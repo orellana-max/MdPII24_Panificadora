@@ -1,0 +1,9 @@
+Repositorio em github:
+
+https://github.com/orellana-max/Panificadora_MdP2_2024.git
+
+diagrama de clases en draw.io:
+
+https://app.diagrams.net/#G11I06KN3q8juPV2nk59_iDVsTUjgw8XAq#%7B%22pageId%22%3A%22C5RBs43oDa-KdzZeNtuy%22%7D
+
+
