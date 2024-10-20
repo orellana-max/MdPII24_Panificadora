@@ -19,13 +19,6 @@ agregarCliente: cliente
 
 	listaClientes add: cliente.!
 
-agregarCliente: unNum nom: unNom dire: unaDire tel: unTel
-	"Crea y agrega un Cliente a la lista de Clientes"
-
-	"| clien |
-	clien := Cliente crearClienteNro: unNum nom: unNom dire: unaDire tel: unTel.
-	listaClientes add: clien."!
-
 agregarPedidoCliente: unCliente prods: ProductosPedidos
 	"Agrega un Pedido a la lista de Pedidos"
 	"|n |
@@ -37,12 +30,6 @@ agregarProducto: producto
 	"Agrega un producto a la lista de productos"
 
 	listaProductos add: producto!
-
-agregarProducto:unNom tip:unTipo prec:unPrecio
-"Crea y Agrega un producto a la lista de poductos"
-|prod|
-prod:= Producto crearProductoNombre: unNom tip: unTipo prec: unPrecio .
-listaProductos add: prod.!
 
 agregarProveedor: unProveedor
 	"Agrega un Provedor a la lista de productos"
@@ -96,14 +83,18 @@ eliminarProveedor: unProveedor
 	"Elimina un Provedor de la lista de poductos"
 
 	| nom nro |
-	nom := unProveedor verNombre.
-	nro:= unProveedor verNroProveedor.
-	(listaProveedores includes: unProveedor)
+	unProveedor notNil
 		ifTrue: 
-			[listaProveedores remove: unProveedor.
-			MessageBox warning:  'Se elimino Provedor Nro: ' ,nro printString, ' Nombre: ', nom.]
-		ifFalse: 
-			[MessageBox warning:  'No existe Proveedor Nro: ' ,nro printString, ' Nombre: ', nom , ' en la lista.' .]!
+			[nom := unProveedor verNombre.
+			nro := unProveedor verNroProveedor.
+			(listaProveedores includes: unProveedor)
+				ifTrue: 
+					[listaProveedores remove: unProveedor.
+					MessageBox warning: 'Se elimino Proveedor Nro: ' , nro printString , ' Nombre: ' , nom]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Proveedor Nro: ' , nro printString , ' Nombre: ' , nom , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Proveedor es vacio']!
 
 fabricarProducto: unProducto pana: unPanadero cantidad: unaCantidad
 	"Pone a producir un producto asignando al panadero correspondiente"
@@ -146,20 +137,19 @@ repartirPedido:unPedido
 "unPedido repartir."
 "agregar a viajes realizados del repartidor"!
 
-traerPrecioProducto:nroProducto
-"Retorna el precio de un producto, cero si no  existe producto en la lista de Productos"
-|pro prec|
-pro := self traerProducto: nroProducto.
-prec := 0.0.
-(pro notNil) ifTrue: [prec := pro verPrecio ].
+traerPrecioProducto: nroProducto
+	"Retorna el precio de un producto, cero si no  existe producto en la lista de Productos"
 
-^prec.
-!
+	| pro prec |
+	pro := self traerProductoNro: nroProducto.
+	prec := 0.0.
+	pro notNil ifTrue: [prec := pro verPrecio].
+	^prec!
 
-traerProducto: nroProd
+traerProductoNro: nroProd
 	"Retorna el producto de nro de producto pasado por parametro, nil en caso contrario"
 
-	^listaProductos detect: [:pro | pro verNroProducto = nroProd] ifNone: [^nil].!
+	^listaProductos detect: [:pro | pro verNroProducto = nroProd] ifNone: [^nil]!
 
 verDireccion
 	"retorna la Direccion de la Panificadora"
@@ -191,10 +181,8 @@ verTelefono
 
 !Panificadora categoriesForMethods!
 agregarCliente:!public! !
-agregarCliente:nom:dire:tel:!public! !
 agregarPedidoCliente:prods:!public! !
 agregarProducto:!public! !
-agregarProducto:tip:prec:!public! !
 agregarProveedor:!public! !
 asignarRepartidorPedido:!public! !
 eliminarCliente:!public! !
@@ -207,7 +195,7 @@ modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
 traerPrecioProducto:!public! !
-traerProducto:!public! !
+traerProductoNro:!public! !
 verDireccion!public! !
 verListaClientes!public! !
 verListaProductos!public! !
