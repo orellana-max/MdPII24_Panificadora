@@ -146,8 +146,18 @@ repartirPedido:unPedido
 "unPedido repartir."
 "agregar a viajes realizados del repartidor"!
 
+traerPrecioProducto:nroProducto
+"Retorna el precio de un producto, cero si no  existe producto en la lista de Productos"
+|pro prec|
+pro := self traerProducto: nroProducto.
+prec := 0.0.
+(pro notNil) ifTrue: [prec := pro verPrecio ].
+
+^prec.
+!
+
 traerProducto: nroProd
-	"Retorna el producto de nro de producto parado por parametro, nil en caso contrario"
+	"Retorna el producto de nro de producto pasado por parametro, nil en caso contrario"
 
 	^listaProductos detect: [:pro | pro verNroProducto = nroProd] ifNone: [^nil].!
 
@@ -196,6 +206,7 @@ modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
+traerPrecioProducto:!public! !
 traerProducto:!public! !
 verDireccion!public! !
 verListaClientes!public! !
