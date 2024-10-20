@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk"!
 
 Object subclass: #Producto
-	instanceVariableNames: 'nroProducto nombreProd tipo stock precio porDocena'
+	instanceVariableNames: 'nroProducto nombreProducto tipo stock precio porDocena'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'idProd'!
@@ -14,31 +14,39 @@ Producto comment: ''!
 
 !Producto methodsFor!
 
-aumentarStock:cant
+aumentarStock:cantidad
 "aumenta la cantidad del stock del producto"
-stock:=stock + cant.!
+stock:=stock + cantidad.!
 
-disminuirStock: cant
+disminuirStock: cantidad
 	"aumenta la cantidad del stock del producto"
 
-	stock := stock - cant!
+	stock := stock - cantidad.!
 
 imprimir
-"retorna una cadena con los datos"
-|cadena|
+	"retorna una cadena con los datos"
 
-cadena := nroProducto  printString , ' | ', nombreProd , ' | ', tipo , ' | ',  (stock printString), ' | ', (precio printString) , ' | porDoc: ', (porDocena printString).
-^cadena.!
+	| cadena |
+	cadena := 'Producto nro: ', nroProducto printString , ' | Nom: ' , nombreProducto , ' | tipo: ' , tipo , ' | Strock: '
+				, stock printString , ' | Precio: '
+				, precio printString , ' | porDoc: '
+				, porDocena printString.
+	^cadena!
 
 iniProductoNombre: unNom tip: unTipo prec: unPrecio
 	"Inicializa una instancia de Producto"
 
 	nroProducto := Producto nextId.
-	nombreProd := unNom.
+	nombreProducto := unNom.
 	tipo := unTipo.
 	precio := unPrecio.
 	stock := 0.
 	porDocena := false!
+
+modNombre: unNombre
+	"Modifica el nombre del producto"
+
+	nombreProducto := unNombre!
 
 modPorDocena
 	"Modifica si se vende por docena o no"
@@ -65,15 +73,15 @@ modTipo: unTipo
 
 	tipo:= unTipo.!
 
-nombre
+verNombre
 	"retorna el nombre del producto"
 
-	^nombreProd.!
+	^nombreProducto.!
 
-nombre: unNombre
-	"Modifica el nombre del producto"
+VerNombre
+	"retorna el nombre del producto"
 
-	nombreProd := unNombre.!
+	^nombreProducto!
 
 verNroProducto
 "retorna el Numero del producto"
@@ -103,12 +111,13 @@ aumentarStock:!public! !
 disminuirStock:!public! !
 imprimir!public! !
 iniProductoNombre:tip:prec:!public! !
+modNombre:!public! !
 modPorDocena!public! !
 modPrecio:!public! !
 modStock:!public! !
 modTipo:!public! !
-nombre!public! !
-nombre:!public! !
+verNombre!public! !
+VerNombre!public! !
 verNroProducto!public! !
 verPorDocena!public! !
 verPrecio!public! !
@@ -123,10 +132,13 @@ crearProductoNombre:unNom tip:unTipo prec:unPrecio
 ^(self new) iniProductoNombre: unNom tip: unTipo prec: unPrecio.!
 
 initialize
-	"Inicia la Variable de Clase nextId"
-	idProd := 1.!
+	"Inicia la Variable de Clase idProd"
+
+	idProd := 1!
 
 nextId
+	"retorna un id unico para una nueva instancia de producto"
+
 	| id |
 	id := idProd.
 	idProd := idProd + 1.

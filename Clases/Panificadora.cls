@@ -44,6 +44,11 @@ agregarProducto:unNom tip:unTipo prec:unPrecio
 prod:= Producto crearProductoNombre: unNom tip: unTipo prec: unPrecio .
 listaProductos add: prod.!
 
+agregarProveedor: unProveedor
+	"Agrega un Provedor a la lista de productos"
+
+	listaProveedores add: unProveedor!
+
 asignarRepartidorPedido: nroPedido
 "asignar un repartidor libre al pedido"
 
@@ -55,40 +60,50 @@ repartidor := listaRepartidores detect: [:rep | rep libre = true] ifNone:[^nil].
 "asignar repartidor"
 "pedido modiRepartidorAsignado: (repartidor  verNroRepartidor )."!
 
-direccion
-	"retorna la Direccion de la Panificadora"
-
-	^direccion.!
-
-direccion: unaDire
-	"Modifica la Direccion de la Panificadora"
-
-	direccion := unaDire.!
-
-eliminarCliente: cliente
+eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
 
-	| msj nom|
-	nom:= cliente verNombre.
-	msj := 'No existe Cliente ' , nom , ' para eliminar. '.
-
-	(listaClientes includes: cliente) ifTrue: [listaClientes remove: cliente.
-	Transcript show: ('se elimino Cliente' , nom); cr] ifFalse: [ Transcript show: msj; cr ].
+	| nom nro |
+	nom := unCliente verNombre.
+	nro:= unCliente verNroProveedor.
+	(listaClientes includes: unCliente)
+		ifTrue: 
+			[listaClientes remove: unCliente.
+			MessageBox warning:  'Se elimino Cliente Nro: ' ,nro printString, ' Nombre: ', nom.]
+		ifFalse: 
+			[MessageBox warning:  'No existe Cliente Nro: ' ,nro printString, ' Nombre: ', nom , ' en la lista.' .]
 	
 !
 
-eliminarProducto: producto
+eliminarProducto: unProducto
 	"Elimina un producto de la lista de poductos"
 
-	| msj nom |
-	nom := producto verNombre.
-	msj := 'No existe producto: ' , nom , ' en la lista.' .
-	(listaProductos includes: producto)
+	| nom nro |
+	unProducto notNil
 		ifTrue: 
-			[listaProductos remove: producto.
-			Transcript show: 'se elimino Producto: ' , nom; cr]
+			[nom := unProducto verNombre.
+			nro := unProducto verNroProducto.
+			(listaProductos includes: unProducto)
+				ifTrue: 
+					[listaProductos remove: unProducto.
+					MessageBox warning: 'Se elimino Producto Nro: ' , nro printString , ' Nombre: ' , nom]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Producto Nro: ' , nro printString , ' Nombre: ' , nom , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Producto es vacio']!
+
+eliminarProveedor: unProveedor
+	"Elimina un Provedor de la lista de poductos"
+
+	| nom nro |
+	nom := unProveedor verNombre.
+	nro:= unProveedor verNroProveedor.
+	(listaProveedores includes: unProveedor)
+		ifTrue: 
+			[listaProveedores remove: unProveedor.
+			MessageBox warning:  'Se elimino Provedor Nro: ' ,nro printString, ' Nombre: ', nom.]
 		ifFalse: 
-			[Transcript show: msj; cr]!
+			[MessageBox warning:  'No existe Proveedor Nro: ' ,nro printString, ' Nombre: ', nom , ' en la lista.' .]!
 
 fabricarProducto: unProducto pana: unPanadero cantidad: unaCantidad
 	"Pone a producir un producto asignando al panadero correspondiente"
@@ -108,6 +123,11 @@ iniPanificadoraNom: unNom dire: unaDire tel: unTel
 	listaEmpleados := OrderedCollection new.
 	listaClientes := OrderedCollection new.
 	listaProveedores := OrderedCollection new!
+
+modDireccion: unaDire
+	"Modifica la Direccion de la Panificadora"
+
+	direccion := unaDire!
 
 modNombre: unNombre
 	"Modifca el nombre de la Panificadora"
@@ -131,6 +151,11 @@ traerProducto: nroProd
 
 	^listaProductos detect: [:pro | pro verNroProducto = nroProd] ifNone: [^nil].!
 
+verDireccion
+	"retorna la Direccion de la Panificadora"
+
+	^direccion!
+
 verListaClientes
 	"Retorna la lista de Clientes"
 
@@ -140,6 +165,11 @@ verListaProductos
 	"Retorna la lista de productos"
 
 	^listaProductos!
+
+verListaProveedores
+	"Retorna la lista de Proveedores"
+
+	^listaProveedores!
 
 verNombre
 "retorna el nombre de la Panificadora"
@@ -155,19 +185,22 @@ agregarCliente:nom:dire:tel:!public! !
 agregarPedidoCliente:prods:!public! !
 agregarProducto:!public! !
 agregarProducto:tip:prec:!public! !
+agregarProveedor:!public! !
 asignarRepartidorPedido:!public! !
-direccion!public! !
-direccion:!public! !
 eliminarCliente:!public! !
 eliminarProducto:!public! !
+eliminarProveedor:!public! !
 fabricarProducto:pana:cantidad:!public! !
 iniPanificadoraNom:dire:tel:!public! !
+modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
 traerProducto:!public! !
+verDireccion!public! !
 verListaClientes!public! !
 verListaProductos!public! !
+verListaProveedores!public! !
 verNombre!public! !
 verTelefono!public! !
 !

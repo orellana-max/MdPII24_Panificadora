@@ -6,6 +6,7 @@ package paxVersion: 1;
 package classNames
 	add: #Panificadora;
 	add: #Producto;
+	add: #Proveedor;
 	yourself.
 
 package binaryGlobalNames: (Set new
@@ -15,7 +16,8 @@ package globalAliases: (Set new
 	yourself).
 
 package setPrerequisites: #(
-	'Dolphin').
+	'..\..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin'
+	'..\..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin Message Box').
 
 package!
 
@@ -28,10 +30,16 @@ Object subclass: #Panificadora
 	classInstanceVariableNames: ''!
 
 Object subclass: #Producto
-	instanceVariableNames: 'nroProducto nombreProd tipo stock precio porDocena'
+	instanceVariableNames: 'nroProducto nombreProducto tipo stock precio porDocena'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'idProd'!
+
+Object subclass: #Proveedor
+	instanceVariableNames: 'nroProveedor direccion telefono tipoProductos nombre'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: 'idProveedor'!
 
 "End of package definition"!
 
@@ -77,6 +85,11 @@ agregarProducto:unNom tip:unTipo prec:unPrecio
 prod:= Producto crearProductoNombre: unNom tip: unTipo prec: unPrecio .
 listaProductos add: prod.!
 
+agregarProveedor: unProveedor
+	"Agrega un Provedor a la lista de productos"
+
+	listaProveedores add: unProveedor!
+
 asignarRepartidorPedido: nroPedido
 "asignar un repartidor libre al pedido"
 
@@ -88,40 +101,50 @@ repartidor := listaRepartidores detect: [:rep | rep libre = true] ifNone:[^nil].
 "asignar repartidor"
 "pedido modiRepartidorAsignado: (repartidor  verNroRepartidor )."!
 
-direccion
-	"retorna la Direccion de la Panificadora"
-
-	^direccion.!
-
-direccion: unaDire
-	"Modifica la Direccion de la Panificadora"
-
-	direccion := unaDire.!
-
-eliminarCliente: cliente
+eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
 
-	| msj nom|
-	nom:= cliente verNombre.
-	msj := 'No existe Cliente ' , nom , ' para eliminar. '.
-
-	(listaClientes includes: cliente) ifTrue: [listaClientes remove: cliente.
-	Transcript show: ('se elimino Cliente' , nom); cr] ifFalse: [ Transcript show: msj; cr ].
+	| nom nro |
+	nom := unCliente verNombre.
+	nro:= unCliente verNroProveedor.
+	(listaClientes includes: unCliente)
+		ifTrue: 
+			[listaClientes remove: unCliente.
+			MessageBox warning:  'Se elimino Cliente Nro: ' ,nro printString, ' Nombre: ', nom.]
+		ifFalse: 
+			[MessageBox warning:  'No existe Cliente Nro: ' ,nro printString, ' Nombre: ', nom , ' en la lista.' .]
 	
 !
 
-eliminarProducto: producto
+eliminarProducto: unProducto
 	"Elimina un producto de la lista de poductos"
 
-	| msj nom |
-	nom := producto verNombre.
-	msj := 'No existe producto: ' , nom , ' en la lista.' .
-	(listaProductos includes: producto)
+	| nom nro |
+	unProducto notNil
 		ifTrue: 
-			[listaProductos remove: producto.
-			Transcript show: 'se elimino Producto: ' , nom; cr]
+			[nom := unProducto verNombre.
+			nro := unProducto verNroProducto.
+			(listaProductos includes: unProducto)
+				ifTrue: 
+					[listaProductos remove: unProducto.
+					MessageBox warning: 'Se elimino Producto Nro: ' , nro printString , ' Nombre: ' , nom]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Producto Nro: ' , nro printString , ' Nombre: ' , nom , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Producto es vacio']!
+
+eliminarProveedor: unProveedor
+	"Elimina un Provedor de la lista de poductos"
+
+	| nom nro |
+	nom := unProveedor verNombre.
+	nro:= unProveedor verNroProveedor.
+	(listaProveedores includes: unProveedor)
+		ifTrue: 
+			[listaProveedores remove: unProveedor.
+			MessageBox warning:  'Se elimino Provedor Nro: ' ,nro printString, ' Nombre: ', nom.]
 		ifFalse: 
-			[Transcript show: msj; cr]!
+			[MessageBox warning:  'No existe Proveedor Nro: ' ,nro printString, ' Nombre: ', nom , ' en la lista.' .]!
 
 fabricarProducto: unProducto pana: unPanadero cantidad: unaCantidad
 	"Pone a producir un producto asignando al panadero correspondiente"
@@ -141,6 +164,11 @@ iniPanificadoraNom: unNom dire: unaDire tel: unTel
 	listaEmpleados := OrderedCollection new.
 	listaClientes := OrderedCollection new.
 	listaProveedores := OrderedCollection new!
+
+modDireccion: unaDire
+	"Modifica la Direccion de la Panificadora"
+
+	direccion := unaDire!
 
 modNombre: unNombre
 	"Modifca el nombre de la Panificadora"
@@ -164,6 +192,11 @@ traerProducto: nroProd
 
 	^listaProductos detect: [:pro | pro verNroProducto = nroProd] ifNone: [^nil].!
 
+verDireccion
+	"retorna la Direccion de la Panificadora"
+
+	^direccion!
+
 verListaClientes
 	"Retorna la lista de Clientes"
 
@@ -173,6 +206,11 @@ verListaProductos
 	"Retorna la lista de productos"
 
 	^listaProductos!
+
+verListaProveedores
+	"Retorna la lista de Proveedores"
+
+	^listaProveedores!
 
 verNombre
 "retorna el nombre de la Panificadora"
@@ -188,19 +226,22 @@ agregarCliente:nom:dire:tel:!public! !
 agregarPedidoCliente:prods:!public! !
 agregarProducto:!public! !
 agregarProducto:tip:prec:!public! !
+agregarProveedor:!public! !
 asignarRepartidorPedido:!public! !
-direccion!public! !
-direccion:!public! !
 eliminarCliente:!public! !
 eliminarProducto:!public! !
+eliminarProveedor:!public! !
 fabricarProducto:pana:cantidad:!public! !
 iniPanificadoraNom:dire:tel:!public! !
+modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
 traerProducto:!public! !
+verDireccion!public! !
 verListaClientes!public! !
 verListaProductos!public! !
+verListaProveedores!public! !
 verNombre!public! !
 verTelefono!public! !
 !
@@ -227,31 +268,39 @@ Producto comment: ''!
 
 !Producto methodsFor!
 
-aumentarStock:cant
+aumentarStock:cantidad
 "aumenta la cantidad del stock del producto"
-stock:=stock + cant.!
+stock:=stock + cantidad.!
 
-disminuirStock: cant
+disminuirStock: cantidad
 	"aumenta la cantidad del stock del producto"
 
-	stock := stock - cant!
+	stock := stock - cantidad.!
 
 imprimir
-"retorna una cadena con los datos"
-|cadena|
+	"retorna una cadena con los datos"
 
-cadena := nroProducto  printString , ' | ', nombreProd , ' | ', tipo , ' | ',  (stock printString), ' | ', (precio printString) , ' | porDoc: ', (porDocena printString).
-^cadena.!
+	| cadena |
+	cadena := 'Producto nro: ', nroProducto printString , ' | Nom: ' , nombreProducto , ' | tipo: ' , tipo , ' | Strock: '
+				, stock printString , ' | Precio: '
+				, precio printString , ' | porDoc: '
+				, porDocena printString.
+	^cadena!
 
 iniProductoNombre: unNom tip: unTipo prec: unPrecio
 	"Inicializa una instancia de Producto"
 
 	nroProducto := Producto nextId.
-	nombreProd := unNom.
+	nombreProducto := unNom.
 	tipo := unTipo.
 	precio := unPrecio.
 	stock := 0.
 	porDocena := false!
+
+modNombre: unNombre
+	"Modifica el nombre del producto"
+
+	nombreProducto := unNombre!
 
 modPorDocena
 	"Modifica si se vende por docena o no"
@@ -278,15 +327,15 @@ modTipo: unTipo
 
 	tipo:= unTipo.!
 
-nombre
+verNombre
 	"retorna el nombre del producto"
 
-	^nombreProd.!
+	^nombreProducto.!
 
-nombre: unNombre
-	"Modifica el nombre del producto"
+VerNombre
+	"retorna el nombre del producto"
 
-	nombreProd := unNombre.!
+	^nombreProducto!
 
 verNroProducto
 "retorna el Numero del producto"
@@ -316,12 +365,13 @@ aumentarStock:!public! !
 disminuirStock:!public! !
 imprimir!public! !
 iniProductoNombre:tip:prec:!public! !
+modNombre:!public! !
 modPorDocena!public! !
 modPrecio:!public! !
 modStock:!public! !
 modTipo:!public! !
-nombre!public! !
-nombre:!public! !
+verNombre!public! !
+VerNombre!public! !
 verNroProducto!public! !
 verPorDocena!public! !
 verPrecio!public! !
@@ -336,11 +386,13 @@ crearProductoNombre:unNom tip:unTipo prec:unPrecio
 ^(self new) iniProductoNombre: unNom tip: unTipo prec: unPrecio.!
 
 initialize
-	"Inicia la Variable de Clase nextId"
+	"Inicia la Variable de Clase idProd"
 
 	idProd := 1!
 
 nextId
+	"retorna un id unico para una nueva instancia de producto"
+
 	| id |
 	id := idProd.
 	idProd := idProd + 1.
@@ -348,6 +400,119 @@ nextId
 
 !Producto class categoriesForMethods!
 crearProductoNombre:tip:prec:!public! !
+initialize!public! !
+nextId!public! !
+!
+
+Proveedor guid: (GUID fromString: '{4d142482-4e17-4a30-bff2-851d3c202d10}')!
+
+Proveedor comment: ''!
+
+!Proveedor categoriesForClass!Kernel-Objects! !
+
+!Proveedor methodsFor!
+
+imprimir
+	"Retorna los datos de la instancia de Proveedor"
+
+	| cad |
+	cad := 'Proveedor Nro: ', nroProveedor printString, ' | Nom: ', nombre, ' | Dir: ', direccion, ' | Tel: ', telefono, ' | Tipo: ', tipoProductos.
+	^cad.!
+
+iniProveedorNombre: unNom dir: unaDir tel: unTel tip: unTipo
+	"Inicializa una instancia de Proveedor"
+
+	nroProveedor := Proveedor nextId.
+	nombre := unNom.
+	direccion := unaDir.
+	telefono := unTel.
+	tipoProductos := unTipo!
+
+modDireccion: unaDire
+	"modifica la direccion del proovedor"
+
+	direccion := unaDire!
+
+modNombre: unNom
+	"modifica el nombre del proovedor"
+
+	nombre := unNom.!
+
+modTelefono: unTel
+	"modifica el telefono del proovedor"
+
+	telefono := unTel!
+
+modTipoProductos: unTipo
+	"modifica el tipo de Producto que proovee el proveedor"
+
+	tipoProductos := unTipo!
+
+verDireccion
+	"retorna la direccion del proovedor"
+
+	^direccion!
+
+verNombre
+	"retorna el nombre del proovedor"
+
+	^nombre.!
+
+verNroProveedor
+	"retorna el numero del proveedor"
+
+	^nroProveedor.!
+
+verTelefono
+	"retorna el telefono del proveedor"
+
+	^telefono!
+
+verTipoProductos
+	"retorna el tipo de Producto que proovee el proveedor"
+
+	^tipoProductos.! !
+
+!Proveedor categoriesForMethods!
+imprimir!public! !
+iniProveedorNombre:dir:tel:tip:!public! !
+modDireccion:!public! !
+modNombre:!public! !
+modTelefono:!public! !
+modTipoProductos:!public! !
+verDireccion!public! !
+verNombre!public! !
+verNroProveedor!public! !
+verTelefono!public! !
+verTipoProductos!public! !
+!
+
+!Proveedor class methodsFor!
+
+crearProveedorNombre: unNom dir: unaDir tel: unTel tip: unTipo
+	"retorna una instancia de Proveedor inicializada"
+
+	^self new
+		iniProveedorNombre: unNom
+		dir: unaDir
+		tel: unTel
+		tip: unTipo!
+
+initialize
+	"inicializa la variable de Clase idProveedor"
+
+	idProveedor := 1!
+
+nextId
+	"retorna un id unico para una nueva instancia de Proveedor"
+
+	| id |
+	id := idProveedor.
+	idProveedor := idProveedor + 1.
+	^id! !
+
+!Proveedor class categoriesForMethods!
+crearProveedorNombre:dir:tel:tip:!public! !
 initialize!public! !
 nextId!public! !
 !
