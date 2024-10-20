@@ -6,6 +6,9 @@ diagrama de clases en draw.io:
 
 https://app.diagrams.net/#G11I06KN3q8juPV2nk59_iDVsTUjgw8XAq#%7B%22pageId%22%3A%22C5RBs43oDa-KdzZeNtuy%22%7D
 
+<<<<<<< HEAD
+=======
 
 
 
+>>>>>>> origin/master
