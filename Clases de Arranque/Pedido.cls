@@ -1,13 +1,17 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk"!
 
 Object subclass: #Pedido
-	instanceVariableNames: 'nroPedido fecha fechaEntrega estado nroCliente nroRepartidorAsignado listaProductosPedidos'
+	instanceVariableNames: 'nroPedido fecha fechaEntrega estado nroCliente nroRepartidorAsignado listaProductosPedidos total'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'nroPedidoStatic'!
-Pedido guid: (GUID fromString: '{D2E215D0-9920-4AA0-84C6-40A60B01EC3A}')!
+
+Pedido guid: (GUID fromString: '{d2e215d0-9920-4aa0-84c6-40a60b01ec3a}')!
+
 Pedido comment: ''!
+
 !Pedido categoriesForClass!Kernel-Objects! !
+
 !Pedido methodsFor!
 
 iniPedidoNro: unNroPedi fechaEnt: fEnt nroCli: unNroCliente listPP: listaDeProdPed
@@ -21,14 +25,37 @@ iniPedidoNro: unNroPedi fechaEnt: fEnt nroCli: unNroCliente listPP: listaDeProdP
 	nroRepartidorAsignado := -1.
 	listaProductosPedidos := listaDeProdPed!
 
+modEstado: unEstado
+	estado := unEstado.!
+
 modiRepartidorAsignado: numeroRepartidor
 	nroRepartidorAsignado := numeroRepartidor.!
 
+verEstado
+	^estado.!
+
+verFechaEntrega
+	^fechaEntrega.!
+
 verNroPedido
-	^nroPedido.! !
-!Pedido categoriesFor: #iniPedidoNro:fechaEnt:nroCli:listPP:!public! !
-!Pedido categoriesFor: #modiRepartidorAsignado:!public! !
-!Pedido categoriesFor: #verNroPedido!public! !
+	^nroPedido.!
+
+verRepartidor
+	^nroRepartidorAsignado.!
+
+verTotal
+	^total.! !
+
+!Pedido categoriesForMethods!
+iniPedidoNro:fechaEnt:nroCli:listPP:!public! !
+modEstado:!public! !
+modiRepartidorAsignado:!public! !
+verEstado!public! !
+verFechaEntrega!public! !
+verNroPedido!public! !
+verRepartidor!public! !
+verTotal!public! !
+!
 
 !Pedido class methodsFor!
 
@@ -49,6 +76,9 @@ f := Date tomorrow .
 Transcript show: 'fecha elegida de entrega: ', f printString; cr.
 
 ^(self new) iniPedidoNro: nroPedidoStatic panificadora: pani fechaEnt: f nroCli: unNroClien listPP: lista.! !
-!Pedido class categoriesFor: #crearPedido:listProdPed:!public! !
-!Pedido class categoriesFor: #crearPedido:nroClien:listProdPed:!public! !
+
+!Pedido class categoriesForMethods!
+crearPedido:listProdPed:!public! !
+crearPedido:nroClien:listProdPed:!public! !
+!
 
