@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk"!
 
 Object subclass: #ProductoPedido
-	instanceVariableNames: 'idProductoPedido nroProducto cantidad nroPedido pedido'
+	instanceVariableNames: 'idProductoPedido nroPedido nroProducto cantidad pedido'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'nroProductoPedido'!
@@ -26,26 +26,45 @@ costo [
     ^ total.  "Devuelve el costo total del ProductoPedido"
 ]!
 
-iniProductoPedido:unId nroProd:unNroProduct pedido:unPedido cantidad:cant
+iniProductoPedido:unNroProduct  cantidad:cant pedido:unPedido
 "inicializa una instancia de ProductoPedido"
 
-idProductoPedido := unId.
+idProductoPedido := ProductoPedido nextNroProdPed.
 nroProducto := unNroProduct.
+cantidad:= cant.
 pedido := unPedido.
 nroPedido := pedido verNroPedido.
-cantidad:= cant.!
+!
 
 modCantidad:unNro
 	cantidad=cantidad+unNro.!
 
 verCantidad
-	^cantidad! !
+	^cantidad!
+
+verIdProdPed
+	"Retorna el nro de ID del Producto Pedidio"
+
+	^idProductoPedido!
+
+verNroPedido
+	"Retorna el nro de pedido asociado al Producto pedido"
+
+	^pedido verNroPedido!
+
+verNroProducto
+	"Retorna el nro de Pedido de ProductoPedido"
+
+	^nroProducto! !
 
 !ProductoPedido categoriesForMethods!
 costo!public! !
-iniProductoPedido:nroProd:pedido:cantidad:!public! !
+iniProductoPedido:cantidad:pedido:!public! !
 modCantidad:!public! !
 verCantidad!public! !
+verIdProdPed!public! !
+verNroPedido!public! !
+verNroProducto!public! !
 !
 
 !ProductoPedido class methodsFor!
@@ -54,12 +73,20 @@ crearProductoPedido:nroProducto pedido:unPedido cant:cantidad
 nroProductoPedido := nroProductoPedido +1.
 ^(self new) iniProductoPedido: nroProductoPedido nroProd: nroProducto pedido: unPedido cantidad: cantidad.!
 
-initialize [
-    nroProductoPedido := 0.
-]! !
+initialize
+	[nroProductoPedido := 0]!
+
+nextNroProdPed
+	"retorna un id unico para una nueva instancia de ProductoPedido"
+
+	| id |
+	id := nroProductoPedido.
+	nroProductoPedido := nroProductoPedido + 1.
+	^id! !
 
 !ProductoPedido class categoriesForMethods!
 crearProductoPedido:pedido:cant:!public! !
 initialize!public! !
+nextNroProdPed!public! !
 !
 

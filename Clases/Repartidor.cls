@@ -1,45 +1,80 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk"!
 
 Empleado subclass: #Repartidor
-	instanceVariableNames: 'nroRepartidor pedidosEntregados nroPedidoAsignado'
+	instanceVariableNames: 'nroRepartidor listaPedidosEntregados nroPedidoAsignado'
 	classVariableNames: 'UnNuevoNroRepartidor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-Repartidor guid: (GUID fromString: '{E520E4A8-E744-4822-9CF7-93BF17A6E60E}')!
+
+Repartidor guid: (GUID fromString: '{e520e4a8-e744-4822-9cf7-93bf17a6e60e}')!
+
 Repartidor comment: ''!
+
 !Repartidor categoriesForClass!Kernel-Objects! !
+
 !Repartidor methodsFor!
 
 agregarPedidoRealizado: unNroPedido
-"agrega un pedido a la lista de pedidos realizados"
-pedidosEntregados add: unNroPedido.!
+	"agrega un pedido a la lista de pedidos realizados"
 
-asignarPedido: numeroPedido
+	listaPedidosEntregados add: unNroPedido!
+
+asignarPedido: nroPedido
 "asigna un nuevo numero de pedido para entregar"
-nroPedidoAsignado := numeroPedido.!
+nroPedidoAsignado := nroPedido.!
 
-iniRepartidorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel 
+imprimir
+^'Repartidor nro:  ', nroRepartidor printString , ' | ', super imprimir.!
+
+iniRepartidorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Repartidor"
-	
 
-	self iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
+	self
+		iniEmpleadoLegajo: unLegajo
+		nom: unNombre
+		dire: unaDire
+		tel: unTel.
 	nroRepartidor := Repartidor nuevoNroRepartidor.
 	sueldo := 500000.
 	nroPedidoAsignado := 0.
-	pedidosEntregados := OrderedCollection new.!
+	listaPedidosEntregados := OrderedCollection new!
 
 liberarRepartidor
 "Solamente cambia a cero el pedido asignado, asi el repartidor estara libre para un hacer un nuevo pedido "
 self agregarPedidoRealizado: nroPedidoAsignado.
 nroPedidoAsignado := 0.!
 
+repartir: pedido
+"Reparte el pedido asigando"
+|nroPed|
+nroPed := pedido verNroPedido.
+self asignarPedido: nroPed.
+self liberarRepartidor.
+
+Transcript show: 'El repartidor nro : ', nroRepartidor printString, ' repartio el pedido nro: ', nroPed printString ; cr.!
+
+verListaPedidosEntregados
+"retorna la lista de pedidos asignados"
+
+^listaPedidosEntregados.!
+
+verNroPedidoAsignado
+	^nroPedidoAsignado .!
+
 verNroRepartidor
 	^nroRepartidor.! !
-!Repartidor categoriesFor: #agregarPedidoRealizado:!public! !
-!Repartidor categoriesFor: #asignarPedido:!public! !
-!Repartidor categoriesFor: #iniRepartidorLegajo:nom:dire:tel:!public! !
-!Repartidor categoriesFor: #liberarRepartidor!public! !
-!Repartidor categoriesFor: #verNroRepartidor!public! !
+
+!Repartidor categoriesForMethods!
+agregarPedidoRealizado:!public! !
+asignarPedido:!public! !
+imprimir!public! !
+iniRepartidorLegajo:nom:dire:tel:!public! !
+liberarRepartidor!public! !
+repartir:!public! !
+verListaPedidosEntregados!public! !
+verNroPedidoAsignado!public! !
+verNroRepartidor!public! !
+!
 
 !Repartidor class methodsFor!
 
@@ -53,6 +88,9 @@ nuevoNroRepartidor
 (UnNuevoNroRepartidor isNil) ifTrue: [UnNuevoNroRepartidor := 0].
 UnNuevoNroRepartidor := UnNuevoNroRepartidor + 1.
 ^UnNuevoNroRepartidor.! !
-!Repartidor class categoriesFor: #crearRepartidorLegajo:nom:dire:tel:!public! !
-!Repartidor class categoriesFor: #nuevoNroRepartidor!public! !
+
+!Repartidor class categoriesForMethods!
+crearRepartidorLegajo:nom:dire:tel:!public! !
+nuevoNroRepartidor!public! !
+!
 

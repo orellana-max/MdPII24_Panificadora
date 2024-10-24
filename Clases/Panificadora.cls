@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk"!
 
 Object subclass: #Panificadora
-	instanceVariableNames: 'nombre direccion telefono listaProductos listaPedidos listaEmpleados listaClientes listaProveedores listaRepartidores'
+	instanceVariableNames: 'nombre direccion telefono listaClientes listaEmpleados listaPanaderos listaPedidos listaProductos listaProveedores listaRepartidores listaVendedores'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -19,12 +19,20 @@ agregarCliente: cliente
 
 	listaClientes add: cliente.!
 
-agregarPedidoCliente: unCliente prods: ProductosPedidos
-	"Agrega un Pedido a la lista de Pedidos"
-	"|n |
-	n:= unCliente verNroCliente.
-	listaPedidos add: (Pedido crearPedido: n listProdPed: ProductosPedidos)."
-	!
+agregarEmpleado: empleado
+	"Agrega un Empleado a la lista de Empleados"
+
+	listaEmpleados add: empleado.!
+
+agregarPanadero: panadero
+	"Agrega un panadero a la lista de panaderos"
+
+	listaPanaderos add: panadero!
+
+agregarPedido: pedido
+	"Agrega un pedido a la lista de Pedidos"
+
+	listaPedidos add: pedido.!
 
 agregarProducto: producto
 	"Agrega un producto a la lista de productos"
@@ -35,6 +43,16 @@ agregarProveedor: unProveedor
 	"Agrega un Provedor a la lista de productos"
 
 	listaProveedores add: unProveedor!
+
+agregarRepartidor: repartidor
+	"Agrega un repartidor a la lista de repartidores"
+
+	listaRepartidores add: repartidor!
+
+agregarVendedor: vendedor
+	"Agrega un Vendedor a la lista de Vendedor"
+
+	listaVendedores add: vendedor.!
 
 asignarRepartidorPedido: nroPedido
 "asignar un repartidor libre al pedido"
@@ -50,17 +68,70 @@ repartidor := listaRepartidores detect: [:rep | rep libre = true] ifNone:[^nil].
 eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
 
-	| nom nro |
-	nom := unCliente verNombre.
-	nro:= unCliente verNroProveedor.
-	(listaClientes includes: unCliente)
+	unCliente notNil
 		ifTrue: 
-			[listaClientes remove: unCliente.
-			MessageBox warning:  'Se elimino Cliente Nro: ' ,nro printString, ' Nombre: ', nom.]
-		ifFalse: 
-			[MessageBox warning:  'No existe Cliente Nro: ' ,nro printString, ' Nombre: ', nom , ' en la lista.' .]
-	
-!
+			[ | nom nro |
+			nom := unCliente verNombre.
+			nro := unCliente verNroCliente.
+			(listaClientes includes: unCliente)
+				ifTrue: 
+					[listaClientes remove: unCliente.
+					MessageBox warning: 'Se elimino Cliente Nro: ' , nro printString , ' Nombre: ' , nom]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Cliente Nro: ' , nro printString , ' Nombre: ' , nom , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Cliente es vacio']!
+
+eliminarEmpleado: unEmpleado
+	"Elimina un Empleado de la lista de Empleados"
+
+	unEmpleado notNil
+		ifTrue: 
+			[ | nom leg |
+			nom := unEmpleado verNombre.
+			leg := unEmpleado verLegajo .
+			(listaEmpleados includes: unEmpleado)
+				ifTrue: 
+					[listaEmpleados remove: unEmpleado.
+					MessageBox warning: 'Se elimino Empleado Legajo ' , leg printString , ' Nombre: ' , nom]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Empleado legajo ' , leg printString , ' Nombre: ' , nom , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Empleado es vacio']!
+
+eliminarPanadero: unPanadero
+	"Elimina un Panadero de la lista de Panaderos"
+
+	unPanadero notNil
+		ifTrue: 
+			[ | nom leg |
+			nom := unPanadero verNombre.
+			leg := unPanadero verLegajo .
+			(listaPanaderos includes: unPanadero)
+				ifTrue: 
+					[listaPanaderos remove: unPanadero.
+					MessageBox warning: 'Se elimino Panadero Legajo ' , leg printString , ' Nombre: ' , nom]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Panadero legajo ' , leg printString , ' Nombre: ' , nom , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Panadero es vacio']!
+
+eliminarPedido: unPedido
+	"Elimina un Pedido de la lista de Pedidos"
+
+	| fecha nro |
+	unPedido notNil
+		ifTrue: 
+			[fecha := unPedido verFecha .
+			nro := unPedido verNroPedido .
+			(listaPedidos includes: unPedido)
+				ifTrue: 
+					[listaPedidos remove: unPedido.
+					MessageBox warning: 'Se elimino Pedido Nro: ' , nro printString , ' Fecha: ' , fecha printString]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Pedido Nro: ' , nro printString , ' Fecha: ' , fecha printString , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Pedido es vacio']!
 
 eliminarProducto: unProducto
 	"Elimina un producto de la lista de poductos"
@@ -80,7 +151,7 @@ eliminarProducto: unProducto
 		ifFalse: [MessageBox warning: 'El Producto es vacio']!
 
 eliminarProveedor: unProveedor
-	"Elimina un Provedor de la lista de poductos"
+	"Elimina un Provedor de la lista de Proveedores"
 
 	| nom nro |
 	unProveedor notNil
@@ -95,6 +166,40 @@ eliminarProveedor: unProveedor
 					[MessageBox
 						warning: 'No existe Proveedor Nro: ' , nro printString , ' Nombre: ' , nom , ' en la lista.']]
 		ifFalse: [MessageBox warning: 'El Proveedor es vacio']!
+
+eliminarRepartidor: unRepartidor
+	"Elimina un Repartidor de la lista de Repartidores"
+
+	| nom nro |
+	unRepartidor notNil
+		ifTrue: 
+			[nom := unRepartidor verNombre.
+			nro := unRepartidor verNroRepartidor .
+			(listaRepartidores includes: unRepartidor)
+				ifTrue: 
+					[listaRepartidores remove: unRepartidor.
+					MessageBox warning: 'Se elimino Repartidor Nro: ' , nro printString , ' Nombre: ' , nom]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Repartidor Nro: ' , nro printString , ' Nombre: ' , nom , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Repartidor es vacio']!
+
+eliminarVendedor: unVendedor
+	"Elimina un Vendedor de la lista de Vendedores"
+
+	| nom nro |
+	unVendedor notNil
+		ifTrue: 
+			[nom := unVendedor verNombre.
+			nro := unVendedor verNroVendedor.
+			(listaVendedores includes: unVendedor)
+				ifTrue: 
+					[listaVendedores remove: unVendedor.
+					MessageBox warning: 'Se elimino Vendedor Nro: ' , nro printString , ' Nombre: ' , nom]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe Vendedor Nro: ' , nro printString , ' Nombre: ' , nom , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El Vendedor es vacio']!
 
 fabricarProducto: unProducto pana: unPanadero cantidad: unaCantidad
 	"Pone a producir un producto asignando al panadero correspondiente"
@@ -113,7 +218,10 @@ iniPanificadoraNom: unNom dire: unaDire tel: unTel
 	listaPedidos := OrderedCollection new.
 	listaEmpleados := OrderedCollection new.
 	listaClientes := OrderedCollection new.
-	listaProveedores := OrderedCollection new!
+	listaProveedores := OrderedCollection new.
+	listaPanaderos := OrderedCollection new.
+	listaVendedores := OrderedCollection new.
+	listaRepartidores := OrderedCollection new.!
 
 modDireccion: unaDire
 	"Modifica la Direccion de la Panificadora"
@@ -146,10 +254,10 @@ traerPrecioProducto: nroProducto
 	pro notNil ifTrue: [prec := pro verPrecio].
 	^prec!
 
-traerProductoNro: nroProd
+traerProductoNro: nroProducto
 	"Retorna el producto de nro de producto pasado por parametro, nil en caso contrario"
 
-	^listaProductos detect: [:pro | pro verNroProducto = nroProd] ifNone: [^nil]!
+	^listaProductos detect: [:pro | pro verNroProducto = nroProducto] ifNone: [^nil]!
 
 verDireccion
 	"retorna la Direccion de la Panificadora"
@@ -161,6 +269,21 @@ verListaClientes
 
 	^listaClientes.!
 
+verListaEmpleados
+	"Retorna la lista de Empleados"
+
+	^listaEmpleados .!
+
+verListaPanaderos
+	"Retorna la lista de Panaderos"
+
+	^listaPanaderos .!
+
+verListaPedidos
+	"Retorna la lista de Pedidos"
+
+	^listaPedidos .!
+
 verListaProductos
 	"Retorna la lista de productos"
 
@@ -170,6 +293,16 @@ verListaProveedores
 	"Retorna la lista de Proveedores"
 
 	^listaProveedores!
+
+verListaRepartidores
+	"Retorna la lista de Repartidores"
+
+	^listaRepartidores .!
+
+verListaVendedores
+	"Retorna la lista de Vendedores"
+
+	^listaVendedores .!
 
 verNombre
 "retorna el nombre de la Panificadora"
@@ -181,13 +314,22 @@ verTelefono
 
 !Panificadora categoriesForMethods!
 agregarCliente:!public! !
-agregarPedidoCliente:prods:!public! !
+agregarEmpleado:!public! !
+agregarPanadero:!public! !
+agregarPedido:!public! !
 agregarProducto:!public! !
 agregarProveedor:!public! !
+agregarRepartidor:!public! !
+agregarVendedor:!public! !
 asignarRepartidorPedido:!public! !
 eliminarCliente:!public! !
+eliminarEmpleado:!public! !
+eliminarPanadero:!public! !
+eliminarPedido:!public! !
 eliminarProducto:!public! !
 eliminarProveedor:!public! !
+eliminarRepartidor:!public! !
+eliminarVendedor:!public! !
 fabricarProducto:pana:cantidad:!public! !
 iniPanificadoraNom:dire:tel:!public! !
 modDireccion:!public! !
@@ -198,8 +340,13 @@ traerPrecioProducto:!public! !
 traerProductoNro:!public! !
 verDireccion!public! !
 verListaClientes!public! !
+verListaEmpleados!public! !
+verListaPanaderos!public! !
+verListaPedidos!public! !
 verListaProductos!public! !
 verListaProveedores!public! !
+verListaRepartidores!public! !
+verListaVendedores!public! !
 verNombre!public! !
 verTelefono!public! !
 !

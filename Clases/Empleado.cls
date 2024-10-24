@@ -1,14 +1,26 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk"!
 
 Object subclass: #Empleado
 	instanceVariableNames: 'legajo direccion telefono sueldo nombre'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-Empleado guid: (GUID fromString: '{449B804D-71EA-44DE-B429-1A4CB51801E4}')!
+
+Empleado guid: (GUID fromString: '{449b804d-71ea-44de-b429-1a4cb51801e4}')!
+
 Empleado comment: ''!
+
 !Empleado categoriesForClass!Kernel-Objects! !
+
 !Empleado methodsFor!
+
+imprimir
+	"retorna una cadena con los datos"
+
+	| cadena |
+	cadena := 'Legajo: ', legajo printString , ' | Nom: ' , nombre , ' | direccion ' , direccion , ' | Tel: '
+				, telefono, ' | sueldo ', sueldo printString.
+	^cadena!
 
 iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Empleado"
@@ -60,17 +72,21 @@ verSueldo
 verTelefono
 "Retorna el telefono del Empleado"
 ^telefono.! !
-!Empleado categoriesFor: #iniEmpleadoLegajo:nom:dire:tel:!public! !
-!Empleado categoriesFor: #modDireccion:!public! !
-!Empleado categoriesFor: #modLegajo:!public! !
-!Empleado categoriesFor: #modNombre:!public! !
-!Empleado categoriesFor: #modSueldo:!public! !
-!Empleado categoriesFor: #modTelefono:!public! !
-!Empleado categoriesFor: #verDireccion!public! !
-!Empleado categoriesFor: #verLegajo!public! !
-!Empleado categoriesFor: #verNombre!public! !
-!Empleado categoriesFor: #verSueldo!public! !
-!Empleado categoriesFor: #verTelefono!public! !
+
+!Empleado categoriesForMethods!
+imprimir!public! !
+iniEmpleadoLegajo:nom:dire:tel:!public! !
+modDireccion:!public! !
+modLegajo:!public! !
+modNombre:!public! !
+modSueldo:!public! !
+modTelefono:!public! !
+verDireccion!public! !
+verLegajo!public! !
+verNombre!public! !
+verSueldo!public! !
+verTelefono!public! !
+!
 
 !Empleado class methodsFor!
 
@@ -78,5 +94,8 @@ crearEmpleadoLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
 	"Retorna una instancia de Empleado inicializada"
 
 	^(self new) iniEmpleadoLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.! !
-!Empleado class categoriesFor: #crearEmpleadoLegajo:nom:dire:tel:!public! !
+
+!Empleado class categoriesForMethods!
+crearEmpleadoLegajo:nom:dire:tel:!public! !
+!
 

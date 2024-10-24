@@ -14,10 +14,32 @@ Pedido comment: ''!
 
 !Pedido methodsFor!
 
-iniPedidoNro: unNroPedi fechaEnt: fEnt nroCli: unNroCliente listPP: listaDeProdPed
+agregarProductoPedido: productoPedido
+	"Agrega un ProductoPedido a la lista de ProductosPedidos"
+
+	listaProductosPedidos add: productoPedido!
+
+eliminarProductoPedido: unProductoPedido
+	"Elimina un ProductoPedido de la lista de Productos Pedidos"
+
+	| id nroProd |
+	unProductoPedido notNil
+		ifTrue: 
+			[id := unProductoPedido verIdProdPed .
+			nroProd := unProductoPedido verNroProducto .
+			(listaProductosPedidos includes: unProductoPedido)
+				ifTrue: 
+					[listaProductosPedidos remove: unProductoPedido.
+					MessageBox warning: 'Se elimino ProductoPedido id: ' , id printString , ' con el Producto Nro: ' , nroProd printString]
+				ifFalse: 
+					[MessageBox
+						warning: 'No existe ProductoPedido id:  ' , id printString , ' con el Producto Nro: ' , nroProd printString , ' en la lista.']]
+		ifFalse: [MessageBox warning: 'El ProductoPedido es vacio']!
+
+iniPedidoNroCliente: unNroCliente fechaEnt: fEnt  listPP: listaDeProdPed
 	"Retorna una instacia de Pedido inicializada"
 
-	nroPedido := unNroPedi.
+	nroPedido := Pedido nextNroPedido.
 	fecha := Date today.
 	fechaEntrega := fEnt.
 	estado := 'en Preparacion'.
@@ -28,32 +50,45 @@ iniPedidoNro: unNroPedi fechaEnt: fEnt nroCli: unNroCliente listPP: listaDeProdP
 modEstado: unEstado
 	estado := unEstado.!
 
-modiRepartidorAsignado: numeroRepartidor
-	nroRepartidorAsignado := numeroRepartidor.!
+modiRepartidorAsignado: nroRepartidor
+	nroRepartidorAsignado := nroRepartidor.!
 
 verEstado
 	^estado.!
 
+verFecha
+"Retorna la fecha de la creacion del pedido"
+	^fecha.!
+
 verFechaEntrega
 	^fechaEntrega.!
+
+verListaProductosPedidos
+	"Retorna la lista de ProductosPedidos"
+
+	^listaProductosPedidos!
 
 verNroPedido
 	^nroPedido.!
 
-verRepartidor
-	^nroRepartidorAsignado.!
+verNroRepartidor
+	^nroRepartidorAsignado!
 
 verTotal
 	^total.! !
 
 !Pedido categoriesForMethods!
-iniPedidoNro:fechaEnt:nroCli:listPP:!public! !
+agregarProductoPedido:!public! !
+eliminarProductoPedido:!public! !
+iniPedidoNroCliente:fechaEnt:listPP:!public! !
 modEstado:!public! !
 modiRepartidorAsignado:!public! !
 verEstado!public! !
+verFecha!public! !
 verFechaEntrega!public! !
+verListaProductosPedidos!public! !
 verNroPedido!public! !
-verRepartidor!public! !
+verNroRepartidor!public! !
 verTotal!public! !
 !
 
@@ -75,10 +110,23 @@ nroPedidoStatic := nroPedidoStatic +1.
 f := Date tomorrow .
 Transcript show: 'fecha elegida de entrega: ', f printString; cr.
 
-^(self new) iniPedidoNro: nroPedidoStatic panificadora: pani fechaEnt: f nroCli: unNroClien listPP: lista.! !
+^(self new) iniPedidoNro: nroPedidoStatic panificadora: pani fechaEnt: f nroCli: unNroClien listPP: lista.!
+
+initialize
+[nroPedidoStatic := 1]!
+
+nextNroPedido
+	"retorna un id unico para una nueva instancia de Pedido"
+
+	| id |
+	id := nroPedidoStatic .
+	nroPedidoStatic := nroPedidoStatic + 1.
+	^id! !
 
 !Pedido class categoriesForMethods!
 crearPedido:listProdPed:!public! !
 crearPedido:nroClien:listProdPed:!public! !
+initialize!public! !
+nextNroPedido!public! !
 !
 

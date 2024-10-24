@@ -74,14 +74,9 @@ modTipo: unTipo
 	tipo:= unTipo.!
 
 verNombre
-	"retorna el nombre del producto"
+	"retorna el nombre del Producto"
 
 	^nombreProducto.!
-
-VerNombre
-	"retorna el nombre del producto"
-
-	^nombreProducto!
 
 verNroProducto
 "retorna el Numero del producto"
@@ -117,7 +112,6 @@ modPrecio:!public! !
 modStock:!public! !
 modTipo:!public! !
 verNombre!public! !
-VerNombre!public! !
 verNroProducto!public! !
 verPorDocena!public! !
 verPrecio!public! !

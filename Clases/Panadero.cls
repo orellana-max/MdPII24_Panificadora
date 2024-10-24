@@ -1,19 +1,27 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk"!
 
 Empleado subclass: #Panadero
-	instanceVariableNames: ''
+	instanceVariableNames: 'puesto'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-Panadero guid: (GUID fromString: '{924BF294-35D3-4F4D-A558-48E649E78E2B}')!
+
+Panadero guid: (GUID fromString: '{924bf294-35d3-4f4d-a558-48e649e78e2b}')!
+
 Panadero comment: ''!
+
 !Panadero categoriesForClass!Kernel-Objects! !
+
 !Panadero methodsFor!
 
-iniPanaderoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
-	"Inicializa una instancia de Empleado"
+imprimir
+^'Panadero Puesto:  ', puesto, ' | ', super imprimir.!
+
+iniPanaderoLegajo: unLegajo puesto: unPuesto nom: unNombre dire: unaDire tel: unTel
+	"Inicializa una instancia de Panadero"
 
 	self iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
+	puesto := unPuesto.
 	sueldo := 800000.
 	
 	
@@ -29,8 +37,12 @@ unProducto aumentarStock: unaCant.
 Transcript show: 'se produjo ' , (unaCant  printString), unidad,' de ', unProducto verNombre; cr.
 Transcript show: ' (Stock: ' , unProducto verStock printString , '  )' ; cr.
 ! !
-!Panadero categoriesFor: #iniPanaderoLegajo:nom:dire:tel:!public! !
-!Panadero categoriesFor: #producirProducto:cant:!public! !
+
+!Panadero categoriesForMethods!
+imprimir!public! !
+iniPanaderoLegajo:puesto:nom:dire:tel:!public! !
+producirProducto:cant:!public! !
+!
 
 !Panadero class methodsFor!
 
@@ -38,5 +50,8 @@ crearPanaderoLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
 	"Retorna una instancia de Panadero inicializada"
 
 	^(self new) iniPanaderoLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.! !
-!Panadero class categoriesFor: #crearPanaderoLegajo:nom:dire:tel:!public! !
+
+!Panadero class categoriesForMethods!
+crearPanaderoLegajo:nom:dire:tel:!public! !
+!
 

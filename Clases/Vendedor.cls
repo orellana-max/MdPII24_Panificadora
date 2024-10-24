@@ -1,35 +1,56 @@
-"Filed out from Dolphin Smalltalk 7"!
+﻿"Filed out from Dolphin Smalltalk"!
 
 Empleado subclass: #Vendedor
-	instanceVariableNames: 'nroVendedor pedidosVendidos'
+	instanceVariableNames: 'nroVendedor listaPedidosVendidos'
 	classVariableNames: 'UnNuevoNroVendedor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
-Vendedor guid: (GUID fromString: '{4355CCF0-7EEA-498A-9E87-CCEF4959DAED}')!
+
+Vendedor guid: (GUID fromString: '{4355ccf0-7eea-498a-9e87-ccef4959daed}')!
+
 Vendedor comment: ''!
+
 !Vendedor categoriesForClass!Kernel-Objects! !
+
 !Vendedor methodsFor!
 
 agregarPedidoVendido: unNroPedido
-"Agrega un pedido a la lista de pedidos vendidos del vendedor"
+	"Agrega un pedido a la lista de pedidos vendidos del vendedor"
 
-pedidosVendidos add: unNroPedido.!
+	listaPedidosVendidos add: unNroPedido!
+
+imprimir
+^'Vendedor nro:  ', nroVendedor printString , ' | ', super imprimir.!
 
 iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Vendedor"
 
-	self iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
+	self
+		iniEmpleadoLegajo: unLegajo
+		nom: unNombre
+		dire: unaDire
+		tel: unTel.
 	nroVendedor := Vendedor nuevoNumeroVendedor.
-	pedidosVendidos := OrderedCollection new.
-	sueldo := 600000.!
+	listaPedidosVendidos := OrderedCollection new.
+	sueldo := 600000!
+
+verListaPedidosVendidos
+	"retorna la listab de los pedidos vendidos por el vendedor"
+
+	^listaPedidosVendidos!
 
 verNroVendedor
 "Retorna el numero de vendedor"
 
 ^nroVendedor.! !
-!Vendedor categoriesFor: #agregarPedidoVendido:!public! !
-!Vendedor categoriesFor: #iniVendedorLegajo:nom:dire:tel:!public! !
-!Vendedor categoriesFor: #verNroVendedor!public! !
+
+!Vendedor categoriesForMethods!
+agregarPedidoVendido:!public! !
+imprimir!public! !
+iniVendedorLegajo:nom:dire:tel:!public! !
+verListaPedidosVendidos!public! !
+verNroVendedor!public! !
+!
 
 !Vendedor class methodsFor!
 
@@ -43,6 +64,9 @@ nuevoNumeroVendedor
 (UnNuevoNroVendedor isNil) ifTrue: [UnNuevoNroVendedor := 0].
 UnNuevoNroVendedor := UnNuevoNroVendedor + 1.
 ^UnNuevoNroVendedor.! !
-!Vendedor class categoriesFor: #crearVendedorLegajo:nom:dire:tel:!public! !
-!Vendedor class categoriesFor: #nuevoNumeroVendedor!public! !
+
+!Vendedor class categoriesForMethods!
+crearVendedorLegajo:nom:dire:tel:!public! !
+nuevoNumeroVendedor!public! !
+!
 
