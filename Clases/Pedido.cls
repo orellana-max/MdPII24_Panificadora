@@ -14,32 +14,37 @@ Pedido comment: ''!
 
 !Pedido methodsFor!
 
-agregarProductoPedido: productoPedido
-	"Agrega un ProductoPedido a la lista de ProductosPedidos"
+agregarProductoPedido: nroProducto cantidad: cantidad
+   | productoExistente nuevoProductoPedido |
+   
+   productoExistente := listaProductosPedidos detect: [ :p | p verNroProducto = nroProducto ] ifNone: [ nil ].
+   
+   productoExistente
+      ifNotNil: [ productoExistente modCantidad: (productoExistente verCantidad + cantidad) ]
+      ifNil: [
+         nuevoProductoPedido := ProductoPedido new.
+         nuevoProductoPedido iniProductoPedido: (listaProductosPedidos size + 1)
+                                nroProd: nroProducto
+                                pedido: self
+                                cantidad: cantidad.
+         listaProductosPedidos add: nuevoProductoPedido
+      ].!
 
-	listaProductosPedidos add: productoPedido!
+eliminarProductoPedido: nroProducto
+   | productoAEliminar |
+   productoAEliminar := listaProductosPedidos detect: [ :p | p verNroProducto = nroProducto ] ifNone: [ nil ].
+   productoAEliminar
+      ifNotNil: [
+         listaProductosPedidos remove: productoAEliminar.
+      ]
+      ifNil: [
+         Transcript show: 'Producto no encontrado en el pedido'; cr.
+      ].!
 
-eliminarProductoPedido: unProductoPedido
-	"Elimina un ProductoPedido de la lista de Productos Pedidos"
-
-	| id nroProd |
-	unProductoPedido notNil
-		ifTrue: 
-			[id := unProductoPedido verIdProdPed .
-			nroProd := unProductoPedido verNroProducto .
-			(listaProductosPedidos includes: unProductoPedido)
-				ifTrue: 
-					[listaProductosPedidos remove: unProductoPedido.
-					MessageBox warning: 'Se elimino ProductoPedido id: ' , id printString , ' con el Producto Nro: ' , nroProd printString]
-				ifFalse: 
-					[MessageBox
-						warning: 'No existe ProductoPedido id:  ' , id printString , ' con el Producto Nro: ' , nroProd printString , ' en la lista.']]
-		ifFalse: [MessageBox warning: 'El ProductoPedido es vacio']!
-
-iniPedidoNroCliente: unNroCliente fechaEnt: fEnt  listPP: listaDeProdPed
+iniPedidoNro: unNroPedi fechaEnt: fEnt nroCli: unNroCliente listPP: listaDeProdPed
 	"Retorna una instacia de Pedido inicializada"
 
-	nroPedido := Pedido nextNroPedido.
+	nroPedido := unNroPedi.
 	fecha := Date today.
 	fechaEntrega := fEnt.
 	estado := 'en Preparacion'.
@@ -50,45 +55,53 @@ iniPedidoNroCliente: unNroCliente fechaEnt: fEnt  listPP: listaDeProdPed
 modEstado: unEstado
 	estado := unEstado.!
 
-modiRepartidorAsignado: nroRepartidor
-	nroRepartidorAsignado := nroRepartidor.!
+modiRepartidorAsignado: numeroRepartidor
+	nroRepartidorAsignado := numeroRepartidor.!
 
 verEstado
 	^estado.!
-
-verFecha
-"Retorna la fecha de la creacion del pedido"
-	^fecha.!
 
 verFechaEntrega
 	^fechaEntrega.!
 
 verListaProductosPedidos
-	"Retorna la lista de ProductosPedidos"
-
-	^listaProductosPedidos!
+   | listaTexto |
+   listaTexto := String streamContents: [ :stream |
+      listaProductosPedidos do: [ :producto |
+         stream
+            nextPutAll: ', Nro Producto: ', producto verNroProducto printString;
+            nextPutAll: ', Cantidad: ', producto verCantidad printString;
+            nextPutAll: ', Nro Pedido: ', producto verNroPedido printString;
+            nextPutAll: '; '.
+      ].
+   ].
+   Transcript show: listaTexto; cr.!
 
 verNroPedido
 	^nroPedido.!
 
-verNroRepartidor
-	^nroRepartidorAsignado!
+verRepartidor
+	^nroRepartidorAsignado.!
 
 verTotal
-	^total.! !
+   total := 0.
+   listaProductosPedidos do: [ :productoPedido |
+      total := total + productoPedido verCosto .
+   ].
+
+   ^ total.! !
 
 !Pedido categoriesForMethods!
-agregarProductoPedido:!public! !
+agregarProductoPedido:cantidad:!public! !
 eliminarProductoPedido:!public! !
-iniPedidoNroCliente:fechaEnt:listPP:!public! !
+iniPedidoNro:fechaEnt:nroCli:listPP:!public! !
 modEstado:!public! !
 modiRepartidorAsignado:!public! !
 verEstado!public! !
-verFecha!public! !
 verFechaEntrega!public! !
 verListaProductosPedidos!public! !
 verNroPedido!public! !
-verNroRepartidor!public! !
+verRepartidor!public! !
 verTotal!public! !
 !
 
@@ -110,23 +123,10 @@ nroPedidoStatic := nroPedidoStatic +1.
 f := Date tomorrow .
 Transcript show: 'fecha elegida de entrega: ', f printString; cr.
 
-^(self new) iniPedidoNro: nroPedidoStatic panificadora: pani fechaEnt: f nroCli: unNroClien listPP: lista.!
-
-initialize
-[nroPedidoStatic := 1]!
-
-nextNroPedido
-	"retorna un id unico para una nueva instancia de Pedido"
-
-	| id |
-	id := nroPedidoStatic .
-	nroPedidoStatic := nroPedidoStatic + 1.
-	^id! !
+^(self new) iniPedidoNro: nroPedidoStatic panificadora: pani fechaEnt: f nroCli: unNroClien listPP: lista.! !
 
 !Pedido class categoriesForMethods!
 crearPedido:listProdPed:!public! !
 crearPedido:nroClien:listProdPed:!public! !
-initialize!public! !
-nextNroPedido!public! !
 !
 
