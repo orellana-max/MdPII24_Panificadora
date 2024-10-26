@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk"!
 
 Object subclass: #ProductoPedido
-	instanceVariableNames: 'idProductoPedido nroPedido nroProducto cantidad pedido'
+	instanceVariableNames: 'idProductoPedido nroProducto cantidad nroPedido pedido costoUnitario'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'nroProductoPedido'!
@@ -14,56 +14,46 @@ ProductoPedido comment: ''!
 
 !ProductoPedido methodsFor!
 
-costo [
-    | precio total |
-
-    "Llama a la clase CatalogoProductos para obtener el precio del producto según nroProducto"
-    precio := Panificadora precioProducto: nroProducto.
-
-    "Calcula el costo total multiplicando la cantidad de productos por el precio unitario"
-    total := cantidad * precio.
-    
-    ^ total.  "Devuelve el costo total del ProductoPedido"
-]!
-
-iniProductoPedido:unNroProduct  cantidad:cant pedido:unPedido
+iniProductoPedido:unId nroProd:unNroProduct pedido:unPedido cantidad:cant costoUnitario:cost
 "inicializa una instancia de ProductoPedido"
 
-idProductoPedido := ProductoPedido nextNroProdPed.
+idProductoPedido := unId.
 nroProducto := unNroProduct.
-cantidad:= cant.
 pedido := unPedido.
 nroPedido := pedido verNroPedido.
-!
+cantidad:= cant.
+costoUnitario:=cost.!
 
 modCantidad:unNro
 	cantidad=cantidad+unNro.!
 
+modCostoUnitario:unNro
+	costoUnitario =unNro.!
+
 verCantidad
-	^cantidad!
+	^cantidad.!
 
-verIdProdPed
-	"Retorna el nro de ID del Producto Pedidio"
+verCosto [
+    | precio total |
+    precio := costoUnitario .
+    total := cantidad * precio.
+    
+    ^ total. 
+]!
 
-	^idProductoPedido!
-
-verNroPedido
-	"Retorna el nro de pedido asociado al Producto pedido"
-
-	^pedido verNroPedido!
+verCostoUnitario
+	^costoUnitario.!
 
 verNroProducto
-	"Retorna el nro de Pedido de ProductoPedido"
-
-	^nroProducto! !
+	^nroProducto.! !
 
 !ProductoPedido categoriesForMethods!
-costo!public! !
-iniProductoPedido:cantidad:pedido:!public! !
+iniProductoPedido:nroProd:pedido:cantidad:costoUnitario:!public! !
 modCantidad:!public! !
+modCostoUnitario:!public! !
 verCantidad!public! !
-verIdProdPed!public! !
-verNroPedido!public! !
+verCosto!public! !
+verCostoUnitario!public! !
 verNroProducto!public! !
 !
 
@@ -73,20 +63,12 @@ crearProductoPedido:nroProducto pedido:unPedido cant:cantidad
 nroProductoPedido := nroProductoPedido +1.
 ^(self new) iniProductoPedido: nroProductoPedido nroProd: nroProducto pedido: unPedido cantidad: cantidad.!
 
-initialize
-	[nroProductoPedido := 0]!
-
-nextNroProdPed
-	"retorna un id unico para una nueva instancia de ProductoPedido"
-
-	| id |
-	id := nroProductoPedido.
-	nroProductoPedido := nroProductoPedido + 1.
-	^id! !
+initialize [
+    nroProductoPedido := 0.
+]! !
 
 !ProductoPedido class categoriesForMethods!
 crearProductoPedido:pedido:cant:!public! !
 initialize!public! !
-nextNroProdPed!public! !
 !
 
