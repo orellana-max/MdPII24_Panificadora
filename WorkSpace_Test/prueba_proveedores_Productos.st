@@ -12,8 +12,6 @@ Transcript cr.
 
 "Eliminar provedor existente"
 
-
-
 Producto initialize.
 listProd := OrderedCollection new.
 1 to: 5 do:[:i | prov := Producto crearProductoNombre: ('producto ', i printString) tip: ('tipo ', i printString) prec: (1000.1 * i).

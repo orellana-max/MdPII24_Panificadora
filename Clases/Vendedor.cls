@@ -34,6 +34,12 @@ iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 	listaPedidosVendidos := OrderedCollection new.
 	sueldo := 600000!
 
+printOn: aStream
+	aStream
+		nextPutAll: 'Vendedor nro:  ';
+		nextPutAll: nroVendedor printString , ' | '.
+	super printOn: aStream!
+
 verListaPedidosVendidos
 	"retorna la listab de los pedidos vendidos por el vendedor"
 
@@ -48,6 +54,7 @@ verNroVendedor
 agregarPedidoVendido:!public! !
 imprimir!public! !
 iniVendedorLegajo:nom:dire:tel:!public! !
+printOn:!public! !
 verListaPedidosVendidos!public! !
 verNroVendedor!public! !
 !

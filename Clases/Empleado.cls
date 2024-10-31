@@ -53,6 +53,15 @@ modTelefono:unTelefono
 "Modifica el telefono del Empleado"
 telefono =unTelefono .!
 
+printOn: aStream
+	aStream
+		nextPutAll: 'Leg: ' , legajo printString , ' | ';
+		nextPutAll: 'Nom:  ' , nombre , ' | ';
+		nextPutAll: 'Dir:  ' , direccion , ' | ';
+		nextPutAll: 'Tel:  ' , telefono , ' | ';
+		nextPutAll: 'Sueldo:  ';
+		print: sueldo printString.!
+
 verDireccion
 "Retorna la direccion del Empleado"
 ^direccion.!
@@ -81,6 +90,7 @@ modLegajo:!public! !
 modNombre:!public! !
 modSueldo:!public! !
 modTelefono:!public! !
+printOn:!public! !
 verDireccion!public! !
 verLegajo!public! !
 verNombre!public! !

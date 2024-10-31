@@ -57,10 +57,10 @@ agregarVendedor: vendedor
 asignarRepartidorPedido: nroPedido
 "asignar un repartidor libre al pedido"
 
-|pedido repartidor|
+|repartidor|
 "pedido:= listaPedidos detect: [:ped | ped verNroPedido = nroPedido] ifNone: [^nil]."
 "seguir con buscar repartidor libre...."
-repartidor := listaRepartidores detect: [:rep | rep libre = true] ifNone:[^nil].
+repartidor:= listaRepartidores detect: [:rep | rep libre = true] ifNone:[^nil].
 
 "asignar repartidor"
 "pedido modiRepartidorAsignado: (repartidor  verNroRepartidor )."!
