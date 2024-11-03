@@ -17,7 +17,7 @@ pue := '0'.
 	pue:= dic at: op ifAbsent: ['0'].
 	].
 p:= Panadero crearPanaderoLegajo: leg nom: nom dire: dir tel: tel puesto: pue.
-MessageBox warning:  'Se creo con exito el Panadero ', p verPuesto , ' leg:', p verLegajo printString , 'nom: ',  p verNombre.
+MessageBox warning:  'Se creo con exito el Panadero ', p verPuesto , ' leg: ', p verLegajo printString , ' nom: ',  p verNombre.
 "Agregamos el Panadero a la lista"
 listPanaderos add: p.
 

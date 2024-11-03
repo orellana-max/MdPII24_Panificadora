@@ -1,5 +1,5 @@
 ﻿| package |
-package := Package name: 'pkg_master'.
+package := Package name: 'pkg_maxi'.
 package paxVersion: 1;
 	basicComment: ''.
 
@@ -86,7 +86,7 @@ Empleado subclass: #Repartidor
 	classInstanceVariableNames: ''!
 
 Empleado subclass: #Vendedor
-	instanceVariableNames: 'nroVendedor listaPedidosVendidos'
+	instanceVariableNames: 'nroVendedor pedidosVendidos'
 	classVariableNames: 'UnNuevoNroVendedor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -796,10 +796,12 @@ imprimir
 	"retorna una cadena con los datos"
 
 	| cadena |
-	cadena := 'Producto nro: ', nroProducto printString , ' | Nom: ' , nombreProducto , ' | tipo: ' , tipo , ' | Strock: '
-				, stock printString , ' | Precio: '
-				, precio printString , ' | porDoc: '
-				, porDocena printString.
+	cadena := 'Producto nro: ', nroProducto printString , 
+			' | Nom: ' , nombreProducto , 
+			' | tipo: ' , tipo ,
+			' | Strock: ' , stock printString ,
+			' | Precio: ', precio printString , 
+			' | porDoc: ', porDocena printString.
 	^cadena!
 
 iniProductoNombre: unNom tip: unTipo prec: unPrecio
@@ -810,7 +812,8 @@ iniProductoNombre: unNom tip: unTipo prec: unPrecio
 	tipo := unTipo.
 	precio := unPrecio.
 	stock := 0.
-	porDocena := false!
+	porDocena := false.
+	tipo = 'Factura' ifTrue: [porDocena := true]!
 
 modNombre: unNombre
 	"Modifica el nombre del producto"
@@ -841,6 +844,19 @@ modTipo: unTipo
 	"modifica el tipo del producto"
 
 	tipo:= unTipo.!
+
+printOn: aStream
+	aStream
+		nextPutAll: 'Producto Nro:  ';
+		nextPutAll: nroProducto printString , ' | ';
+		nextPutAll: 'Nom:  ';
+		nextPutAll: nombreProducto , ' | ';
+		nextPutAll: 'Tipo:  ';
+		nextPutAll: tipo , ' | ';
+		nextPutAll: 'Precio:  ';
+		nextPutAll: precio printString , ' | ';
+		nextPutAll: 'Stock:  ';
+		nextPutAll: stock printString!
 
 verNombre
 	"retorna el nombre del Producto"
@@ -880,6 +896,7 @@ modPorDocena!public! !
 modPrecio:!public! !
 modStock:!public! !
 modTipo:!public! !
+printOn:!public! !
 verNombre!public! !
 verNroProducto!public! !
 verPorDocena!public! !
@@ -901,11 +918,13 @@ initialize
 
 nextId
 	"retorna un id unico para una nueva instancia de producto"
-
-	| id |
+	(idProd isNil) ifTrue: [idProd := 0].
+	idProd := idProd + 1.
+	^idProd.
+	"| id |
 	id := idProd.
 	idProd := idProd + 1.
-	^id! !
+	^id"! !
 
 !Producto class categoriesForMethods!
 crearProductoNombre:tip:prec:!public! !
@@ -1263,7 +1282,7 @@ Vendedor comment: ''!
 agregarPedidoVendido: unNroPedido
 	"Agrega un pedido a la lista de pedidos vendidos del vendedor"
 
-	listaPedidosVendidos add: unNroPedido!
+	pedidosVendidos add: unNroPedido!
 
 imprimir
 ^'Vendedor nro:  ', nroVendedor printString , ' | ', super imprimir.!
@@ -1277,7 +1296,7 @@ iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 		dire: unaDire
 		tel: unTel.
 	nroVendedor := Vendedor nuevoNumeroVendedor.
-	listaPedidosVendidos := OrderedCollection new.
+	pedidosVendidos := OrderedCollection new.
 	sueldo := 600000!
 
 printOn: aStream
@@ -1286,23 +1305,23 @@ printOn: aStream
 		nextPutAll: nroVendedor printString , ' | '.
 	super printOn: aStream!
 
-verListaPedidosVendidos
-	"retorna la listab de los pedidos vendidos por el vendedor"
-
-	^listaPedidosVendidos!
-
 verNroVendedor
 "Retorna el numero de vendedor"
 
-^nroVendedor.! !
+^nroVendedor.!
+
+verPedidosVendidos
+	"retorna la listab de los pedidos vendidos por el vendedor"
+
+	^pedidosVendidos! !
 
 !Vendedor categoriesForMethods!
 agregarPedidoVendido:!public! !
 imprimir!public! !
 iniVendedorLegajo:nom:dire:tel:!public! !
 printOn:!public! !
-verListaPedidosVendidos!public! !
 verNroVendedor!public! !
+verPedidosVendidos!public! !
 !
 
 !Vendedor class methodsFor!
