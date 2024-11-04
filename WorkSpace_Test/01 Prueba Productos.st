@@ -76,7 +76,7 @@ pro:= Producto crearProductoNombre:'Grisines Salvado 1 Kg' tip: 'Galleta' prec: 
 listPro add: pro.
 pro:= Producto crearProductoNombre:'Vigilante /doc' tip: 'Factura' prec: 3500.0.
 listPro add: pro.
-pro:= Producto crearProductoNombre:'Cañoncito /doc' tip: 'Factura' prec: 4000.0.
+pro:= Producto crearProductoNombre:'Canioncito /doc' tip: 'Factura' prec: 4000.0.
 listPro add: pro.
 pro:= Producto crearProductoNombre:'Medialuna Manteca /doc' tip: 'Factura' prec: 4000.0.
 listPro add: pro.
@@ -87,8 +87,6 @@ listPro add: pro.
 pro:= Producto crearProductoNombre:'Totita Blanca /doc' tip: 'Factura' prec: 4000.0.
 listPro add: pro.
 pro:= Producto crearProductoNombre:'Churros /doc' tip: 'Factura' prec: 5000.0.
-listPro add: pro.
-pro:= Producto crearProductoNombre:'Moñito /doc' tip: 'Factura' prec: 3900.0.
 listPro add: pro.
 pro:= Producto crearProductoNombre:'Sacramento /doc' tip: 'Factura' prec: 4100.0.
 listPro add: pro.

@@ -10,7 +10,7 @@ Cliente guid: (GUID fromString: '{b9dc76af-91b0-47bd-9ddd-07ac331b74fc}')!
 
 Cliente comment: ''!
 
-!Cliente categoriesForClass!Kernel-Objects! !
+!Cliente categoriesForClass!cat_max1! !
 
 !Cliente methodsFor!
 

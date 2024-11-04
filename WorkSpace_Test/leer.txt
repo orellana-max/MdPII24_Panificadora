@@ -24,6 +24,23 @@ modifique productos.
 en prueba Productos de juan: cargue muchos productos.
 modifique el ini de la clase producto para que automaticamente se seleccione si es por docena al crearse la instancia
 
+productoPedido:
+metodo de clase nextNroPP >>> para tener un nro de id siempre distinto.
+iniProductoPedidoNroProd:unNroProduct cantidad:cant costoUnitario:cost >> inicia con el nro del producto, la cantidad y el costo unitario.
+
+agregue metodo modNroPedido: unNroPedido >> para agregar el numero de pedido que corresponde al productoPedido.
+
+
+hice dos crear.
++crearProductoPedido:unProducto cantidad:cant.
++crearProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo
+
+la relacion con el pedido (nroPedido) la seteamos cuando agregamos el productoPedido al pedido .... o cuando agregamos la lista de productosPedidos al Pedido.
+Aunque no sé si hace falta.
+ 
+
+
+
 
 
 

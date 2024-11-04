@@ -33,6 +33,7 @@ listRep add: r.
 
 
 "Listar los Repartidores"
-Transcript nextPutAll: 'Lista de repartidores '.
-Transcript cr.
+Transcript show:  'Lista de repartidores '.
+
 listRep do:[:re | re printOn: Transcript cr].
+Transcript cr.

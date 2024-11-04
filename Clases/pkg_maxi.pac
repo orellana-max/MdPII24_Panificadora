@@ -101,7 +101,7 @@ Cliente guid: (GUID fromString: '{b9dc76af-91b0-47bd-9ddd-07ac331b74fc}')!
 
 Cliente comment: ''!
 
-!Cliente categoriesForClass!Kernel-Objects! !
+!Cliente categoriesForClass!cat_max1! !
 
 !Cliente methodsFor!
 
@@ -343,13 +343,47 @@ agregarVendedor: vendedor
 asignarRepartidorPedido: nroPedido
 "asignar un repartidor libre al pedido"
 
-|repartidor|
-"pedido:= listaPedidos detect: [:ped | ped verNroPedido = nroPedido] ifNone: [^nil]."
+|repartidor pedido|
+"buscar el pedido"
+pedido:= listaPedidos detect: [:ped | ped verNroPedido = nroPedido] ifNone: [^nil].
 "seguir con buscar repartidor libre...."
-repartidor:= listaRepartidores detect: [:rep | rep libre = true] ifNone:[^nil].
+repartidor:= listaRepartidores detect: [:rep | rep verNroPedidoAsignado = 0 ] ifNone:[^nil].
 
-"asignar repartidor"
-"pedido modiRepartidorAsignado: (repartidor  verNroRepartidor )."!
+"asignar repartidor al pedido"
+pedido modiRepartidorAsignado: repartidor verNroRepartidor.
+
+"retorna el repartidor asignado"
+^repartidor.
+
+!
+
+comprarProductosNroCliente: nroCliente listaProd: unaListaProdPedido
+" un cliente compra un lista de productoPedido, este metodo hace todo el trabajo llamando a todos los metodos necesarios para que se concrete la compra"
+|pe pro pana|
+
+"crear el pedido y agregarlo a la lista de pedidos de la panificadora"
+pe:= Pedido crearPedido: nroCliente listProdPed: unaListaProdPedido.
+self agregarPedido: pe.
+
+"producir cada productoPedido"
+1 to: ( (pe verListaPedidos) size) do: [: prodPe |   
+							pro := (self verListaProductos) detect: [: p| p verNroProducto = prodPe verNroProducto]. "busca el producto del productoPedido"
+							pana := self seleccionarPanadero: pro. "selecciona un panadero segun el tipo de producto, si es un pastel se necesita un pastelero"
+							pana producirProducto: pro cant: prodPe verCantidad. "Se pide al panadero producir el productoPedido"
+							].
+
+"modificar el estado del pedido, ahora ya esta lista para repartir"
+pe modEstado: 'listo para repartir'.
+
+" repartir producto"
+self repartirPedido: pe.
+
+"modificar el estado del pedido"
+pe modEstado:'entregado'.
+
+
+
+!
 
 eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
@@ -526,10 +560,34 @@ modTelefono: unTelefono
 
 repartirPedido:unPedido
 "verificar si el pedido tiene repartidor y asignar uno"
+|repa|
+((unPedido verRepartidor) isNil) ifTrue: [ 
+								repa := self asignarRepartidorPedido: unPedido verNroPedido.
+								repa asignarPedido: unPedido verNroPedido.
+								].
 "verificar si el pedido esta en estado listo para repartir"
+(unPedido verEstado = 'listo para repartir') ifTrue: [ 
+										Transcript show: 'Repartiendo el pedido'."unPedido repartir."
+										repa liberarRepartidor. "agregar a viajes realizados del repartidor"
+										]
+								     ifFalse: [
+										Transcript show: 'El pedido aun no esta listo para repartir'
+										].
+										
+											
 
-"unPedido repartir."
-"agregar a viajes realizados del repartidor"!
+
+!
+
+seleccionarPanadero: unProducto
+"selecciona un panadero segun el tipo de producto a producir"
+|dic pana|
+
+dic := Dictionary new at:'Pastel' put:'Pastelero'; at:'Pan' put:'Panadero'; at:'Factura' put:'Facturero'; at:'Tarta' put:'Maestro'; at:'Galleta' put:'Maestro'; yourself.
+
+pana := listaPanaderos detect: [:p| p verPuesto = dic at: (unProducto verTipo)].
+
+^pana.!
 
 traerPrecioProducto: nroProducto
 	"Retorna el precio de un producto, cero si no  existe producto en la lista de Productos"
@@ -608,6 +666,7 @@ agregarProveedor:!public! !
 agregarRepartidor:!public! !
 agregarVendedor:!public! !
 asignarRepartidorPedido:!public! !
+comprarProductosNroCliente:listaProd:!public! !
 eliminarCliente:!public! !
 eliminarEmpleado:!public! !
 eliminarPanadero:!public! !
@@ -622,6 +681,7 @@ modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
+seleccionarPanadero:!public! !
 traerPrecioProducto:!public! !
 traerProductoNro:!public! !
 verDireccion!public! !
@@ -940,12 +1000,11 @@ ProductoPedido comment: ''!
 
 !ProductoPedido methodsFor!
 
-iniProductoPedido:unId nroProd:unNroProduct pedido:unPedido cantidad:cant costoUnitario:cost
+iniProductoPedidoNroProd:unNroProduct cantidad:cant costoUnitario:cost
 "inicializa una instancia de ProductoPedido"
 
-idProductoPedido := unId.
+idProductoPedido := ProductoPedido nextNroPP.
 nroProducto := unNroProduct.
-pedido := unPedido.
 nroPedido := pedido verNroPedido.
 cantidad:= cant.
 costoUnitario:=cost.!
@@ -956,16 +1015,16 @@ modCantidad:unNro
 modCostoUnitario:unNro
 	costoUnitario =unNro.!
 
+modNroPedido: unNroPedido
+	nroPedido := unNroPedido!
+
 verCantidad
 	^cantidad.!
 
-verCosto [
-    | precio total |
-    precio := costoUnitario .
-    total := cantidad * precio.
-    
-    ^ total. 
-]!
+verCosto
+	| total |
+	total := cantidad * costoUnitario.
+	^total!
 
 verCostoUnitario
 	^costoUnitario.!
@@ -974,9 +1033,10 @@ verNroProducto
 	^nroProducto.! !
 
 !ProductoPedido categoriesForMethods!
-iniProductoPedido:nroProd:pedido:cantidad:costoUnitario:!public! !
+iniProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 modCantidad:!public! !
 modCostoUnitario:!public! !
+modNroPedido:!public! !
 verCantidad!public! !
 verCosto!public! !
 verCostoUnitario!public! !
@@ -985,17 +1045,30 @@ verNroProducto!public! !
 
 !ProductoPedido class methodsFor!
 
-crearProductoPedido:nroProducto pedido:unPedido cant:cantidad
-nroProductoPedido := nroProductoPedido +1.
-^(self new) iniProductoPedido: nroProductoPedido nroProd: nroProducto pedido: unPedido cantidad: cantidad.!
+crearProductoPedido:unProducto cantidad:cant
+
+	^(self new) iniProductoPedidoNroProd: unProducto verNroProducto cantidad: cant costoUnitario: unProducto verCosto.!
+
+crearProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo
+
+	^(self new) iniProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo.!
 
 initialize [
     nroProductoPedido := 0.
-]! !
+]!
+
+nextNroPP
+	"retorna un id unico para una nueva instancia de producto"
+	(nroProductoPedido isNil) ifTrue: [nroProductoPedido := 0].
+	nroProductoPedido := nroProductoPedido + 1.
+	^nroProductoPedido.
+! !
 
 !ProductoPedido class categoriesForMethods!
-crearProductoPedido:pedido:cant:!public! !
+crearProductoPedido:cantidad:!public! !
+crearProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 initialize!public! !
+nextNroPP!public! !
 !
 
 Proveedor guid: (GUID fromString: '{4d142482-4e17-4a30-bff2-851d3c202d10}')!

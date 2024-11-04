@@ -27,10 +27,12 @@ imprimir
 	"retorna una cadena con los datos"
 
 	| cadena |
-	cadena := 'Producto nro: ', nroProducto printString , ' | Nom: ' , nombreProducto , ' | tipo: ' , tipo , ' | Strock: '
-				, stock printString , ' | Precio: '
-				, precio printString , ' | porDoc: '
-				, porDocena printString.
+	cadena := 'Producto nro: ', nroProducto printString , 
+			' | Nom: ' , nombreProducto , 
+			' | tipo: ' , tipo ,
+			' | Strock: ' , stock printString ,
+			' | Precio: ', precio printString , 
+			' | porDoc: ', porDocena printString.
 	^cadena!
 
 iniProductoNombre: unNom tip: unTipo prec: unPrecio
@@ -41,7 +43,8 @@ iniProductoNombre: unNom tip: unTipo prec: unPrecio
 	tipo := unTipo.
 	precio := unPrecio.
 	stock := 0.
-	porDocena := false!
+	porDocena := false.
+	tipo = 'Factura' ifTrue: [porDocena := true]!
 
 modNombre: unNombre
 	"Modifica el nombre del producto"
@@ -72,6 +75,19 @@ modTipo: unTipo
 	"modifica el tipo del producto"
 
 	tipo:= unTipo.!
+
+printOn: aStream
+	aStream
+		nextPutAll: 'Producto Nro:  ';
+		nextPutAll: nroProducto printString , ' | ';
+		nextPutAll: 'Nom:  ';
+		nextPutAll: nombreProducto , ' | ';
+		nextPutAll: 'Tipo:  ';
+		nextPutAll: tipo , ' | ';
+		nextPutAll: 'Precio:  ';
+		nextPutAll: precio printString , ' | ';
+		nextPutAll: 'Stock:  ';
+		nextPutAll: stock printString!
 
 verNombre
 	"retorna el nombre del Producto"
@@ -111,6 +127,7 @@ modPorDocena!public! !
 modPrecio:!public! !
 modStock:!public! !
 modTipo:!public! !
+printOn:!public! !
 verNombre!public! !
 verNroProducto!public! !
 verPorDocena!public! !
@@ -132,11 +149,13 @@ initialize
 
 nextId
 	"retorna un id unico para una nueva instancia de producto"
-
-	| id |
+	(idProd isNil) ifTrue: [idProd := 0].
+	idProd := idProd + 1.
+	^idProd.
+	"| id |
 	id := idProd.
 	idProd := idProd + 1.
-	^id! !
+	^id"! !
 
 !Producto class categoriesForMethods!
 crearProductoNombre:tip:prec:!public! !

@@ -57,13 +57,47 @@ agregarVendedor: vendedor
 asignarRepartidorPedido: nroPedido
 "asignar un repartidor libre al pedido"
 
-|repartidor|
-"pedido:= listaPedidos detect: [:ped | ped verNroPedido = nroPedido] ifNone: [^nil]."
+|repartidor pedido|
+"buscar el pedido"
+pedido:= listaPedidos detect: [:ped | ped verNroPedido = nroPedido] ifNone: [^nil].
 "seguir con buscar repartidor libre...."
-repartidor:= listaRepartidores detect: [:rep | rep libre = true] ifNone:[^nil].
+repartidor:= listaRepartidores detect: [:rep | rep verNroPedidoAsignado = 0 ] ifNone:[^nil].
 
-"asignar repartidor"
-"pedido modiRepartidorAsignado: (repartidor  verNroRepartidor )."!
+"asignar repartidor al pedido"
+pedido modiRepartidorAsignado: repartidor verNroRepartidor.
+
+"retorna el repartidor asignado"
+^repartidor.
+
+!
+
+comprarProductosNroCliente: nroCliente listaProd: unaListaProdPedido
+" un cliente compra un lista de productoPedido, este metodo hace todo el trabajo llamando a todos los metodos necesarios para que se concrete la compra"
+|pe pro pana|
+
+"crear el pedido y agregarlo a la lista de pedidos de la panificadora"
+pe:= Pedido crearPedido: nroCliente listProdPed: unaListaProdPedido.
+self agregarPedido: pe.
+
+"producir cada productoPedido"
+1 to: ( (pe verListaPedidos) size) do: [: prodPe |   
+							pro := (self verListaProductos) detect: [: p| p verNroProducto = prodPe verNroProducto]. "busca el producto del productoPedido"
+							pana := self seleccionarPanadero: pro. "selecciona un panadero segun el tipo de producto, si es un pastel se necesita un pastelero"
+							pana producirProducto: pro cant: prodPe verCantidad. "Se pide al panadero producir el productoPedido"
+							].
+
+"modificar el estado del pedido, ahora ya esta lista para repartir"
+pe modEstado: 'listo para repartir'.
+
+" repartir producto"
+self repartirPedido: pe.
+
+"modificar el estado del pedido"
+pe modEstado:'entregado'.
+
+
+
+!
 
 eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
@@ -240,10 +274,34 @@ modTelefono: unTelefono
 
 repartirPedido:unPedido
 "verificar si el pedido tiene repartidor y asignar uno"
+|repa|
+((unPedido verRepartidor) isNil) ifTrue: [ 
+								repa := self asignarRepartidorPedido: unPedido verNroPedido.
+								repa asignarPedido: unPedido verNroPedido.
+								].
 "verificar si el pedido esta en estado listo para repartir"
+(unPedido verEstado = 'listo para repartir') ifTrue: [ 
+										Transcript show: 'Repartiendo el pedido'."unPedido repartir."
+										repa liberarRepartidor. "agregar a viajes realizados del repartidor"
+										]
+								     ifFalse: [
+										Transcript show: 'El pedido aun no esta listo para repartir'
+										].
+										
+											
 
-"unPedido repartir."
-"agregar a viajes realizados del repartidor"!
+
+!
+
+seleccionarPanadero: unProducto
+"selecciona un panadero segun el tipo de producto a producir"
+|dic pana|
+
+dic := Dictionary new at:'Pastel' put:'Pastelero'; at:'Pan' put:'Panadero'; at:'Factura' put:'Facturero'; at:'Tarta' put:'Maestro'; at:'Galleta' put:'Maestro'; yourself.
+
+pana := listaPanaderos detect: [:p| p verPuesto = dic at: (unProducto verTipo)].
+
+^pana.!
 
 traerPrecioProducto: nroProducto
 	"Retorna el precio de un producto, cero si no  existe producto en la lista de Productos"
@@ -322,6 +380,7 @@ agregarProveedor:!public! !
 agregarRepartidor:!public! !
 agregarVendedor:!public! !
 asignarRepartidorPedido:!public! !
+comprarProductosNroCliente:listaProd:!public! !
 eliminarCliente:!public! !
 eliminarEmpleado:!public! !
 eliminarPanadero:!public! !
@@ -336,6 +395,7 @@ modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
+seleccionarPanadero:!public! !
 traerPrecioProducto:!public! !
 traerProductoNro:!public! !
 verDireccion!public! !
