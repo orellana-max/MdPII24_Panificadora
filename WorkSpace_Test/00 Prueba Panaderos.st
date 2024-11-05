@@ -24,14 +24,10 @@ listPanaderos add: p.
 "imprimimos el panadero creado en System Transcript"
 "p printOn: Transcript."
 
-p:= Panadero crearPanaderoLegajo: 2 nom: 'Maximiliano' dire: 'calle 102' tel: '123-564' puesto: 'Pastelero'.
-listPanaderos add: p.
-p:= Panadero crearPanaderoLegajo: 3 nom: 'Daniel' dire: 'calle 103' tel: '123-564' puesto: 'Panadero'.
-listPanaderos add: p.
-p:= Panadero crearPanaderoLegajo: 4 nom: 'Juan' dire: 'calle 104' tel: '123-564' puesto: 'Maestro'.
-listPanaderos add: p.
-p:= Panadero crearPanaderoLegajo: 5 nom: 'Gonzalo' dire: 'calle 105' tel: '123-564' puesto: 'Facturero'.
-listPanaderos add: p.
+listPanaderos add: (Panadero crearPanaderoLegajo: 2 nom: 'Maximiliano' dire: 'calle 102' tel: '123-564' puesto: 'Pastelero').
+listPanaderos add: (Panadero crearPanaderoLegajo: 3 nom: 'Daniel' dire: 'calle 103' tel: '123-564' puesto: 'Panadero').
+listPanaderos add: (Panadero crearPanaderoLegajo: 4 nom: 'Juan' dire: 'calle 104' tel: '123-564' puesto: 'Maestro').
+listPanaderos add: (Panadero crearPanaderoLegajo: 5 nom: 'Gonzalo' dire: 'calle 105' tel: '123-564' puesto: 'Facturero').
 
 "Listar los panaderos"
 Transcript nextPutAll: 'Lista de Panaderos: '.

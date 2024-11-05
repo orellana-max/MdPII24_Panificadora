@@ -16,7 +16,7 @@ msj:=  'Se creo con exito el Repartidor Nro', r verNroRepartidor printString , '
 sigue:= MessageBox confirm: msj, '  ¿Desea seguir creando Repartidores?'.
 ].
 
-"Creamos varios Clientes y agregamos a la Lista de Clientes"
+"Creamos varios Repartidores y agregamos a la Lista de Reparatidores"
 r:= Repartidor crearRepartidorLegajo: 201 nom: 'Federico' dire: 'calle 201' tel: '200-201'.
 listRep add: r.
 r:= Repartidor crearRepartidorLegajo: 202 nom: 'Jaqueline' dire: 'calle 202' tel: '200-202'.

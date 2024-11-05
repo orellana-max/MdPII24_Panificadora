@@ -18,7 +18,7 @@ imprimir
 	"retorna una cadena con los datos"
 
 	| cadena |
-	cadena := 'Legajo: ', legajo printString , ' | Nom: ' , nombre , ' | direccion ' , direccion , ' | Tel: '
+	cadena := 'Leg: ', legajo printString , ' | Nom: ' , nombre , ' | Dir: ' , direccion , ' | Tel: '
 				, telefono, ' | sueldo ', sueldo printString.
 	^cadena!
 

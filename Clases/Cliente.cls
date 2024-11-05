@@ -14,6 +14,14 @@ Cliente comment: ''!
 
 !Cliente methodsFor!
 
+imprimir
+	"retorna una cadena con los datos"
+
+	| cadena |
+	cadena := 'Cliente Nro:  ' , nroCliente printString , ' | Nom:  ' , nombre , ' | Dir:  ' , direccion
+				, ' | Tel:  ' , telefono.
+	^cadena!
+
 iniClienteNom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Cliente"
 
@@ -62,6 +70,7 @@ verTelefono
 ^telefono.! !
 
 !Cliente categoriesForMethods!
+imprimir!public! !
 iniClienteNom:dire:tel:!public! !
 modDireccion:!public! !
 modNombre:!public! !

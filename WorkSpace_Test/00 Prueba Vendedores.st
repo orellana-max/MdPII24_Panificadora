@@ -15,7 +15,7 @@ MessageBox warning:  'Se creo el Vendedor Nro', v verNroVendedor printString , '
 listVen add: v. 
 sigue:= MessageBox confirm: '¿Desea seguir creando Vendedores?'].
 
-"Creamos varios Clientes y agregamos a la Lista de Clientes"
+"Creamos varios Vendedores y agregamos a la Lista de Vendedores"
 v:= Vendedor crearVendedorLegajo: 301 nom: 'Sandra' dire: 'calle 301' tel: '300-301'.
 listVen add: v.
 v:= Vendedor crearVendedorLegajo: 302 nom: 'Santiago' dire: 'calle 302' tel: '300-302'.

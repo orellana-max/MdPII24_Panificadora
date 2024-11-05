@@ -6,11 +6,11 @@ Ademas le modifique el modo de imprimir porque no me imprimía bien la lista de 
 
 En Panificadora agregue el método “comprarProductos” que se menciona en el diagrama de secuencia, para eso tambien agregue el metodo “seleccionarPanadero” para que si el producto son medialunas lo produzca un facturero, según tipo de producto se selecciona un panadero diferente para producir ese producto, tambien implemente el repartirPedido que faltaba.
 
-
-asignarRepartidorPedido: nroPedido   modifico
-repartirPedido
-comprarProductosNroCliente:listaProd:!public! ! modifico
-seleccionarPanadero:!public! ! creo
+juan implementó:
+asignarRepartidorPedido: nroPedido   
+repartirPedido 
+comprarProductosNroCliente:listaProd: 
+seleccionarPanadero: 
 
 El método “comprarProductos” esta pensado para hacer todo el laburo de la compra, le damos un nroCliente y la lista de productoPedido y completa todo lo que requiere  la compra. 
 
