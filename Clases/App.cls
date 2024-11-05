@@ -322,7 +322,7 @@ mainPrincipal:pan
 
 op :=''.
 [op ~= '0']  whileTrue: [
-	Transcript cr.
+	Transcript clear.
 	Transcript show: 'MenuPrincipal: ';cr.
 	Transcript show: 'Elige opción: ';cr.
 	Transcript show: 'Opción 1: Cargar datos manualmente';cr.
