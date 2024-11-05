@@ -1,12 +1,15 @@
 ﻿| op pan list|
 pan:= Panificadora crearPanificadoraNom: 'pa' dire: 'Av.7 123'  tel: '4257-8897'.
-App mainPrincipal.
-	
+
 App cargarClientesPanificadora: pan.
 App cargarPanaderosPanificadora: pan.
 App cargarProductosPanificadora: pan.
 App cargarRepartidoresPanificadora: pan.
 App cargarVendedoresPanificadora: pan.
+
+App mainPrincipal: pan.
+	
+
 
 "Listar los Clientes"
 Transcript cr.

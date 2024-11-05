@@ -2,7 +2,7 @@
 
 listVen := OrderedCollection new.
 
-"Creamos dos Repartidores manualmente y agregamos a la Lista de Repartidores"
+"Creamos dos Vendedores manualmente y agregamos a la Lista de Repartidores"
 sigue:= true.
 [sigue] whileTrue: [
 leg:= Prompter prompt: 'ingrese legajo: '.

@@ -35,5 +35,5 @@ listRep add: r.
 "Listar los Repartidores"
 Transcript show:  'Lista de repartidores '.
 
-listRep do:[:re | re printOn: Transcript cr].
+listRep do:[:re | Transcript show: (re imprimir) ; cr].
 Transcript cr.
