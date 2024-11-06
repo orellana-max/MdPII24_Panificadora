@@ -1,9 +1,10 @@
 ﻿| package |
-package := Package name: 'pkg_master'.
+package := Package name: 'pkg_maxi'.
 package paxVersion: 1;
 	basicComment: ''.
 
 package classNames
+	add: #App;
 	add: #Cliente;
 	add: #Empleado;
 	add: #Panadero;
@@ -25,11 +26,18 @@ package globalAliases: (Set new
 package setPrerequisites: #(
 	'..\..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin'
 	'..\..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin Legacy Date & Time'
-	'..\..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin Message Box').
+	'..\..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\Base\Dolphin Message Box'
+	'..\..\..\Documents\Dolphin Smalltalk 7\Core\Object Arts\Dolphin\MVP\Presenters\Prompters\Dolphin Prompter').
 
 package!
 
 "Class Definitions"!
+
+Object subclass: #App
+	instanceVariableNames: 'var1'
+	classVariableNames: ''
+	poolDictionaries: ''
+	classInstanceVariableNames: ''!
 
 Object subclass: #Cliente
 	instanceVariableNames: 'nroCliente nombre direccion telefono'
@@ -62,7 +70,7 @@ Object subclass: #Producto
 	classInstanceVariableNames: 'idProd'!
 
 Object subclass: #ProductoPedido
-	instanceVariableNames: 'idProductoPedido nroPedido nroProducto cantidad pedido'
+	instanceVariableNames: 'idProductoPedido nroProducto cantidad nroPedido pedido costoUnitario'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: 'nroProductoPedido'!
@@ -86,7 +94,7 @@ Empleado subclass: #Repartidor
 	classInstanceVariableNames: ''!
 
 Empleado subclass: #Vendedor
-	instanceVariableNames: 'nroVendedor listaPedidosVendidos'
+	instanceVariableNames: 'nroVendedor pedidosVendidos'
 	classVariableNames: 'UnNuevoNroVendedor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -97,13 +105,385 @@ Empleado subclass: #Vendedor
 
 "Classes"!
 
+App guid: (GUID fromString: '{ff893e23-44c7-48a8-9911-5f052bcd62df}')!
+
+App comment: ''!
+
+!App categoriesForClass!cat_max1! !
+
+!App class methodsFor!
+
+cargarCliente:pan
+
+| cant nom dir tel c |
+
+"Ingresar cantidad de Clientes a cargar "
+cant := Prompter prompt: 'Cantidad de Clientes a cargar  '.
+cant := cant asNumber.
+
+1 to: cant do: [:i | 
+nom:= Prompter prompt: 'ingrese nombre: '.
+dir:= Prompter prompt: 'ingrese direccion: '.
+tel:= Prompter prompt: 'ingrese telefono: '.
+c:= Cliente crearClienteNom: nom dire: dir tel: tel.
+Transcript show: 'Se creo el Cliente Nro ', c verNroCliente printString , 'nom: ',  c verNombre; cr.
+pan agregarCliente: c.
+Transcript show: 'Se agrego un Nuevo Cliente a la Panificadora' ; cr.
+]!
+
+cargarClientesPanificadora:pan
+"Carga Clientes a la Panificadora"
+
+	pan agregarCliente: (Cliente crearClienteNom: 'Carlos' dire: 'calle 401'  tel: '445-121').
+	pan agregarCliente: (Cliente crearClienteNom: 'Raul' dire: 'calle 402'  tel: '445-122').
+	pan agregarCliente: (Cliente crearClienteNom: 'Clara' dire: 'calle 403'  tel: '445-123').
+	pan agregarCliente: (Cliente crearClienteNom: 'Manuel' dire: 'calle 404'  tel: '445-124').
+	pan agregarCliente: (Cliente crearClienteNom: 'Rita' dire: 'calle 405'  tel: '445-125').
+	pan agregarCliente: (Cliente crearClienteNom: 'Jose' dire: 'calle 405'  tel: '445-126').
+	pan agregarCliente: (Cliente crearClienteNom: 'Juan' dire: 'calle 405'  tel: '445-127').
+
+!
+
+cargarPanadero:pan
+
+|dic cant p leg nom dir tel   op pue |
+"Dictionary para puestos de Panadero"
+dic := Dictionary new at:'1' put:'Pastelero'; at:'2' put:'Panadero'; at:'3' put:'Facturero'; at:'4' put:'Maestro'; yourself.
+
+"Ingresar cantidad de Panaderos a cargar "
+cant := Prompter prompt: 'Ingrese cantidad de Panaderos a cargar  '.
+cant := cant asNumber.
+
+1 to: cant do: [:i | 
+	Transcript cr.
+	"Creamos un Panadero manualmente"
+	leg:= Prompter prompt: 'ingrese legajo: '.
+	leg:= leg asNumber.
+	nom:= Prompter prompt: 'ingrese nombre: '.
+	dir:= Prompter prompt: 'ingrese direccion: '.
+	tel:= Prompter prompt: 'ingrese telefono: '.
+	pue := '0'.
+	[pue = '0'] whileTrue: [
+		op:= Prompter prompt: 'Ingrese nro de puesto: 1- Pastelero, 2- Panadero, 3- Facturero, 4- Maestro'. 
+		pue:= dic at: op ifAbsent: ['0'].
+		].
+	p:= Panadero crearPanaderoLegajo: leg nom: nom dire: dir tel: tel puesto: pue.
+	Transcript show: 'Se creo con exito el Panadero ', p verPuesto , ' leg: ', p verLegajo printString , ' nom: ',  p verNombre ; cr.
+	
+	pan agregarPanadero: p.
+	Transcript show: 'Se agrego un Nuevo Panadero a la Panificadora'.
+]!
+
+cargarPanaderosPanificadora: pan
+	"Agregamos algunos Panaderos a la panaficadora"
+
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 2 nom: 'Maxi' dire: 'calle 102' tel: '123-564' puesto: 'Pastelero').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 3 nom: 'Daniel' dire: 'calle 103' tel: '123-564' puesto: 'Panadero').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 4 nom: 'Julio' dire: 'calle 104' tel: '123-564' puesto: 'Maestro').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 5 nom: 'Exequiel' dire: 'calle 105' tel: '123-564' puesto: 'Pastelero').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 6 nom: 'Marcela' dire: 'calle 106' tel: '123-564' puesto: 'Panadero').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 7 nom: 'Fabiana' dire: 'calle 107' tel: '123-564' puesto: 'Maestro').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 8 nom: 'Claudia' dire: 'calle 108' tel: '123-564' puesto: 'Facturero').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 9 nom: 'Walter' dire: 'calle 109' tel: '123-564' puesto: 'Facturero').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 10 nom: 'Leon' dire: 'calle 100' tel: '123-564' puesto: 'Maestro').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 11 nom: 'Ivan' dire: 'calle 101' tel: '123-564' puesto: 'Pastelero').
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 12 nom: 'Laureano' dire: 'calle 102' tel: '123-564' puesto: 'Facturero').!
+
+cargarProducto:pan
+
+|pro dic cant nom tip prec op |
+
+"Dictionary para Tipo de Producto"
+dic := Dictionary new at:'1' put:'Pastel'; at:'2' put:'Pan'; at:'3' put:'Factura'; at:'4' put:'Tarta'; at:'5' put:'Galleta'; yourself.
+
+"Ingresar cantidad de Productos a cargar "
+cant := Prompter prompt: 'Ingrese cantidad de Productos a cargar  '.
+cant := cant asNumber.
+
+1 to: cant do: [:i | 
+	Transcript cr.
+	"Creamos un Producto manualmente"
+	nom:= Prompter prompt: 'ingrese nombre del Producto: '.
+	tip := '0'.
+	[tip = '0'] whileTrue: [
+		op:= Prompter prompt: 'ingrese nro de tipo: 1- Pastel, 2- Pan, 3- Factura, 4- Tarta, 5- Galleta'. 
+		tip:= dic at: op ifAbsent: ['0'].
+	].
+	prec:= Prompter prompt: 'ingrese Precio:'.
+	prec:= prec asNumber.
+
+	pro:= Producto crearProductoNombre: nom tip: tip prec: prec.
+	Transcript show:  'Se creo con exito el Producto Nro: ', pro verNroProducto printString , ' Nom: ', pro verNombre , ' Tipo ',  pro verTipo; cr.
+	
+	pan agregarProducto: pro.
+	Transcript show: 'Se agrego un Nuevo Producto a la Panificadora'.
+]!
+
+cargarProductosPanificadora:pan
+
+"Creamos y cargamos varios Productos"
+pan agregarProducto: (Producto crearProductoNombre:'Torta Oreo 1,5 Kg' tip: 'Pastel' prec: 8000.5).
+pan agregarProducto: (Producto crearProductoNombre:'Torta Oreo 2 Kg' tip: 'Pastel' prec: 12000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Torta Selva Negra 1,5 Kg' tip: 'Pastel' prec: 5000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Torta Selva Negra 2,8 Kg' tip: 'Pastel' prec: 9000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Tarta de Ricota' tip: 'Tarta' prec: 3000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Pastaflola' tip: 'Tarta' prec: 2500.0).
+pan agregarProducto: (Producto crearProductoNombre:'Flauta 5 Kg' tip: 'Pan' prec: 7500.05).
+pan agregarProducto: (Producto crearProductoNombre:'Flauta 10 Kg' tip: 'Pan' prec: 15000.05).
+pan agregarProducto: (Producto crearProductoNombre:'Minion 5 Kg' tip: 'Pan' prec: 8000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Minion 10 Kg' tip: 'Pan' prec: 16000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Galletas 5 Kg' tip: 'Pan' prec: 8500.0).
+pan agregarProducto: (Producto crearProductoNombre:'Galletas 10 Kg' tip: 'Pan' prec: 17000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Marinera c/sal 1 Kg' tip: 'Galleta' prec: 2200.0).
+pan agregarProducto: (Producto crearProductoNombre:'Marinera s/sal 1 Kg' tip: 'Galleta' prec: 2000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Marinera Salvado 1 Kg' tip: 'Galleta' prec: 2100.0).
+pan agregarProducto: (Producto crearProductoNombre:'Grisines c/sal 1 Kg' tip: 'Galleta' prec: 1900.0).
+pan agregarProducto: (Producto crearProductoNombre:'Grisines s/sal 1 Kg' tip: 'Galleta' prec: 1800.0).
+pan agregarProducto: (Producto crearProductoNombre:'Grisines Salvado 1 Kg' tip: 'Galleta' prec: 2000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Vigilante /doc' tip: 'Factura' prec: 3500.0).
+pan agregarProducto: (Producto crearProductoNombre:'Canioncito /doc' tip: 'Factura' prec: 4000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Medialuna Manteca /doc' tip: 'Factura' prec: 4000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Medialuna Grasa /doc' tip: 'Factura' prec: 3800.0).
+pan agregarProducto: (Producto crearProductoNombre:'Totita Negra /doc' tip: 'Factura' prec: 4000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Totita Blanca /doc' tip: 'Factura' prec: 4000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Churros /doc' tip: 'Factura' prec: 5000.0).
+pan agregarProducto: (Producto crearProductoNombre:'Sacramento /doc' tip: 'Factura' prec: 4100.0).
+!
+
+cargarRepartidor:pan
+
+|r cant leg nom dir tel |
+
+"Ingresar cantidad de Repartidores a cargar "
+cant := Prompter prompt: 'Ingrese cantidad de repartidores a cargar  '.
+cant := cant asNumber.
+
+1 to: cant do: [:i | 
+	Transcript cr.
+	"Creamos un Repartidor manualmente"
+	leg:= Prompter prompt: 'ingrese legajo: '.
+	leg asNumber.
+	nom:= Prompter prompt: 'ingrese nombre: '.
+	dir:= Prompter prompt: 'ingrese direccion: '.
+	tel:= Prompter prompt: 'ingrese telefono: '.
+	r:= Repartidor crearRepartidorLegajo: leg nom: nom dire: dir tel: tel.
+	Transcript show: 'Se creo con exito el Repartidor Nro ', r verNroRepartidor printString , 'nom: ',  r verNombre; cr.
+	
+	pan agregarRepartidor: r.
+	Transcript show: 'Se agrego un Nuevo Repartidor a la Panificadora'; cr.
+]!
+
+cargarRepartidoresPanificadora:pan
+"Creamos varios Repartidores y agregamos a la Lista de Repartidores"
+	pan agregarRepartidor: (Repartidor crearRepartidorLegajo: 201 nom: 'Federico' dire: 'calle 201' tel: '200-201').
+	pan agregarRepartidor: (Repartidor crearRepartidorLegajo: 202 nom: 'Jaqueline' dire: 'calle 202' tel: '200-202').
+	pan agregarRepartidor: (Repartidor crearRepartidorLegajo: 203 nom: 'Benjamin' dire: 'calle 203' tel: '200-203').
+	pan agregarRepartidor: (Repartidor crearRepartidorLegajo: 204 nom: 'Tatiana' dire: 'calle 204' tel: '200-204').
+	pan agregarRepartidor: (Repartidor crearRepartidorLegajo: 205 nom: 'Ana' dire: 'calle 205' tel: '200-205').
+	pan agregarRepartidor: (Repartidor crearRepartidorLegajo: 206 nom: 'Joel' dire: 'calle 206' tel: '200-206').
+!
+
+cargarVendedor:pan
+
+|v cant leg nom dir tel |
+
+"Ingresar cantidad de Vendedores a cargar "
+cant := Prompter prompt: 'Ingrese cantidad de Vendedores a cargar  '.
+cant := cant asNumber.
+
+1 to: cant do: [:i | 
+	Transcript cr.
+	"Creamos un Vendedor manualmente"
+	leg:= Prompter prompt: 'ingrese legajo: '.
+	leg:= leg asNumber.
+	nom:= Prompter prompt: 'ingrese nombre: '.
+	dir:= Prompter prompt: 'ingrese direccion: '.
+	tel:= Prompter prompt: 'ingrese telefono: '.
+	v:= Vendedor crearVendedorLegajo: leg nom: nom dire: dir tel: tel.
+	Transcript show:  'Se creo el Vendedor Nro', v verNroVendedor printString , ' nom: ',  v verNombre; cr.
+	
+	pan agregarVendedor: v.
+	Transcript show: 'Se agrego un Nuevo Vendedor a la Panificadora'; cr.
+]!
+
+cargarVendedoresPanificadora:pan
+"Creamos varios Vendedores y agregamos a la Lista de Vendedores"
+
+	pan agregarVendedor: (Vendedor crearVendedorLegajo: 301 nom: 'Sandra' dire: 'calle 301' tel: '300-301').
+	pan agregarVendedor: (Vendedor crearVendedorLegajo: 302 nom: 'Santiago' dire: 'calle 302' tel: '300-302').
+	pan agregarVendedor: (Vendedor crearVendedorLegajo: 303 nom: 'Gisela' dire: 'calle 303' tel: '300-303').
+	pan agregarVendedor: (Vendedor crearVendedorLegajo: 304 nom: 'Martin' dire: 'calle 304' tel: '300-304').
+	pan agregarVendedor: (Vendedor crearVendedorLegajo: 305 nom: 'Marcelo' dire: 'calle 305' tel: '300-305').
+	pan agregarVendedor: (Vendedor crearVendedorLegajo: 306 nom: 'Silvio' dire: 'calle 306' tel: '300-306').
+!
+
+mainCargaManual:pan
+
+|op|
+
+op :=''.
+[op ~= '0']  whileTrue: [
+	Transcript cr.
+	Transcript show: 'Menu Carga Manual ';cr.
+	Transcript show: 'Elige opción: ';cr.
+	Transcript show: 'Opción 1: Cargar Clientes';cr.
+	Transcript show: 'Opción 2: Cargar Panaderos';cr.
+	Transcript show: 'Opción 3: Cargar Productos';cr.
+	Transcript show: 'Opción 4: Cargar Repartidores ';cr.
+	Transcript show: 'Opción 5: Cargar Vendedores ';cr.
+	Transcript show: 'Opción 0: Salir';cr.
+
+	op:= Prompter prompt: 'Menu Carga Manual. Ingrese opción: '.
+	Transcript show: 'ingreso: ', op printString; cr.
+	(op = nil)ifTrue: [ op :='-1'].
+	op:= op asNumber.
+
+	(op>=0 and: [op<=5]) ifTrue:[
+			(op = 1) ifTrue:[ Transcript show: 'seleccionó Cargar Clientes.';cr. 
+					App cargarCliente: pan.
+					op:=''. ].		
+			(op = 2) ifTrue:[ Transcript show: 'seleccionó Cargar Panaderos.';cr. 
+					App cargarPanadero: pan.
+					op:=''. ].		
+			(op = 3) ifTrue:[ Transcript show: 'seleccionó Cargar Productos.';cr. 
+					App cargarProducto: pan.
+					op:=''. ].		
+			(op = 4) ifTrue:[ Transcript show: 'seleccionó Cargar Repartidores.';cr. 
+					App cargarRepartidor: pan.
+					op:=''. ].	
+			(op = 5) ifTrue:[ Transcript show: 'seleccionó Cargar Vendedores.';cr. 
+					App cargarVendedor: pan.
+					op:=''. ].	
+			(op = 0) ifTrue:[ Transcript show: 'seleccionó 0. saliendo';cr.
+					op:='0'.] ]
+		ifFalse: [ Transcript show: 'No seleccionó una opcion correcta';cr.
+			op:=''. ].
+	Transcript cr.
+]
+!
+
+mainListarDatos:pan
+
+|op lista|
+
+op :=''.
+[op ~= '0']  whileTrue: [
+	Transcript cr.
+	Transcript show: 'Menu Listar Datos';cr.
+	Transcript show: 'Elige opción: ';cr.
+	Transcript show: 'Opción 1: Listar Clientes';cr.
+	Transcript show: 'Opción 2: Listar Panaderos';cr.
+	Transcript show: 'Opción 3: Listar Productos';cr.
+	Transcript show: 'Opción 4: Listar Repartidores ';cr.
+	Transcript show: 'Opción 5: Listar Vendedores ';cr.
+	Transcript show: 'Opción 0: Salir';cr.
+
+	op:= Prompter prompt: 'Menu Listar Datos. Ingrese opción: '.
+	Transcript show: 'ingreso: ', op printString; cr.
+	Transcript cr.
+	(op = nil)ifTrue: [ op :='-1'].
+	op:= op asNumber.
+
+	(op>=0 and: [op<=5]) ifTrue:[
+		(op = 0) ifTrue:[ Transcript show: 'seleccionó 0. saliendo';cr.
+					op:='0'.]
+				ifFalse:[
+				(op = 1) ifTrue:[ Transcript show: 'seleccionó Listar Clientes.';cr. 
+						lista := pan verListaClientes.
+						op:=''. ].		
+				(op = 2) ifTrue:[ Transcript show: 'seleccionó Listar Panaderos.';cr. 
+						lista := pan verListaPanaderos.
+						op:=''. ].		
+				(op = 3) ifTrue:[ Transcript show: 'seleccionó Listar Productos.';cr. 
+						lista := pan verListaProductos .
+						op:=''. ].		
+				(op = 4) ifTrue:[ Transcript show: 'seleccionó Listar Repartidores.';cr. 
+						lista := pan verListaRepartidores .
+						op:=''. ].	
+				(op = 5) ifTrue:[ Transcript show: 'seleccionó Listar Vendedores.';cr. 
+						lista := pan verListaClientes .
+						op:=''. ].	
+				
+				lista do:[:ob | Transcript show: (ob imprimir) ; cr].
+				Transcript cr. ].
+	]
+	ifFalse: [ Transcript show: 'No seleccionó una opcion correcta';cr.
+			op:=''. ].
+	Transcript cr.
+	].
+
+
+
+!
+
+mainPrincipal:pan
+|op|
+
+op :=''.
+[op ~= '0']  whileTrue: [
+	Transcript clear.
+	Transcript show: 'MenuPrincipal: ';cr.
+	Transcript show: 'Elige opción: ';cr.
+	Transcript show: 'Opción 1: Cargar datos manualmente';cr.
+	Transcript show: 'Opción 2: Listar datos';cr.
+	Transcript show: 'Opción 3: Buscar datos';cr.
+	Transcript show: 'Opción 4: Funciones ';cr.
+	Transcript show: 'Opción 0: Salir';cr.
+	op:= Prompter prompt: 'Menu Principal. Ingrese opción: '.
+	Transcript show: 'ingreso: ', op printString; cr.
+	(op = nil)ifTrue: [ op :='-1'].
+	op:= op asNumber.
+
+	(op>=0 and: [op<=4]) ifTrue:[
+			(op = 1) ifTrue:[ Transcript show: 'seleccionó 1 Cargar datos manualmente.';cr. 
+			App mainCargaManual: pan.
+					op:=''. ].		
+			(op = 2) ifTrue:[ Transcript show: 'seleccionó 2 Listar datos. ';cr. 
+					App mainListarDatos: pan.
+					op:=''. ].		
+			(op = 3) ifTrue:[ Transcript show: 'seleccionó 3 Buscar Datos';cr. 
+					op:=''. ].		
+			(op = 4) ifTrue:[ Transcript show: 'seleccionó 4 Funciones';cr. 
+					op:=''. ].		
+			(op = 0) ifTrue:[ Transcript show: 'seleccionó 0. saliendo';cr.
+					op:='0'.] ]
+		ifFalse: [ Transcript show: 'no seleccionó una opcion correcta';cr.
+			op:=''. ].
+	Transcript cr.
+]
+! !
+
+!App class categoriesForMethods!
+cargarCliente:!public! !
+cargarClientesPanificadora:!public! !
+cargarPanadero:!public! !
+cargarPanaderosPanificadora:!public! !
+cargarProducto:!public! !
+cargarProductosPanificadora:!public! !
+cargarRepartidor:!public! !
+cargarRepartidoresPanificadora:!public! !
+cargarVendedor:!public! !
+cargarVendedoresPanificadora:!public! !
+mainCargaManual:!public! !
+mainListarDatos:!public! !
+mainPrincipal:!public! !
+!
+
 Cliente guid: (GUID fromString: '{b9dc76af-91b0-47bd-9ddd-07ac331b74fc}')!
 
 Cliente comment: ''!
 
-!Cliente categoriesForClass!Kernel-Objects! !
+!Cliente categoriesForClass!cat_max1! !
 
 !Cliente methodsFor!
+
+imprimir
+	"retorna una cadena con los datos"
+
+	| cadena |
+	cadena := 'Cliente Nro:  ' , nroCliente printString , ' | Nom:  ' , nombre , ' | Dir:  ' , direccion
+				, ' | Tel:  ' , telefono.
+	^cadena!
 
 iniClienteNom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Cliente"
@@ -125,6 +505,17 @@ modTelefono:unTelefono
 "Modifica el telefono del cliente"
 telefono =unTelefono .!
 
+printOn: aStream
+	aStream
+		nextPutAll: 'Cliente Nro:  ';
+		nextPutAll: nroCliente printString , ' | ';
+		nextPutAll: 'Nom:  ';
+		nextPutAll: nombre , ' | ';
+		nextPutAll: 'Dir:  ';
+		nextPutAll: direccion , ' | ';
+		nextPutAll: 'Tel:  ';
+		nextPutAll: telefono.!
+
 verDireccion
 "Retorna la direccion del cliente"
 ^direccion.!
@@ -142,10 +533,12 @@ verTelefono
 ^telefono.! !
 
 !Cliente categoriesForMethods!
+imprimir!public! !
 iniClienteNom:dire:tel:!public! !
 modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
+printOn:!public! !
 verDireccion!public! !
 verNombre!public! !
 verNroCliente!public! !
@@ -154,12 +547,13 @@ verTelefono!public! !
 
 !Cliente class methodsFor!
 
-crearClienteNro:unNum nom:unNom dire:unaDire tel:unTel
+crearClienteNom:unNom dire:unaDire tel:unTel
 "Retorna una instancia de Cliente inicializada"
-^(self new) iniClienteNro: unNum nom: unNom dire: unaDire tel: unTel.!
+
+^(self new) iniClienteNom:unNom dire: unaDire tel: unTel.!
 
 initialize
-[ idCliente := 1]
+idCliente := 1.
 !
 
 nextNroCliente
@@ -171,7 +565,7 @@ nextNroCliente
 	^id! !
 
 !Cliente class categoriesForMethods!
-crearClienteNro:nom:dire:tel:!public! !
+crearClienteNom:dire:tel:!public! !
 initialize!public! !
 nextNroCliente!public! !
 !
@@ -188,7 +582,7 @@ imprimir
 	"retorna una cadena con los datos"
 
 	| cadena |
-	cadena := 'Legajo: ', legajo printString , ' | Nom: ' , nombre , ' | direccion ' , direccion , ' | Tel: '
+	cadena := 'Leg: ', legajo printString , ' | Nom: ' , nombre , ' | Dir: ' , direccion , ' | Tel: '
 				, telefono, ' | sueldo ', sueldo printString.
 	^cadena!
 
@@ -223,6 +617,15 @@ modTelefono:unTelefono
 "Modifica el telefono del Empleado"
 telefono =unTelefono .!
 
+printOn: aStream
+	aStream
+		nextPutAll: 'Leg: ' , legajo printString , ' | ';
+		nextPutAll: 'Nom:  ' , nombre , ' | ';
+		nextPutAll: 'Dir:  ' , direccion , ' | ';
+		nextPutAll: 'Tel:  ' , telefono , ' | ';
+		nextPutAll: 'Sueldo:  ';
+		print: sueldo printString.!
+
 verDireccion
 "Retorna la direccion del Empleado"
 ^direccion.!
@@ -251,6 +654,7 @@ modLegajo:!public! !
 modNombre:!public! !
 modSueldo:!public! !
 modTelefono:!public! !
+printOn:!public! !
 verDireccion!public! !
 verLegajo!public! !
 verNombre!public! !
@@ -320,13 +724,47 @@ agregarVendedor: vendedor
 asignarRepartidorPedido: nroPedido
 "asignar un repartidor libre al pedido"
 
-|pedido repartidor|
-"pedido:= listaPedidos detect: [:ped | ped verNroPedido = nroPedido] ifNone: [^nil]."
+|repartidor pedido|
+"buscar el pedido"
+pedido:= listaPedidos detect: [:ped | ped verNroPedido = nroPedido] ifNone: [^nil].
 "seguir con buscar repartidor libre...."
-repartidor := listaRepartidores detect: [:rep | rep libre = true] ifNone:[^nil].
+repartidor:= listaRepartidores detect: [:rep | rep verNroPedidoAsignado = 0 ] ifNone:[^nil].
 
-"asignar repartidor"
-"pedido modiRepartidorAsignado: (repartidor  verNroRepartidor )."!
+"asignar repartidor al pedido"
+pedido modiRepartidorAsignado: repartidor verNroRepartidor.
+
+"retorna el repartidor asignado"
+^repartidor.
+
+!
+
+comprarProductosNroCliente: nroCliente listaProd: unaListaProdPedido
+" un cliente compra un lista de productoPedido, este metodo hace todo el trabajo llamando a todos los metodos necesarios para que se concrete la compra"
+|pe pro pana|
+
+"crear el pedido y agregarlo a la lista de pedidos de la panificadora"
+pe:= Pedido crearPedido: nroCliente listProdPed: unaListaProdPedido.
+self agregarPedido: pe.
+
+"producir cada productoPedido"
+1 to: ( (pe verListaPedidos) size) do: [: prodPe |   
+							pro := (self verListaProductos) detect: [: p| p verNroProducto = prodPe verNroProducto]. "busca el producto del productoPedido"
+							pana := self seleccionarPanadero: pro. "selecciona un panadero segun el tipo de producto, si es un pastel se necesita un pastelero"
+							pana producirProducto: pro cant: prodPe verCantidad. "Se pide al panadero producir el productoPedido"
+							].
+
+"modificar el estado del pedido, ahora ya esta lista para repartir"
+pe modEstado: 'listo para repartir'.
+
+" repartir producto"
+self repartirPedido: pe.
+
+"modificar el estado del pedido"
+pe modEstado:'entregado'.
+
+
+
+!
 
 eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
@@ -503,10 +941,34 @@ modTelefono: unTelefono
 
 repartirPedido:unPedido
 "verificar si el pedido tiene repartidor y asignar uno"
+|repa|
+((unPedido verRepartidor) isNil) ifTrue: [ 
+								repa := self asignarRepartidorPedido: unPedido verNroPedido.
+								repa asignarPedido: unPedido verNroPedido.
+								].
 "verificar si el pedido esta en estado listo para repartir"
+(unPedido verEstado = 'listo para repartir') ifTrue: [ 
+										Transcript show: 'Repartiendo el pedido'."unPedido repartir."
+										repa liberarRepartidor. "agregar a viajes realizados del repartidor"
+										]
+								     ifFalse: [
+										Transcript show: 'El pedido aun no esta listo para repartir'
+										].
+										
+											
 
-"unPedido repartir."
-"agregar a viajes realizados del repartidor"!
+
+!
+
+seleccionarPanadero: unProducto
+"selecciona un panadero segun el tipo de producto a producir"
+|dic pana|
+
+dic := Dictionary new at:'Pastel' put:'Pastelero'; at:'Pan' put:'Panadero'; at:'Factura' put:'Facturero'; at:'Tarta' put:'Maestro'; at:'Galleta' put:'Maestro'; yourself.
+
+pana := listaPanaderos detect: [:p| p verPuesto = dic at: (unProducto verTipo)].
+
+^pana.!
 
 traerPrecioProducto: nroProducto
 	"Retorna el precio de un producto, cero si no  existe producto en la lista de Productos"
@@ -585,6 +1047,7 @@ agregarProveedor:!public! !
 agregarRepartidor:!public! !
 agregarVendedor:!public! !
 asignarRepartidorPedido:!public! !
+comprarProductosNroCliente:listaProd:!public! !
 eliminarCliente:!public! !
 eliminarEmpleado:!public! !
 eliminarPanadero:!public! !
@@ -599,6 +1062,7 @@ modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
+seleccionarPanadero:!public! !
 traerPrecioProducto:!public! !
 traerProductoNro:!public! !
 verDireccion!public! !
@@ -636,32 +1100,37 @@ Pedido comment: ''!
 
 !Pedido methodsFor!
 
-agregarProductoPedido: productoPedido
-	"Agrega un ProductoPedido a la lista de ProductosPedidos"
+agregarProductoPedido: nroProducto cantidad: cantidad
+   | productoExistente nuevoProductoPedido |
+   
+   productoExistente := listaProductosPedidos detect: [ :p | p verNroProducto = nroProducto ] ifNone: [ nil ].
+   
+   productoExistente
+      ifNotNil: [ productoExistente modCantidad: (productoExistente verCantidad + cantidad) ]
+      ifNil: [
+         nuevoProductoPedido := ProductoPedido new.
+         nuevoProductoPedido iniProductoPedido: (listaProductosPedidos size + 1)
+                                nroProd: nroProducto
+                                pedido: self
+                                cantidad: cantidad.
+         listaProductosPedidos add: nuevoProductoPedido
+      ].!
 
-	listaProductosPedidos add: productoPedido!
+eliminarProductoPedido: nroProducto
+   | productoAEliminar |
+   productoAEliminar := listaProductosPedidos detect: [ :p | p verNroProducto = nroProducto ] ifNone: [ nil ].
+   productoAEliminar
+      ifNotNil: [
+         listaProductosPedidos remove: productoAEliminar.
+      ]
+      ifNil: [
+         Transcript show: 'Producto no encontrado en el pedido'; cr.
+      ].!
 
-eliminarProductoPedido: unProductoPedido
-	"Elimina un ProductoPedido de la lista de Productos Pedidos"
-
-	| id nroProd |
-	unProductoPedido notNil
-		ifTrue: 
-			[id := unProductoPedido verIdProdPed .
-			nroProd := unProductoPedido verNroProducto .
-			(listaProductosPedidos includes: unProductoPedido)
-				ifTrue: 
-					[listaProductosPedidos remove: unProductoPedido.
-					MessageBox warning: 'Se elimino ProductoPedido id: ' , id printString , ' con el Producto Nro: ' , nroProd printString]
-				ifFalse: 
-					[MessageBox
-						warning: 'No existe ProductoPedido id:  ' , id printString , ' con el Producto Nro: ' , nroProd printString , ' en la lista.']]
-		ifFalse: [MessageBox warning: 'El ProductoPedido es vacio']!
-
-iniPedidoNroCliente: unNroCliente fechaEnt: fEnt  listPP: listaDeProdPed
+iniPedidoNro: unNroPedi fechaEnt: fEnt nroCli: unNroCliente listPP: listaDeProdPed
 	"Retorna una instacia de Pedido inicializada"
 
-	nroPedido := Pedido nextNroPedido.
+	nroPedido := unNroPedi.
 	fecha := Date today.
 	fechaEntrega := fEnt.
 	estado := 'en Preparacion'.
@@ -672,45 +1141,53 @@ iniPedidoNroCliente: unNroCliente fechaEnt: fEnt  listPP: listaDeProdPed
 modEstado: unEstado
 	estado := unEstado.!
 
-modiRepartidorAsignado: nroRepartidor
-	nroRepartidorAsignado := nroRepartidor.!
+modiRepartidorAsignado: numeroRepartidor
+	nroRepartidorAsignado := numeroRepartidor.!
 
 verEstado
 	^estado.!
-
-verFecha
-"Retorna la fecha de la creacion del pedido"
-	^fecha.!
 
 verFechaEntrega
 	^fechaEntrega.!
 
 verListaProductosPedidos
-	"Retorna la lista de ProductosPedidos"
-
-	^listaProductosPedidos!
+   | listaTexto |
+   listaTexto := String streamContents: [ :stream |
+      listaProductosPedidos do: [ :producto |
+         stream
+            nextPutAll: ', Nro Producto: ', producto verNroProducto printString;
+            nextPutAll: ', Cantidad: ', producto verCantidad printString;
+            nextPutAll: ', Nro Pedido: ', producto verNroPedido printString;
+            nextPutAll: '; '.
+      ].
+   ].
+   Transcript show: listaTexto; cr.!
 
 verNroPedido
 	^nroPedido.!
 
-verNroRepartidor
-	^nroRepartidorAsignado!
+verRepartidor
+	^nroRepartidorAsignado.!
 
 verTotal
-	^total.! !
+   total := 0.
+   listaProductosPedidos do: [ :productoPedido |
+      total := total + productoPedido verCosto .
+   ].
+
+   ^ total.! !
 
 !Pedido categoriesForMethods!
-agregarProductoPedido:!public! !
+agregarProductoPedido:cantidad:!public! !
 eliminarProductoPedido:!public! !
-iniPedidoNroCliente:fechaEnt:listPP:!public! !
+iniPedidoNro:fechaEnt:nroCli:listPP:!public! !
 modEstado:!public! !
 modiRepartidorAsignado:!public! !
 verEstado!public! !
-verFecha!public! !
 verFechaEntrega!public! !
 verListaProductosPedidos!public! !
 verNroPedido!public! !
-verNroRepartidor!public! !
+verRepartidor!public! !
 verTotal!public! !
 !
 
@@ -732,24 +1209,11 @@ nroPedidoStatic := nroPedidoStatic +1.
 f := Date tomorrow .
 Transcript show: 'fecha elegida de entrega: ', f printString; cr.
 
-^(self new) iniPedidoNro: nroPedidoStatic panificadora: pani fechaEnt: f nroCli: unNroClien listPP: lista.!
-
-initialize
-[nroPedidoStatic := 1]!
-
-nextNroPedido
-	"retorna un id unico para una nueva instancia de Pedido"
-
-	| id |
-	id := nroPedidoStatic .
-	nroPedidoStatic := nroPedidoStatic + 1.
-	^id! !
+^(self new) iniPedidoNro: nroPedidoStatic panificadora: pani fechaEnt: f nroCli: unNroClien listPP: lista.! !
 
 !Pedido class categoriesForMethods!
 crearPedido:listProdPed:!public! !
 crearPedido:nroClien:listProdPed:!public! !
-initialize!public! !
-nextNroPedido!public! !
 !
 
 Producto guid: (GUID fromString: '{7948a066-db33-4125-bacc-ab5d39ab576d}')!
@@ -773,10 +1237,12 @@ imprimir
 	"retorna una cadena con los datos"
 
 	| cadena |
-	cadena := 'Producto nro: ', nroProducto printString , ' | Nom: ' , nombreProducto , ' | tipo: ' , tipo , ' | Strock: '
-				, stock printString , ' | Precio: '
-				, precio printString , ' | porDoc: '
-				, porDocena printString.
+	cadena := 'Producto nro: ', nroProducto printString , 
+			' | Nom: ' , nombreProducto , 
+			' | tipo: ' , tipo ,
+			' | Strock: ' , stock printString ,
+			' | Precio: ', precio printString , 
+			' | porDoc: ', porDocena printString.
 	^cadena!
 
 iniProductoNombre: unNom tip: unTipo prec: unPrecio
@@ -787,7 +1253,8 @@ iniProductoNombre: unNom tip: unTipo prec: unPrecio
 	tipo := unTipo.
 	precio := unPrecio.
 	stock := 0.
-	porDocena := false!
+	porDocena := false.
+	tipo = 'Factura' ifTrue: [porDocena := true]!
 
 modNombre: unNombre
 	"Modifica el nombre del producto"
@@ -818,6 +1285,19 @@ modTipo: unTipo
 	"modifica el tipo del producto"
 
 	tipo:= unTipo.!
+
+printOn: aStream
+	aStream
+		nextPutAll: 'Producto Nro:  ';
+		nextPutAll: nroProducto printString , ' | ';
+		nextPutAll: 'Nom:  ';
+		nextPutAll: nombreProducto , ' | ';
+		nextPutAll: 'Tipo:  ';
+		nextPutAll: tipo , ' | ';
+		nextPutAll: 'Precio:  ';
+		nextPutAll: precio printString , ' | ';
+		nextPutAll: 'Stock:  ';
+		nextPutAll: stock printString!
 
 verNombre
 	"retorna el nombre del Producto"
@@ -857,6 +1337,7 @@ modPorDocena!public! !
 modPrecio:!public! !
 modStock:!public! !
 modTipo:!public! !
+printOn:!public! !
 verNombre!public! !
 verNroProducto!public! !
 verPorDocena!public! !
@@ -878,11 +1359,13 @@ initialize
 
 nextId
 	"retorna un id unico para una nueva instancia de producto"
-
-	| id |
+	(idProd isNil) ifTrue: [idProd := 0].
+	idProd := idProd + 1.
+	^idProd.
+	"| id |
 	id := idProd.
 	idProd := idProd + 1.
-	^id! !
+	^id"! !
 
 !Producto class categoriesForMethods!
 crearProductoNombre:tip:prec:!public! !
@@ -898,80 +1381,75 @@ ProductoPedido comment: ''!
 
 !ProductoPedido methodsFor!
 
-costo [
-    | precio total |
-
-    "Llama a la clase CatalogoProductos para obtener el precio del producto según nroProducto"
-    precio := Panificadora precioProducto: nroProducto.
-
-    "Calcula el costo total multiplicando la cantidad de productos por el precio unitario"
-    total := cantidad * precio.
-    
-    ^ total.  "Devuelve el costo total del ProductoPedido"
-]!
-
-iniProductoPedido:unNroProduct  cantidad:cant pedido:unPedido
+iniProductoPedidoNroProd:unNroProduct cantidad:cant costoUnitario:cost
 "inicializa una instancia de ProductoPedido"
 
-idProductoPedido := ProductoPedido nextNroProdPed.
+idProductoPedido := ProductoPedido nextNroPP.
 nroProducto := unNroProduct.
-cantidad:= cant.
-pedido := unPedido.
 nroPedido := pedido verNroPedido.
-!
+cantidad:= cant.
+costoUnitario:=cost.!
 
 modCantidad:unNro
 	cantidad=cantidad+unNro.!
 
+modCostoUnitario:unNro
+	costoUnitario =unNro.!
+
+modNroPedido: unNroPedido
+	nroPedido := unNroPedido!
+
 verCantidad
-	^cantidad!
+	^cantidad.!
 
-verIdProdPed
-	"Retorna el nro de ID del Producto Pedidio"
+verCosto
+	| total |
+	total := cantidad * costoUnitario.
+	^total!
 
-	^idProductoPedido!
-
-verNroPedido
-	"Retorna el nro de pedido asociado al Producto pedido"
-
-	^pedido verNroPedido!
+verCostoUnitario
+	^costoUnitario.!
 
 verNroProducto
-	"Retorna el nro de Pedido de ProductoPedido"
-
-	^nroProducto! !
+	^nroProducto.! !
 
 !ProductoPedido categoriesForMethods!
-costo!public! !
-iniProductoPedido:cantidad:pedido:!public! !
+iniProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 modCantidad:!public! !
+modCostoUnitario:!public! !
+modNroPedido:!public! !
 verCantidad!public! !
-verIdProdPed!public! !
-verNroPedido!public! !
+verCosto!public! !
+verCostoUnitario!public! !
 verNroProducto!public! !
 !
 
 !ProductoPedido class methodsFor!
 
-crearProductoPedido:nroProducto pedido:unPedido cant:cantidad
-nroProductoPedido := nroProductoPedido +1.
-^(self new) iniProductoPedido: nroProductoPedido nroProd: nroProducto pedido: unPedido cantidad: cantidad.!
+crearProductoPedido:unProducto cantidad:cant
 
-initialize
-	[nroProductoPedido := 0]!
+	^(self new) iniProductoPedidoNroProd: unProducto verNroProducto cantidad: cant costoUnitario: unProducto verCosto.!
 
-nextNroProdPed
-	"retorna un id unico para una nueva instancia de ProductoPedido"
+crearProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo
 
-	| id |
-	id := nroProductoPedido.
+	^(self new) iniProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo.!
+
+initialize [
+    nroProductoPedido := 0.
+]!
+
+nextNroPP
+	"retorna un id unico para una nueva instancia de producto"
+	(nroProductoPedido isNil) ifTrue: [nroProductoPedido := 0].
 	nroProductoPedido := nroProductoPedido + 1.
-	^id! !
+	^nroProductoPedido.
+! !
 
 !ProductoPedido class categoriesForMethods!
-crearProductoPedido:pedido:cant:!public! !
+crearProductoPedido:cantidad:!public! !
+crearProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 initialize!public! !
-nextNroProdPed!public! !
+nextNroPP!public! !
 !
 
 Proveedor guid: (GUID fromString: '{4d142482-4e17-4a30-bff2-851d3c202d10}')!
@@ -1098,15 +1576,21 @@ Panadero comment: ''!
 imprimir
 ^'Panadero Puesto:  ', puesto, ' | ', super imprimir.!
 
-iniPanaderoLegajo: unLegajo puesto: unPuesto nom: unNombre dire: unaDire tel: unTel
+iniPanaderoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel puesto: unPuesto
 	"Inicializa una instancia de Panadero"
 
-	self iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
+	super iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
 	puesto := unPuesto.
 	sueldo := 800000.
 	
 	
 !
+
+printOn: aStream
+	aStream
+		nextPutAll: 'Panadero Puesto:  ';
+		nextPutAll: puesto , ' | '.
+		super printOn: aStream.!
 
 producirProducto:unProducto cant:unaCant
 "Produce la cantidad de un producto"
@@ -1117,23 +1601,33 @@ unidad:= ''.
 unProducto aumentarStock: unaCant.
 Transcript show: 'se produjo ' , (unaCant  printString), unidad,' de ', unProducto verNombre; cr.
 Transcript show: ' (Stock: ' , unProducto verStock printString , '  )' ; cr.
-! !
+!
+
+verPuesto
+^puesto.! !
 
 !Panadero categoriesForMethods!
 imprimir!public! !
-iniPanaderoLegajo:puesto:nom:dire:tel:!public! !
+iniPanaderoLegajo:nom:dire:tel:puesto:!public! !
+printOn:!public! !
 producirProducto:cant:!public! !
+verPuesto!public! !
 !
 
 !Panadero class methodsFor!
 
-crearPanaderoLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
+crearPanaderoLegajo: unLegajo nom: unNom dire: unaDire tel: unTel puesto: unPuesto
 	"Retorna una instancia de Panadero inicializada"
 
-	^(self new) iniPanaderoLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.! !
+	^self new
+		iniPanaderoLegajo: unLegajo
+		nom: unNom
+		dire: unaDire
+		tel: unTel
+		puesto: unPuesto! !
 
 !Panadero class categoriesForMethods!
-crearPanaderoLegajo:nom:dire:tel:!public! !
+crearPanaderoLegajo:nom:dire:tel:puesto:!public! !
 !
 
 Repartidor guid: (GUID fromString: '{e520e4a8-e744-4822-9cf7-93bf17a6e60e}')!
@@ -1174,6 +1668,12 @@ liberarRepartidor
 self agregarPedidoRealizado: nroPedidoAsignado.
 nroPedidoAsignado := 0.!
 
+printOn: aStream
+	aStream
+		nextPutAll: 'Repartidor nro:  ';
+		nextPutAll: nroRepartidor printString , ' | '.
+	super printOn: aStream!
+
 repartir: pedido
 "Reparte el pedido asigando"
 |nroPed|
@@ -1200,6 +1700,7 @@ asignarPedido:!public! !
 imprimir!public! !
 iniRepartidorLegajo:nom:dire:tel:!public! !
 liberarRepartidor!public! !
+printOn:!public! !
 repartir:!public! !
 verListaPedidosEntregados!public! !
 verNroPedidoAsignado!public! !
@@ -1235,7 +1736,7 @@ Vendedor comment: ''!
 agregarPedidoVendido: unNroPedido
 	"Agrega un pedido a la lista de pedidos vendidos del vendedor"
 
-	listaPedidosVendidos add: unNroPedido!
+	pedidosVendidos add: unNroPedido!
 
 imprimir
 ^'Vendedor nro:  ', nroVendedor printString , ' | ', super imprimir.!
@@ -1249,25 +1750,32 @@ iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 		dire: unaDire
 		tel: unTel.
 	nroVendedor := Vendedor nuevoNumeroVendedor.
-	listaPedidosVendidos := OrderedCollection new.
+	pedidosVendidos := OrderedCollection new.
 	sueldo := 600000!
 
-verListaPedidosVendidos
-	"retorna la listab de los pedidos vendidos por el vendedor"
-
-	^listaPedidosVendidos!
+printOn: aStream
+	aStream
+		nextPutAll: 'Vendedor nro:  ';
+		nextPutAll: nroVendedor printString , ' | '.
+	super printOn: aStream!
 
 verNroVendedor
 "Retorna el numero de vendedor"
 
-^nroVendedor.! !
+^nroVendedor.!
+
+verPedidosVendidos
+	"retorna la listab de los pedidos vendidos por el vendedor"
+
+	^pedidosVendidos! !
 
 !Vendedor categoriesForMethods!
 agregarPedidoVendido:!public! !
 imprimir!public! !
 iniVendedorLegajo:nom:dire:tel:!public! !
-verListaPedidosVendidos!public! !
+printOn:!public! !
 verNroVendedor!public! !
+verPedidosVendidos!public! !
 !
 
 !Vendedor class methodsFor!

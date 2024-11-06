@@ -10,9 +10,17 @@ Cliente guid: (GUID fromString: '{b9dc76af-91b0-47bd-9ddd-07ac331b74fc}')!
 
 Cliente comment: ''!
 
-!Cliente categoriesForClass!Kernel-Objects! !
+!Cliente categoriesForClass!cat_max1! !
 
 !Cliente methodsFor!
+
+imprimir
+	"retorna una cadena con los datos"
+
+	| cadena |
+	cadena := 'Cliente Nro:  ' , nroCliente printString , ' | Nom:  ' , nombre , ' | Dir:  ' , direccion
+				, ' | Tel:  ' , telefono.
+	^cadena!
 
 iniClienteNom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Cliente"
@@ -34,6 +42,17 @@ modTelefono:unTelefono
 "Modifica el telefono del cliente"
 telefono =unTelefono .!
 
+printOn: aStream
+	aStream
+		nextPutAll: 'Cliente Nro:  ';
+		nextPutAll: nroCliente printString , ' | ';
+		nextPutAll: 'Nom:  ';
+		nextPutAll: nombre , ' | ';
+		nextPutAll: 'Dir:  ';
+		nextPutAll: direccion , ' | ';
+		nextPutAll: 'Tel:  ';
+		nextPutAll: telefono.!
+
 verDireccion
 "Retorna la direccion del cliente"
 ^direccion.!
@@ -51,10 +70,12 @@ verTelefono
 ^telefono.! !
 
 !Cliente categoriesForMethods!
+imprimir!public! !
 iniClienteNom:dire:tel:!public! !
 modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
+printOn:!public! !
 verDireccion!public! !
 verNombre!public! !
 verNroCliente!public! !
@@ -63,12 +84,13 @@ verTelefono!public! !
 
 !Cliente class methodsFor!
 
-crearClienteNro:unNum nom:unNom dire:unaDire tel:unTel
+crearClienteNom:unNom dire:unaDire tel:unTel
 "Retorna una instancia de Cliente inicializada"
-^(self new) iniClienteNro: unNum nom: unNom dire: unaDire tel: unTel.!
+
+^(self new) iniClienteNom:unNom dire: unaDire tel: unTel.!
 
 initialize
-[ idCliente := 1]
+idCliente := 1.
 !
 
 nextNroCliente
@@ -80,7 +102,7 @@ nextNroCliente
 	^id! !
 
 !Cliente class categoriesForMethods!
-crearClienteNro:nom:dire:tel:!public! !
+crearClienteNom:dire:tel:!public! !
 initialize!public! !
 nextNroCliente!public! !
 !

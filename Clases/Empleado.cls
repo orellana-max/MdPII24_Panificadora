@@ -18,7 +18,7 @@ imprimir
 	"retorna una cadena con los datos"
 
 	| cadena |
-	cadena := 'Legajo: ', legajo printString , ' | Nom: ' , nombre , ' | direccion ' , direccion , ' | Tel: '
+	cadena := 'Leg: ', legajo printString , ' | Nom: ' , nombre , ' | Dir: ' , direccion , ' | Tel: '
 				, telefono, ' | sueldo ', sueldo printString.
 	^cadena!
 
@@ -53,6 +53,15 @@ modTelefono:unTelefono
 "Modifica el telefono del Empleado"
 telefono =unTelefono .!
 
+printOn: aStream
+	aStream
+		nextPutAll: 'Leg: ' , legajo printString , ' | ';
+		nextPutAll: 'Nom:  ' , nombre , ' | ';
+		nextPutAll: 'Dir:  ' , direccion , ' | ';
+		nextPutAll: 'Tel:  ' , telefono , ' | ';
+		nextPutAll: 'Sueldo:  ';
+		print: sueldo printString.!
+
 verDireccion
 "Retorna la direccion del Empleado"
 ^direccion.!
@@ -81,6 +90,7 @@ modLegajo:!public! !
 modNombre:!public! !
 modSueldo:!public! !
 modTelefono:!public! !
+printOn:!public! !
 verDireccion!public! !
 verLegajo!public! !
 verNombre!public! !

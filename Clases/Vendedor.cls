@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk"!
 
 Empleado subclass: #Vendedor
-	instanceVariableNames: 'nroVendedor listaPedidosVendidos'
+	instanceVariableNames: 'nroVendedor pedidosVendidos'
 	classVariableNames: 'UnNuevoNroVendedor'
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -17,7 +17,7 @@ Vendedor comment: ''!
 agregarPedidoVendido: unNroPedido
 	"Agrega un pedido a la lista de pedidos vendidos del vendedor"
 
-	listaPedidosVendidos add: unNroPedido!
+	pedidosVendidos add: unNroPedido!
 
 imprimir
 ^'Vendedor nro:  ', nroVendedor printString , ' | ', super imprimir.!
@@ -31,25 +31,32 @@ iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 		dire: unaDire
 		tel: unTel.
 	nroVendedor := Vendedor nuevoNumeroVendedor.
-	listaPedidosVendidos := OrderedCollection new.
+	pedidosVendidos := OrderedCollection new.
 	sueldo := 600000!
 
-verListaPedidosVendidos
-	"retorna la listab de los pedidos vendidos por el vendedor"
-
-	^listaPedidosVendidos!
+printOn: aStream
+	aStream
+		nextPutAll: 'Vendedor nro:  ';
+		nextPutAll: nroVendedor printString , ' | '.
+	super printOn: aStream!
 
 verNroVendedor
 "Retorna el numero de vendedor"
 
-^nroVendedor.! !
+^nroVendedor.!
+
+verPedidosVendidos
+	"retorna la listab de los pedidos vendidos por el vendedor"
+
+	^pedidosVendidos! !
 
 !Vendedor categoriesForMethods!
 agregarPedidoVendido:!public! !
 imprimir!public! !
 iniVendedorLegajo:nom:dire:tel:!public! !
-verListaPedidosVendidos!public! !
+printOn:!public! !
 verNroVendedor!public! !
+verPedidosVendidos!public! !
 !
 
 !Vendedor class methodsFor!

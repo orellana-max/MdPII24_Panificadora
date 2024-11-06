@@ -1,8 +1,0 @@
-Maximiliano:
-Panificadora _ Producto _ Proveedor
-
-Gonzalo
-Pedido _ ProductoPedido _ Cliente
-
-Juan Pablo
-Empleado _ Panadero _ Vendedor_ Repartidor

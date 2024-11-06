@@ -44,6 +44,12 @@ liberarRepartidor
 self agregarPedidoRealizado: nroPedidoAsignado.
 nroPedidoAsignado := 0.!
 
+printOn: aStream
+	aStream
+		nextPutAll: 'Repartidor nro:  ';
+		nextPutAll: nroRepartidor printString , ' | '.
+	super printOn: aStream!
+
 repartir: pedido
 "Reparte el pedido asigando"
 |nroPed|
@@ -70,6 +76,7 @@ asignarPedido:!public! !
 imprimir!public! !
 iniRepartidorLegajo:nom:dire:tel:!public! !
 liberarRepartidor!public! !
+printOn:!public! !
 repartir:!public! !
 verListaPedidosEntregados!public! !
 verNroPedidoAsignado!public! !
