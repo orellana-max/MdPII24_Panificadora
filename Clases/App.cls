@@ -218,6 +218,64 @@ cargarVendedoresPanificadora:pan
 	pan agregarVendedor: (Vendedor crearVendedorLegajo: 306 nom: 'Silvio' dire: 'calle 306' tel: '300-306').
 !
 
+imprimirPedidosCliente:pan
+"imprime los pedidos realizados por un cliente"
+|numCliente listaPedidos|
+
+numCliente := Prompter prompt: 'Ingresar numero de cliente'.
+numCliente := numCliente asNumber.
+
+listaPedidos := (pan verListaPedidos) select:  [ : p | p verNroCliente =  numCliente ].
+
+"impresion pedidos del cliente"
+(listaPedidos isNil) ifTrue: [Transcript show: 'No hay pedidos realizados por ese cliente o el numero ingresado no pertenece a un cliente'; cr]
+				ifFalse: [Transcript show: 'Lista de pedidos del cliente: ', numCliente printString; cr.
+						listaPedidos do:[: p | Transcript show:
+										'Nro pedido: ', (p verNroPedido) printString ,
+										' | Fecha: ', (p verFechaEntrega) printString,	
+										' | Costo: ', (p verTotal) printString; cr		
+									].
+						].!
+
+imprimirPedidosMayorAMenor: pan
+"imprime los pedidos ordenados de mayor a menor costo"
+|pedidosOrdenCosto |
+
+pedidosOrdenCosto := (pan verListaPedidos) asSortedCollection: [ :x :y | x verTotal > y verTotal].
+
+"imprimir los datos ordenados"
+Transcript show: 'Lista de pedidos ordenados por costo de mayor a menor'; cr.
+(pedidosOrdenCosto isNil) ifTrue: [Transcript  show: 'No se han realizado pedidos aun' ] 
+					   ifFalse: [
+								pedidosOrdenCosto do:[
+													: p | Transcript show:
+														'Nro cliente: ', (p verNroCliente) printString,
+														' | Fecha: ', (p verFechaEntrega) printString,	
+														' | Costo: ', (p verTotal) printString; cr		
+													].
+							].!
+
+imprimirPedidosMayorIgualA: pan
+"imprime los pedidos mayores o iguales a un determinado costo ingresado por teclado"
+|costoPedido listaPedidos |
+
+costoPedido := Prompter prompt: 'Ingresar un valor para obtener una lista de pedidos cuyo costo sea mayor o igual al valor ingresado'.
+costoPedido := costoPedido asNumber.
+listaPedidos := (pan verListaPedidos) reject:  [ : p | p verTotal < costoPedido]. "no selecciona aquellos pedidos con costo menor al costo ingresado por teclado"
+
+"impresion pedidos mayores a un costo"
+(listaPedidos isNil) ifTrue: [Transcript show: 'No hay pedidos mayores o iguales a ese costo'; cr]
+				ifFalse:[Transcript show: 'Lista de pedidos de costo mayores a: ', costoPedido printString; cr.
+						listaPedidos do:[
+									: p | Transcript show:
+										'Nro cliente: ', (p verNroCliente) printString,
+										' | Nro pedido: ', (p verNroPedido) printString ,
+										' | Fecha: ', (p verFechaEntrega) printString,	
+										' | Costo: ', (p verTotal) printString; cr		
+									].
+					].
+!
+
 mainCargaManual:pan
 
 |op|
@@ -365,6 +423,9 @@ cargarRepartidor:!public! !
 cargarRepartidoresPanificadora:!public! !
 cargarVendedor:!public! !
 cargarVendedoresPanificadora:!public! !
+imprimirPedidosCliente:!public! !
+imprimirPedidosMayorAMenor:!public! !
+imprimirPedidosMayorIgualA:!public! !
 mainCargaManual:!public! !
 mainListarDatos:!public! !
 mainPrincipal:!public! !
