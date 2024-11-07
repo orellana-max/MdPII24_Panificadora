@@ -10,7 +10,7 @@ Producto guid: (GUID fromString: '{7948a066-db33-4125-bacc-ab5d39ab576d}')!
 
 Producto comment: ''!
 
-!Producto categoriesForClass!Kernel-Objects! !
+!Producto categoriesForClass!cat_max1! !
 
 !Producto methodsFor!
 

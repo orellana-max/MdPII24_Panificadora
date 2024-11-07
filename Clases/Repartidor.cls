@@ -10,7 +10,7 @@ Repartidor guid: (GUID fromString: '{e520e4a8-e744-4822-9cf7-93bf17a6e60e}')!
 
 Repartidor comment: ''!
 
-!Repartidor categoriesForClass!Kernel-Objects! !
+!Repartidor categoriesForClass!cat_max1! !
 
 !Repartidor methodsFor!
 

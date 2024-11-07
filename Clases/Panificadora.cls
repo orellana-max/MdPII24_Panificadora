@@ -10,7 +10,7 @@ Panificadora guid: (GUID fromString: '{17e874c9-7a3b-4335-a009-8ba9896a9a22}')!
 
 Panificadora comment: ''!
 
-!Panificadora categoriesForClass!Kernel-Objects! !
+!Panificadora categoriesForClass!cat_max1! !
 
 !Panificadora methodsFor!
 

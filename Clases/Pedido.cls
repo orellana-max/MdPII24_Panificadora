@@ -10,7 +10,7 @@ Pedido guid: (GUID fromString: '{d2e215d0-9920-4aa0-84c6-40a60b01ec3a}')!
 
 Pedido comment: ''!
 
-!Pedido categoriesForClass!Kernel-Objects! !
+!Pedido categoriesForClass!cat_max1! !
 
 !Pedido methodsFor!
 
