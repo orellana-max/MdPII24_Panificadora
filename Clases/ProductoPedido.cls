@@ -10,7 +10,7 @@ ProductoPedido guid: (GUID fromString: '{9ae45669-d20e-4e41-a18f-54a008d55e0e}')
 
 ProductoPedido comment: ''!
 
-!ProductoPedido categoriesForClass!Kernel-Objects! !
+!ProductoPedido categoriesForClass!cat_max1! !
 
 !ProductoPedido methodsFor!
 

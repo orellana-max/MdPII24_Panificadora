@@ -10,7 +10,7 @@ Vendedor guid: (GUID fromString: '{4355ccf0-7eea-498a-9e87-ccef4959daed}')!
 
 Vendedor comment: ''!
 
-!Vendedor categoriesForClass!Kernel-Objects! !
+!Vendedor categoriesForClass!cat_max1! !
 
 !Vendedor methodsFor!
 
