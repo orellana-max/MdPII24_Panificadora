@@ -10,7 +10,7 @@ Panadero guid: (GUID fromString: '{924bf294-35d3-4f4d-a558-48e649e78e2b}')!
 
 Panadero comment: ''!
 
-!Panadero categoriesForClass!cat_max1! !
+!Panadero categoriesForClass!No category! !
 
 !Panadero methodsFor!
 

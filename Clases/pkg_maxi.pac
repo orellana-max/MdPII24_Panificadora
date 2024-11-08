@@ -97,7 +97,7 @@ Empleado subclass: #Vendedor
 	instanceVariableNames: 'nroVendedor pedidosVendidos'
 	classVariableNames: 'UnNuevoNroVendedor'
 	poolDictionaries: ''
-	classInstanceVariableNames: ''!
+	classInstanceVariableNames: 'idVendedor'!
 
 "End of package definition"!
 
@@ -211,6 +211,23 @@ cargarPanaderosPanificadora: pan
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 10 nom: 'Leon' dire: 'calle 100' tel: '123-564' puesto: 'Maestro').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 11 nom: 'Ivan' dire: 'calle 101' tel: '123-564' puesto: 'Pastelero').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 12 nom: 'Laureano' dire: 'calle 102' tel: '123-564' puesto: 'Facturero').!
+
+cargarPedidosAlaPanificadora: pan
+	"Creamos y cargamos varios Pedidos a la panificadora"
+
+	| listClient listPP list c n |
+	listClient := pan verListaClientes.
+	listPP := App crearListaProductosPedidos: pan.
+	n := 1.
+	1 to: 4 do:  [:i |
+			listClient do: [:c | 
+				list := OrderedCollection new.
+				1 to: 4 do: [:k |
+					list add: (listPP at: n).
+					n := n + k].
+			n := n -5.
+			pan agregarPedido: (Pedido crearPedidoNroClien: c verNroCliente listProdPed: list)]
+]!
 
 cargarProducto:pan
 
@@ -386,24 +403,56 @@ cargarVendedoresPanificadora:pan
 	pan agregarVendedor: (Vendedor crearVendedorLegajo: 306 nom: 'Silvio' dire: 'calle 306' tel: '300-306').
 !
 
+crearListaProductosPedidos: pan
+"devuelve una lista de productos pedidos"
+|list pro listProductos|
+
+ProductoPedido initialize.
+list := OrderedCollection new.
+listProductos := pan verListaProductos.
+(listProductos isEmpty) ifFalse:[
+
+1 to: (listProductos size) do: [:i | 
+	pro :=  listProductos at: i.
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 1).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 2).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 3).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 4).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 5).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 6).
+	].
+].
+
+^list.
+!
+
 imprimirPedidosCliente:pan
 "imprime los pedidos realizados por un cliente"
-|numCliente listaPedidos|
-
-numCliente := Prompter prompt: 'Ingresar numero de cliente'.
-numCliente := numCliente asNumber.
-
-listaPedidos := (pan verListaPedidos) select:  [ : p | p verNroCliente =  numCliente ].
-
-"impresion pedidos del cliente"
-(listaPedidos isNil) ifTrue: [Transcript show: 'No hay pedidos realizados por ese cliente o el numero ingresado no pertenece a un cliente'; cr]
-				ifFalse: [Transcript show: 'Lista de pedidos del cliente: ', numCliente printString; cr.
-						listaPedidos do:[: p | Transcript show:
-										'Nro pedido: ', (p verNroPedido) printString ,
-										' | Fecha: ', (p verFechaEntrega) printString,	
-										' | Costo: ', (p verTotal) printString; cr		
+|num listaPedidos c|
+num:=''.
+[num isNumber] whileFalse: [
+	num := Prompter prompt: 'Ingrese número de Cliente a buscar '.
+	"comprobueba que se ingresa un numero"
+	(num ='') ifTrue: [MessageBox warning: 'no ingreso un numero']
+			ifFalse:[ ((num detect: [ :di| di isDigit not] ifNone:['vacio']) = 'vacio' ) ifTrue: [num := num asNumber.]
+												ifFalse:[MessageBox warning: 'no ingreso un numero'].
+			]. 
+].
+c:= pan traerClienteNro: num.
+(c isNil) ifTrue: [ MessageBox warning: 'El número ingresado no pertenece a un cliente']
+		ifFalse:[
+			listaPedidos := (pan verListaPedidos) select:  [ : p | p verNroCliente =  num ].
+			"impresion pedidos del cliente"
+			(listaPedidos isEmpty) ifTrue: [MessageBox warning: 'No hay pedidos realizados por ese Cliente'.]
+							ifFalse: [Transcript cr; show: 'Lista de pedidos del cliente Nro: ', num printString, ' Nombre: ', c verNombre ; cr.
+									listaPedidos do:[: p | Transcript show:
+													'Nro pedido: ', (p verNroPedido) printString ,
+													' | Fecha Entrega: ', (p verFechaEntrega) printString,	
+													' | Costo: ', (p verTotal) printString,
+													' | Estado ', (p verEstado) printString; cr
+												].
 									].
-						].!
+]!
 
 imprimirPedidosMayorAMenor: pan
 "imprime los pedidos ordenados de mayor a menor costo"
@@ -445,12 +494,23 @@ listaPedidos := (pan verListaPedidos) reject:  [ : p | p verTotal < costoPedido]
 !
 
 load:pan
-"Carga todos las instancias creadas para la panificadora"
+"inicializa las clases y Carga todos las instancias creadas para la panificadora"
+Cliente initialize.
+Empleado initialize.
+Panadero initialize.
+Pedido initialize.
+Producto initialize.
+ProductoPedido initialize.
+Proveedor initialize.
+Repartidor initialize.
+Vendedor initialize.
+
 App cargarClientesPanificadora:  pan.
 App cargarPanaderosPanificadora: pan.
 App cargarProductosPanificadora: pan.
 App cargarRepartidoresPanificadora: pan.
 App cargarVendedoresPanificadora: pan.
+App cargarPedidosAlaPanificadora: pan.
 
 !
 
@@ -599,12 +659,14 @@ cargarCliente:!public! !
 cargarClientesPanificadora:!public! !
 cargarPanadero:!public! !
 cargarPanaderosPanificadora:!public! !
+cargarPedidosAlaPanificadora:!public! !
 cargarProducto:!public! !
 cargarProductosPanificadora:!public! !
 cargarRepartidor:!public! !
 cargarRepartidoresPanificadora:!public! !
 cargarVendedor:!public! !
 cargarVendedoresPanificadora:!public! !
+crearListaProductosPedidos:!public! !
 imprimirPedidosCliente:!public! !
 imprimirPedidosMayorAMenor:!public! !
 imprimirPedidosMayorIgualA:!public! !
@@ -619,7 +681,7 @@ Cliente guid: (GUID fromString: '{b9dc76af-91b0-47bd-9ddd-07ac331b74fc}')!
 
 Cliente comment: ''!
 
-!Cliente categoriesForClass!cat_max1! !
+!Cliente categoriesForClass!No category! !
 
 !Cliente methodsFor!
 
@@ -637,7 +699,8 @@ iniClienteNom: unNombre dire: unaDire tel: unTel
 	nroCliente := Cliente nextNroCliente.
 	nombre := unNombre.
 	direccion := unaDire.
-	telefono := unTel!
+	telefono := unTel.
+        !
 
 modDireccion:unaDireccion
 "Modifica la direccion del cliente"
@@ -699,16 +762,17 @@ crearClienteNom:unNom dire:unaDire tel:unTel
 ^(self new) iniClienteNom:unNom dire: unaDire tel: unTel.!
 
 initialize
-idCliente := 1.
+idCliente := 0.
 !
 
 nextNroCliente
 	"Retorna un id unico para una instancia nueva de Cliente"
-
 	| id |
+
+	(idCliente isNil) ifTrue: [idCliente := 0].
 	id := idCliente.
 	idCliente := idCliente + 1.
-	^id! !
+	^id.! !
 
 !Cliente class categoriesForMethods!
 crearClienteNom:dire:tel:!public! !
@@ -720,7 +784,7 @@ Empleado guid: (GUID fromString: '{449b804d-71ea-44de-b429-1a4cb51801e4}')!
 
 Empleado comment: ''!
 
-!Empleado categoriesForClass!cat_max1! !
+!Empleado categoriesForClass!No category! !
 
 !Empleado methodsFor!
 
@@ -823,7 +887,7 @@ Panificadora guid: (GUID fromString: '{17e874c9-7a3b-4335-a009-8ba9896a9a22}')!
 
 Panificadora comment: ''!
 
-!Panificadora categoriesForClass!cat_max1! !
+!Panificadora categoriesForClass!No category! !
 
 !Panificadora methodsFor!
 
@@ -885,32 +949,29 @@ pedido modiRepartidorAsignado: repartidor verNroRepartidor.
 !
 
 comprarProductosNroCliente: nroCliente listaProd: unaListaProdPedido
-" un cliente compra un lista de productoPedido, este metodo hace todo el trabajo llamando a todos los metodos necesarios para que se concrete la compra"
-|pe pro pana|
+	" un cliente compra un lista de productoPedido, este metodo hace todo el trabajo llamando a todos los metodos necesarios para que se concrete la compra"
 
-"crear el pedido y agregarlo a la lista de pedidos de la panificadora"
-pe:= Pedido crearPedido: nroCliente listProdPed: unaListaProdPedido.
-self agregarPedido: pe.
+	| pe pro pana |
+	"crear el pedido y agregarlo a la lista de pedidos de la panificadora"
+	pe := Pedido crearPedidoNroClien: nroCliente listProdPed: unaListaProdPedido.
+	self agregarPedido: pe.
 
-"producir cada productoPedido"
-1 to: ( (pe verListaPedidos) size) do: [: prodPe |   
-							pro := (self verListaProductos) detect: [: p| p verNroProducto = prodPe verNroProducto]. "busca el producto del productoPedido"
-							pana := self seleccionarPanadero: pro. "selecciona un panadero segun el tipo de producto, si es un pastel se necesita un pastelero"
-							pana producirProducto: pro cant: prodPe verCantidad. "Se pide al panadero producir el productoPedido"
-							].
+	"producir cada productoPedido"
+	1 to: pe verListaPedidos size
+		do: 
+			[:prodPe |
+			pro := self verListaProductos detect: [:p | p verNroProducto = prodPe verNroProducto].	"busca el producto del productoPedido"
+			pana := self seleccionarPanadero: pro.	"selecciona un panadero segun el tipo de producto, si es un pastel se necesita un pastelero"
+			pana producirProducto: pro cant: prodPe verCantidad	"Se pide al panadero producir el productoPedido"].
 
-"modificar el estado del pedido, ahora ya esta lista para repartir"
-pe modEstado: 'listo para repartir'.
+	"modificar el estado del pedido, ahora ya esta lista para repartir"
+	pe modEstado: 'listo para repartir'.
 
-" repartir producto"
-self repartirPedido: pe.
+	" repartir producto"
+	self repartirPedido: pe.
 
-"modificar el estado del pedido"
-pe modEstado:'entregado'.
-
-
-
-!
+	"modificar el estado del pedido"
+	pe modEstado: 'entregado'!
 
 eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
@@ -1116,6 +1177,11 @@ pana := listaPanaderos detect: [:p| p verPuesto = dic at: (unProducto verTipo)].
 
 ^pana.!
 
+traerClienteNro: nroCliente
+	"Retorna el producto de nro de producto pasado por parametro, nil en caso contrario"
+
+	^listaClientes detect: [:pro | pro verNroCliente = nroCliente ] ifNone: [^nil].!
+
 traerPrecioProducto: nroProducto
 	"Retorna el precio de un producto, cero si no  existe producto en la lista de Productos"
 
@@ -1209,6 +1275,7 @@ modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
 seleccionarPanadero:!public! !
+traerClienteNro:!public! !
 traerPrecioProducto:!public! !
 traerProductoNro:!public! !
 verDireccion!public! !
@@ -1242,7 +1309,7 @@ Pedido guid: (GUID fromString: '{d2e215d0-9920-4aa0-84c6-40a60b01ec3a}')!
 
 Pedido comment: ''!
 
-!Pedido categoriesForClass!cat_max1! !
+!Pedido categoriesForClass!No category! !
 
 !Pedido methodsFor!
 
@@ -1262,6 +1329,19 @@ agregarProductoPedido: nroProducto cantidad: cantidad
          listaProductosPedidos add: nuevoProductoPedido
       ].!
 
+agregarProductoPedidoProd: unProducto cantidad: cantidad
+   | PPExistente nuevoPP |
+   
+   PPExistente := listaProductosPedidos detect: [ :p | p verNroProducto = unProducto verNroProducto ] ifNone: [ nil ].
+   
+   PPExistente ifNotNil: [ PPExistente sumarCantidad:  cantidad.]
+      ifNil: [
+        nuevoPP := ProductoPedido crearProductoPedido: unProducto pedido: self cantidad: cantidad.
+	listaProductosPedidos add: nuevoPP.
+	total := 0.
+	listaProductosPedidos do: [ :pp | total := total + pp verCosto.].
+      ].!
+
 eliminarProductoPedido: nroProducto
    | productoAEliminar |
    productoAEliminar := listaProductosPedidos detect: [ :p | p verNroProducto = nroProducto ] ifNone: [ nil ].
@@ -1273,16 +1353,43 @@ eliminarProductoPedido: nroProducto
          Transcript show: 'Producto no encontrado en el pedido'; cr.
       ].!
 
-iniPedidoNro: unNroPedi fechaEnt: fEnt nroCli: unNroCliente listPP: listaDeProdPed
+imprimir
+
+|cad|
+cad:= 'Pedido Nro: ', nroPedido printString, ' Fecha: ', fecha printString, ' Fecha Entrega: ', fechaEntrega printString, 
+' Cliente Nro: ', nroCliente printString, ' Repartidor Nro: ', nroRepartidorAsignado printString,
+' total: $', self verTotal printString. 
+^cad.!
+
+imprimirTrpt
+
+|cad|
+cad:= '--------------------------------------------------------------'.
+Transcript show: cad;cr.
+Transcript nextPutAll: 'Pedido Nro: ', nroPedido printString;cr.
+Transcript nextPutAll: 'Fecha: ', fecha printString;cr.
+Transcript nextPutAll: 'Fecha Entrega: ', fechaEntrega printString;cr.
+Transcript nextPutAll: 'Cliente Nro: ', nroCliente printString;cr.
+Transcript nextPutAll: 'Repartidor Asignado Nro: ', nroRepartidorAsignado printString;cr.
+Transcript nextPutAll: 'Total: $', self verTotal printString; cr. 
+Transcript show: cad;cr.!
+
+iniPedidoNroCli: unNroCliente fechaEnt: fEnt  listPP: listaDeProdPed
 	"Retorna una instacia de Pedido inicializada"
 
-	nroPedido := unNroPedi.
+	nroPedido := Pedido nextId.
 	fecha := Date today.
 	fechaEntrega := fEnt.
 	estado := 'en Preparacion'.
 	nroCliente := unNroCliente.
 	nroRepartidorAsignado := -1.
-	listaProductosPedidos := listaDeProdPed!
+	listaProductosPedidos := listaDeProdPed.
+	total := 0.
+	listaProductosPedidos do: [ :pp | 
+		total := total + pp verCosto.
+		pp setPedido: self.
+	].
+!
 
 modEstado: unEstado
 	estado := unEstado.!
@@ -1309,6 +1416,9 @@ verListaProductosPedidos
    ].
    Transcript show: listaTexto; cr.!
 
+verNroCliente
+^nroCliente.!
+
 verNroPedido
 	^nroPedido.!
 
@@ -1317,21 +1427,23 @@ verRepartidor
 
 verTotal
    total := 0.
-   listaProductosPedidos do: [ :productoPedido |
-      total := total + productoPedido verCosto .
+   listaProductosPedidos do: [ :pp | total := total + pp verCosto .
    ].
-
    ^ total.! !
 
 !Pedido categoriesForMethods!
 agregarProductoPedido:cantidad:!public! !
+agregarProductoPedidoProd:cantidad:!public! !
 eliminarProductoPedido:!public! !
-iniPedidoNro:fechaEnt:nroCli:listPP:!public! !
+imprimir!public! !
+imprimirTrpt!public! !
+iniPedidoNroCli:fechaEnt:listPP:!public! !
 modEstado:!public! !
 modiRepartidorAsignado:!public! !
 verEstado!public! !
 verFechaEntrega!public! !
 verListaProductosPedidos!public! !
+verNroCliente!public! !
 verNroPedido!public! !
 verRepartidor!public! !
 verTotal!public! !
@@ -1339,34 +1451,43 @@ verTotal!public! !
 
 !Pedido class methodsFor!
 
-crearPedido:unNroClien listProdPed:lista
-|f|
+crearPedidoNroClien:unNroClien listProdPed: lista
+	"Crea un pedido con el numero de cliente y la lista de productos pedidos"
+
+	| fEnt |
+	fEnt := Date tomorrow.
+	^self new iniPedidoNroCli: unNroClien fechaEnt: fEnt listPP: lista.!
+
+crearPedidoNroCliente:unNroClien fechaEntrega:unaFecha listProdPed:lista
+"Crea un pedido con el numero de cliente y la lista de productos pedidos"
+
+^(self new) iniPedidoNroCli: unNroClien fechaEnt: unaFecha listPP: lista.
+
+!
+
+initialize
+
+nroPedidoStatic :=1.!
+
+nextId
+
+|id|
+id := nroPedidoStatic.
 nroPedidoStatic := nroPedidoStatic +1.
-
-f := Date tomorrow .
-Transcript show: 'fecha elegida de entrega: ', f printString; cr.
-
-^(self new) iniPedidoNro: nroPedidoStatic fechaEnt: f nroCli: unNroClien listPP: lista.!
-
-crearPedido:pani nroClien:unNroClien listProdPed:lista
-|f|
-nroPedidoStatic := nroPedidoStatic +1.
-
-f := Date tomorrow .
-Transcript show: 'fecha elegida de entrega: ', f printString; cr.
-
-^(self new) iniPedidoNro: nroPedidoStatic panificadora: pani fechaEnt: f nroCli: unNroClien listPP: lista.! !
+^id.! !
 
 !Pedido class categoriesForMethods!
-crearPedido:listProdPed:!public! !
-crearPedido:nroClien:listProdPed:!public! !
+crearPedidoNroClien:listProdPed:!public! !
+crearPedidoNroCliente:fechaEntrega:listProdPed:!public! !
+initialize!public! !
+nextId!public! !
 !
 
 Producto guid: (GUID fromString: '{7948a066-db33-4125-bacc-ab5d39ab576d}')!
 
 Producto comment: ''!
 
-!Producto categoriesForClass!cat_max1! !
+!Producto categoriesForClass!No category! !
 
 !Producto methodsFor!
 
@@ -1501,7 +1622,7 @@ crearProductoNombre:unNom tip:unTipo prec:unPrecio
 initialize
 	"Inicia la Variable de Clase idProd"
 
-	idProd := 1!
+	idProd := 0!
 
 nextId
 	"retorna un id unico para una nueva instancia de producto"
@@ -1523,27 +1644,63 @@ ProductoPedido guid: (GUID fromString: '{9ae45669-d20e-4e41-a18f-54a008d55e0e}')
 
 ProductoPedido comment: ''!
 
-!ProductoPedido categoriesForClass!cat_max1! !
+!ProductoPedido categoriesForClass!No category! !
 
 !ProductoPedido methodsFor!
+
+imprimir
+"Devuelve una cadena con los datos del producto pedido"
+|cadena|
+
+cadena := 'Producto Pedido ID: ', idProductoPedido printString,' Producto Nro: ', nroProducto printString,' Cant: ', cantidad printString,' total $', self verCosto printString .
+
+^cadena!
 
 iniProductoPedidoNroProd:unNroProduct cantidad:cant costoUnitario:cost
 "inicializa una instancia de ProductoPedido"
 
 idProductoPedido := ProductoPedido nextNroPP.
 nroProducto := unNroProduct.
-nroPedido := pedido verNroPedido.
+nroPedido := 0.
+pedido := nil.
 cantidad:= cant.
 costoUnitario:=cost.!
 
+iniProductoPedidoUnProd:unProducto cantidad:cant 
+"inicializa una instancia de ProductoPedido"
+
+idProductoPedido := ProductoPedido nextNroPP.
+nroProducto := unProducto verNroProducto .
+nroPedido := 0.
+pedido := nil.
+cantidad:= cant.
+costoUnitario:=unProducto verPrecio.!
+
+iniProductoPedidoUnProd:unProducto Pedido: unPedido cantidad:cant 
+"inicializa una instancia de ProductoPedido"
+
+idProductoPedido := ProductoPedido nextNroPP.
+nroProducto := unProducto verNroProducto .
+nroPedido := unPedido verNroPedido.
+pedido := unPedido.
+cantidad:= cant.
+costoUnitario:=unProducto verPrecio.!
+
 modCantidad:unNro
-	cantidad=cantidad+unNro.!
+	cantidad:=unNro.!
 
 modCostoUnitario:unNro
 	costoUnitario =unNro.!
 
 modNroPedido: unNroPedido
 	nroPedido := unNroPedido!
+
+setPedido: unPedido
+	pedido := unPedido.
+	nroPedido := unPedido verNroPedido!
+
+sumarCantidad:unaCant
+	cantidad:=cantidad + unaCant.!
 
 verCantidad
 	^cantidad.!
@@ -1556,17 +1713,30 @@ verCosto
 verCostoUnitario
 	^costoUnitario.!
 
+verIdPP
+	^idProductoPedido.!
+
+verNrodelPedido
+	^nroPedido.!
+
 verNroProducto
 	^nroProducto.! !
 
 !ProductoPedido categoriesForMethods!
+imprimir!public! !
 iniProductoPedidoNroProd:cantidad:costoUnitario:!public! !
+iniProductoPedidoUnProd:cantidad:!public! !
+iniProductoPedidoUnProd:Pedido:cantidad:!public! !
 modCantidad:!public! !
 modCostoUnitario:!public! !
 modNroPedido:!public! !
+setPedido:!public! !
+sumarCantidad:!public! !
 verCantidad!public! !
 verCosto!public! !
 verCostoUnitario!public! !
+verIdPP!public! !
+verNrodelPedido!public! !
 verNroProducto!public! !
 !
 
@@ -1574,15 +1744,19 @@ verNroProducto!public! !
 
 crearProductoPedido:unProducto cantidad:cant
 
-	^(self new) iniProductoPedidoNroProd: unProducto verNroProducto cantidad: cant costoUnitario: unProducto verCosto.!
+	^(self new) iniProductoPedidoUnProd: unProducto cantidad: cant.!
+
+crearProductoPedido:unProducto pedido:unPedido cantidad:cant
+
+	^(self new) iniProductoPedidoUnProd: unProducto Pedido: unPedido cantidad: cant.!
 
 crearProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo
 
 	^(self new) iniProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo.!
 
-initialize [
+initialize 
     nroProductoPedido := 0.
-]!
+!
 
 nextNroPP
 	"retorna un id unico para una nueva instancia de producto"
@@ -1593,6 +1767,7 @@ nextNroPP
 
 !ProductoPedido class categoriesForMethods!
 crearProductoPedido:cantidad:!public! !
+crearProductoPedido:pedido:cantidad:!public! !
 crearProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 initialize!public! !
 nextNroPP!public! !
@@ -1602,7 +1777,7 @@ Proveedor guid: (GUID fromString: '{4d142482-4e17-4a30-bff2-851d3c202d10}')!
 
 Proveedor comment: ''!
 
-!Proveedor categoriesForClass!cat_max1! !
+!Proveedor categoriesForClass!No category! !
 
 !Proveedor methodsFor!
 
@@ -1715,7 +1890,7 @@ Panadero guid: (GUID fromString: '{924bf294-35d3-4f4d-a558-48e649e78e2b}')!
 
 Panadero comment: ''!
 
-!Panadero categoriesForClass!cat_max1! !
+!Panadero categoriesForClass!No category! !
 
 !Panadero methodsFor!
 
@@ -1780,7 +1955,7 @@ Repartidor guid: (GUID fromString: '{e520e4a8-e744-4822-9cf7-93bf17a6e60e}')!
 
 Repartidor comment: ''!
 
-!Repartidor categoriesForClass!cat_max1! !
+!Repartidor categoriesForClass!No category! !
 
 !Repartidor methodsFor!
 
@@ -1860,6 +2035,10 @@ crearRepartidorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
 
 	^(self new) iniRepartidorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.!
 
+initialize
+
+UnNuevoNroRepartidor := 0.!
+
 nuevoNroRepartidor
 "Retorna un nuevo nuevo de repartidor, primero se asegura que este inicializada la variable de clase "
 (UnNuevoNroRepartidor isNil) ifTrue: [UnNuevoNroRepartidor := 0].
@@ -1868,6 +2047,7 @@ UnNuevoNroRepartidor := UnNuevoNroRepartidor + 1.
 
 !Repartidor class categoriesForMethods!
 crearRepartidorLegajo:nom:dire:tel:!public! !
+initialize!public! !
 nuevoNroRepartidor!public! !
 !
 
@@ -1875,7 +2055,7 @@ Vendedor guid: (GUID fromString: '{4355ccf0-7eea-498a-9e87-ccef4959daed}')!
 
 Vendedor comment: ''!
 
-!Vendedor categoriesForClass!cat_max1! !
+!Vendedor categoriesForClass!No category! !
 
 !Vendedor methodsFor!
 
@@ -1890,14 +2070,11 @@ imprimir
 iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Vendedor"
 
-	self
-		iniEmpleadoLegajo: unLegajo
-		nom: unNombre
-		dire: unaDire
-		tel: unTel.
-	nroVendedor := Vendedor nuevoNumeroVendedor.
+	self iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
+	"nroVendedor := Vendedor nuevoNumeroVendedor."
+	nroVendedor := Vendedor nextNroVendedor.
 	pedidosVendidos := OrderedCollection new.
-	sueldo := 600000!
+	sueldo := 600000.!
 
 printOn: aStream
 	aStream
@@ -1931,6 +2108,19 @@ crearVendedorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
 
 	^(self new) iniVendedorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.!
 
+initialize
+	idVendedor := 0
+	"UnNuevoNroVendedor := 0."!
+
+nextNroVendedor
+	"Retorna un id unico para una instancia nueva de Vendedor"
+	| id |
+
+	(idVendedor isNil) ifTrue: [idVendedor := 0].
+	id := idVendedor.
+	idVendedor := idVendedor + 1.
+	^id.!
+
 nuevoNumeroVendedor
 "Retorna un nuevo numero de vendedor, primero se asegura que ya fue inicializada la variable de clase"
 (UnNuevoNroVendedor isNil) ifTrue: [UnNuevoNroVendedor := 0].
@@ -1939,6 +2129,8 @@ UnNuevoNroVendedor := UnNuevoNroVendedor + 1.
 
 !Vendedor class categoriesForMethods!
 crearVendedorLegajo:nom:dire:tel:!public! !
+initialize!public! !
+nextNroVendedor!public! !
 nuevoNumeroVendedor!public! !
 !
 

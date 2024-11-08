@@ -10,7 +10,7 @@ Panificadora guid: (GUID fromString: '{17e874c9-7a3b-4335-a009-8ba9896a9a22}')!
 
 Panificadora comment: ''!
 
-!Panificadora categoriesForClass!cat_max1! !
+!Panificadora categoriesForClass!No category! !
 
 !Panificadora methodsFor!
 
@@ -72,32 +72,29 @@ pedido modiRepartidorAsignado: repartidor verNroRepartidor.
 !
 
 comprarProductosNroCliente: nroCliente listaProd: unaListaProdPedido
-" un cliente compra un lista de productoPedido, este metodo hace todo el trabajo llamando a todos los metodos necesarios para que se concrete la compra"
-|pe pro pana|
+	" un cliente compra un lista de productoPedido, este metodo hace todo el trabajo llamando a todos los metodos necesarios para que se concrete la compra"
 
-"crear el pedido y agregarlo a la lista de pedidos de la panificadora"
-pe:= Pedido crearPedido: nroCliente listProdPed: unaListaProdPedido.
-self agregarPedido: pe.
+	| pe pro pana |
+	"crear el pedido y agregarlo a la lista de pedidos de la panificadora"
+	pe := Pedido crearPedidoNroClien: nroCliente listProdPed: unaListaProdPedido.
+	self agregarPedido: pe.
 
-"producir cada productoPedido"
-1 to: ( (pe verListaPedidos) size) do: [: prodPe |   
-							pro := (self verListaProductos) detect: [: p| p verNroProducto = prodPe verNroProducto]. "busca el producto del productoPedido"
-							pana := self seleccionarPanadero: pro. "selecciona un panadero segun el tipo de producto, si es un pastel se necesita un pastelero"
-							pana producirProducto: pro cant: prodPe verCantidad. "Se pide al panadero producir el productoPedido"
-							].
+	"producir cada productoPedido"
+	1 to: pe verListaPedidos size
+		do: 
+			[:prodPe |
+			pro := self verListaProductos detect: [:p | p verNroProducto = prodPe verNroProducto].	"busca el producto del productoPedido"
+			pana := self seleccionarPanadero: pro.	"selecciona un panadero segun el tipo de producto, si es un pastel se necesita un pastelero"
+			pana producirProducto: pro cant: prodPe verCantidad	"Se pide al panadero producir el productoPedido"].
 
-"modificar el estado del pedido, ahora ya esta lista para repartir"
-pe modEstado: 'listo para repartir'.
+	"modificar el estado del pedido, ahora ya esta lista para repartir"
+	pe modEstado: 'listo para repartir'.
 
-" repartir producto"
-self repartirPedido: pe.
+	" repartir producto"
+	self repartirPedido: pe.
 
-"modificar el estado del pedido"
-pe modEstado:'entregado'.
-
-
-
-!
+	"modificar el estado del pedido"
+	pe modEstado: 'entregado'!
 
 eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
@@ -303,6 +300,11 @@ pana := listaPanaderos detect: [:p| p verPuesto = dic at: (unProducto verTipo)].
 
 ^pana.!
 
+traerClienteNro: nroCliente
+	"Retorna el producto de nro de producto pasado por parametro, nil en caso contrario"
+
+	^listaClientes detect: [:pro | pro verNroCliente = nroCliente ] ifNone: [^nil].!
+
 traerPrecioProducto: nroProducto
 	"Retorna el precio de un producto, cero si no  existe producto en la lista de Productos"
 
@@ -396,6 +398,7 @@ modNombre:!public! !
 modTelefono:!public! !
 repartirPedido:!public! !
 seleccionarPanadero:!public! !
+traerClienteNro:!public! !
 traerPrecioProducto:!public! !
 traerProductoNro:!public! !
 verDireccion!public! !

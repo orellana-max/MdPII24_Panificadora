@@ -10,7 +10,7 @@ Proveedor guid: (GUID fromString: '{4d142482-4e17-4a30-bff2-851d3c202d10}')!
 
 Proveedor comment: ''!
 
-!Proveedor categoriesForClass!cat_max1! !
+!Proveedor categoriesForClass!No category! !
 
 !Proveedor methodsFor!
 

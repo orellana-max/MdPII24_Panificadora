@@ -10,7 +10,7 @@ Repartidor guid: (GUID fromString: '{e520e4a8-e744-4822-9cf7-93bf17a6e60e}')!
 
 Repartidor comment: ''!
 
-!Repartidor categoriesForClass!cat_max1! !
+!Repartidor categoriesForClass!No category! !
 
 !Repartidor methodsFor!
 
@@ -90,6 +90,10 @@ crearRepartidorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
 
 	^(self new) iniRepartidorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.!
 
+initialize
+
+UnNuevoNroRepartidor := 0.!
+
 nuevoNroRepartidor
 "Retorna un nuevo nuevo de repartidor, primero se asegura que este inicializada la variable de clase "
 (UnNuevoNroRepartidor isNil) ifTrue: [UnNuevoNroRepartidor := 0].
@@ -98,6 +102,7 @@ UnNuevoNroRepartidor := UnNuevoNroRepartidor + 1.
 
 !Repartidor class categoriesForMethods!
 crearRepartidorLegajo:nom:dire:tel:!public! !
+initialize!public! !
 nuevoNroRepartidor!public! !
 !
 

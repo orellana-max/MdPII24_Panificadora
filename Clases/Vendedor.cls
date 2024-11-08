@@ -4,13 +4,13 @@ Empleado subclass: #Vendedor
 	instanceVariableNames: 'nroVendedor pedidosVendidos'
 	classVariableNames: 'UnNuevoNroVendedor'
 	poolDictionaries: ''
-	classInstanceVariableNames: ''!
+	classInstanceVariableNames: 'idVendedor'!
 
 Vendedor guid: (GUID fromString: '{4355ccf0-7eea-498a-9e87-ccef4959daed}')!
 
 Vendedor comment: ''!
 
-!Vendedor categoriesForClass!cat_max1! !
+!Vendedor categoriesForClass!No category! !
 
 !Vendedor methodsFor!
 
@@ -25,14 +25,11 @@ imprimir
 iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Vendedor"
 
-	self
-		iniEmpleadoLegajo: unLegajo
-		nom: unNombre
-		dire: unaDire
-		tel: unTel.
-	nroVendedor := Vendedor nuevoNumeroVendedor.
+	self iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
+	"nroVendedor := Vendedor nuevoNumeroVendedor."
+	nroVendedor := Vendedor nextNroVendedor.
 	pedidosVendidos := OrderedCollection new.
-	sueldo := 600000!
+	sueldo := 600000.!
 
 printOn: aStream
 	aStream
@@ -66,6 +63,19 @@ crearVendedorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
 
 	^(self new) iniVendedorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.!
 
+initialize
+	idVendedor := 0
+	"UnNuevoNroVendedor := 0."!
+
+nextNroVendedor
+	"Retorna un id unico para una instancia nueva de Vendedor"
+	| id |
+
+	(idVendedor isNil) ifTrue: [idVendedor := 0].
+	id := idVendedor.
+	idVendedor := idVendedor + 1.
+	^id.!
+
 nuevoNumeroVendedor
 "Retorna un nuevo numero de vendedor, primero se asegura que ya fue inicializada la variable de clase"
 (UnNuevoNroVendedor isNil) ifTrue: [UnNuevoNroVendedor := 0].
@@ -74,6 +84,8 @@ UnNuevoNroVendedor := UnNuevoNroVendedor + 1.
 
 !Vendedor class categoriesForMethods!
 crearVendedorLegajo:nom:dire:tel:!public! !
+initialize!public! !
+nextNroVendedor!public! !
 nuevoNumeroVendedor!public! !
 !
 
