@@ -10,7 +10,7 @@ Cliente guid: (GUID fromString: '{b9dc76af-91b0-47bd-9ddd-07ac331b74fc}')!
 
 Cliente comment: ''!
 
-!Cliente categoriesForClass!cat_max1! !
+!Cliente categoriesForClass!No category! !
 
 !Cliente methodsFor!
 
@@ -28,7 +28,8 @@ iniClienteNom: unNombre dire: unaDire tel: unTel
 	nroCliente := Cliente nextNroCliente.
 	nombre := unNombre.
 	direccion := unaDire.
-	telefono := unTel!
+	telefono := unTel.
+        !
 
 modDireccion:unaDireccion
 "Modifica la direccion del cliente"
@@ -90,16 +91,17 @@ crearClienteNom:unNom dire:unaDire tel:unTel
 ^(self new) iniClienteNom:unNom dire: unaDire tel: unTel.!
 
 initialize
-idCliente := 1.
+idCliente := 0.
 !
 
 nextNroCliente
 	"Retorna un id unico para una instancia nueva de Cliente"
-
 	| id |
+
+	(idCliente isNil) ifTrue: [idCliente := 0].
 	id := idCliente.
 	idCliente := idCliente + 1.
-	^id! !
+	^id.! !
 
 !Cliente class categoriesForMethods!
 crearClienteNom:dire:tel:!public! !

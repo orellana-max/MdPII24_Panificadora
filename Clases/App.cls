@@ -113,6 +113,23 @@ cargarPanaderosPanificadora: pan
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 11 nom: 'Ivan' dire: 'calle 101' tel: '123-564' puesto: 'Pastelero').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 12 nom: 'Laureano' dire: 'calle 102' tel: '123-564' puesto: 'Facturero').!
 
+cargarPedidosAlaPanificadora: pan
+	"Creamos y cargamos varios Pedidos a la panificadora"
+
+	| listClient listPP list c n |
+	listClient := pan verListaClientes.
+	listPP := App crearListaProductosPedidos: pan.
+	n := 1.
+	1 to: 4 do:  [:i |
+			listClient do: [:c | 
+				list := OrderedCollection new.
+				1 to: 4 do: [:k |
+					list add: (listPP at: n).
+					n := n + k].
+			n := n -5.
+			pan agregarPedido: (Pedido crearPedidoNroClien: c verNroCliente listProdPed: list)]
+]!
+
 cargarProducto:pan
 
 |pro dic nom tip precio precio2 op sigue cant idx|
@@ -287,24 +304,56 @@ cargarVendedoresPanificadora:pan
 	pan agregarVendedor: (Vendedor crearVendedorLegajo: 306 nom: 'Silvio' dire: 'calle 306' tel: '300-306').
 !
 
+crearListaProductosPedidos: pan
+"devuelve una lista de productos pedidos"
+|list pro listProductos|
+
+ProductoPedido initialize.
+list := OrderedCollection new.
+listProductos := pan verListaProductos.
+(listProductos isEmpty) ifFalse:[
+
+1 to: (listProductos size) do: [:i | 
+	pro :=  listProductos at: i.
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 1).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 2).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 3).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 4).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 5).
+	list add: (ProductoPedido crearProductoPedido: pro cantidad: 6).
+	].
+].
+
+^list.
+!
+
 imprimirPedidosCliente:pan
 "imprime los pedidos realizados por un cliente"
-|numCliente listaPedidos|
-
-numCliente := Prompter prompt: 'Ingresar numero de cliente'.
-numCliente := numCliente asNumber.
-
-listaPedidos := (pan verListaPedidos) select:  [ : p | p verNroCliente =  numCliente ].
-
-"impresion pedidos del cliente"
-(listaPedidos isNil) ifTrue: [Transcript show: 'No hay pedidos realizados por ese cliente o el numero ingresado no pertenece a un cliente'; cr]
-				ifFalse: [Transcript show: 'Lista de pedidos del cliente: ', numCliente printString; cr.
-						listaPedidos do:[: p | Transcript show:
-										'Nro pedido: ', (p verNroPedido) printString ,
-										' | Fecha: ', (p verFechaEntrega) printString,	
-										' | Costo: ', (p verTotal) printString; cr		
+|num listaPedidos c|
+num:=''.
+[num isNumber] whileFalse: [
+	num := Prompter prompt: 'Ingrese número de Cliente a buscar '.
+	"comprobueba que se ingresa un numero"
+	(num ='') ifTrue: [MessageBox warning: 'no ingreso un numero']
+			ifFalse:[ ((num detect: [ :di| di isDigit not] ifNone:['vacio']) = 'vacio' ) ifTrue: [num := num asNumber.]
+												ifFalse:[MessageBox warning: 'no ingreso un numero'].
+			]. 
+].
+c:= pan traerClienteNro: num.
+(c isNil) ifTrue: [ MessageBox warning: 'El número ingresado no pertenece a un cliente']
+		ifFalse:[
+			listaPedidos := (pan verListaPedidos) select:  [ : p | p verNroCliente =  num ].
+			"impresion pedidos del cliente"
+			(listaPedidos isEmpty) ifTrue: [MessageBox warning: 'No hay pedidos realizados por ese Cliente'.]
+							ifFalse: [Transcript cr; show: 'Lista de pedidos del cliente Nro: ', num printString, ' Nombre: ', c verNombre ; cr.
+									listaPedidos do:[: p | Transcript show:
+													'Nro pedido: ', (p verNroPedido) printString ,
+													' | Fecha Entrega: ', (p verFechaEntrega) printString,	
+													' | Costo: ', (p verTotal) printString,
+													' | Estado ', (p verEstado) printString; cr
+												].
 									].
-						].!
+]!
 
 imprimirPedidosMayorAMenor: pan
 "imprime los pedidos ordenados de mayor a menor costo"
@@ -346,12 +395,23 @@ listaPedidos := (pan verListaPedidos) reject:  [ : p | p verTotal < costoPedido]
 !
 
 load:pan
-"Carga todos las instancias creadas para la panificadora"
+"inicializa las clases y Carga todos las instancias creadas para la panificadora"
+Cliente initialize.
+Empleado initialize.
+Panadero initialize.
+Pedido initialize.
+Producto initialize.
+ProductoPedido initialize.
+Proveedor initialize.
+Repartidor initialize.
+Vendedor initialize.
+
 App cargarClientesPanificadora:  pan.
 App cargarPanaderosPanificadora: pan.
 App cargarProductosPanificadora: pan.
 App cargarRepartidoresPanificadora: pan.
 App cargarVendedoresPanificadora: pan.
+App cargarPedidosAlaPanificadora: pan.
 
 !
 
@@ -500,12 +560,14 @@ cargarCliente:!public! !
 cargarClientesPanificadora:!public! !
 cargarPanadero:!public! !
 cargarPanaderosPanificadora:!public! !
+cargarPedidosAlaPanificadora:!public! !
 cargarProducto:!public! !
 cargarProductosPanificadora:!public! !
 cargarRepartidor:!public! !
 cargarRepartidoresPanificadora:!public! !
 cargarVendedor:!public! !
 cargarVendedoresPanificadora:!public! !
+crearListaProductosPedidos:!public! !
 imprimirPedidosCliente:!public! !
 imprimirPedidosMayorAMenor:!public! !
 imprimirPedidosMayorIgualA:!public! !

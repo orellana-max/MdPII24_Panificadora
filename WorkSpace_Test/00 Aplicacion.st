@@ -275,7 +275,9 @@ salir := false.
 	op:=''. ].
 "3 - Buscar Datos"
 	(op = '3') ifTrue:[ Transcript show: '3 - Buscar Datos';cr. 
-
+	
+	App imprimirPedidosCliente: pan.
+	MessageBox warning: 'seguir'.
 
 	"Termina menu Buscar Datos"	
 	op:=''. ].

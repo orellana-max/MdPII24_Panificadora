@@ -10,7 +10,7 @@ Producto guid: (GUID fromString: '{7948a066-db33-4125-bacc-ab5d39ab576d}')!
 
 Producto comment: ''!
 
-!Producto categoriesForClass!cat_max1! !
+!Producto categoriesForClass!No category! !
 
 !Producto methodsFor!
 
@@ -145,7 +145,7 @@ crearProductoNombre:unNom tip:unTipo prec:unPrecio
 initialize
 	"Inicia la Variable de Clase idProd"
 
-	idProd := 1!
+	idProd := 0!
 
 nextId
 	"retorna un id unico para una nueva instancia de producto"

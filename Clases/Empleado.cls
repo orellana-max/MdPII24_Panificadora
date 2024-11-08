@@ -10,7 +10,7 @@ Empleado guid: (GUID fromString: '{449b804d-71ea-44de-b429-1a4cb51801e4}')!
 
 Empleado comment: ''!
 
-!Empleado categoriesForClass!cat_max1! !
+!Empleado categoriesForClass!No category! !
 
 !Empleado methodsFor!
 
