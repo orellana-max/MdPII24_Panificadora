@@ -282,11 +282,83 @@ salir := false.
 	"Termina menu Buscar Datos"	
 	op:=''. ].
 "4 - Funciones"
-	(op = '4') ifTrue:[ Transcript show: '4 - Funciones';cr. 
+	(op = '4') ifTrue: [
+    Transcript show: '4 - Funciones'; cr.
+    op := ''.
+    volver := false.
+    [volver not] whileTrue: [
+        Transcript clear; show: '    MENU PRINCIPAL: '; cr; show: 'Elige opción: '; cr.
+        Transcript show: 'Opción 1: Listar pedidos reducida (collect)'; cr.
+        Transcript show: 'Opción 2: Pedidos con total > 20000'; cr.
+        Transcript show: 'Opción 3: Función 3'; cr.
+        Transcript show: 'Opción 0: Salir'; cr; cr.
+
+        op := Prompter prompt: 'Menú Principal. Ingrese opción: '.
+
+        (op = '1') ifTrue: [
+            Transcript show: 'Listando pedidos...'; cr.
+            lista := pan verListaPedidos.
+
+            lista isEmpty ifTrue: [
+                Transcript show: 'No hay pedidos para mostrar.'; cr.
+            ] ifFalse: [
+                "Transformar la lista de pedidos usando collect"
+                lista := lista collect: [:pedido |
+                    'Pedido Nro: ', pedido verNroPedido printString,
+                    ', Cliente Nro: ', pedido verNroCliente printString,
+                    ', Total: ', pedido verTotal printString
+                ].
+                
+                "Mostrar los resultados"
+                lista do: [:pedidoTexto |
+                    Transcript show: pedidoTexto; cr.
+                ].
+                Transcript cr.
+            ].
+
+            "Esperar confirmación del usuario antes de continuar"
+            MessageBox confirm: 'Presione OK para volver al menú principal'.
+            op := ''
+        ].
+
+        (op = '2') ifTrue: [
+		    Transcript show: 'Listando pedidos con total > 200000...'; cr.
+		    lista := pan verListaPedidos.
+
+		    "Seleccionar los pedidos cuyo total es mayor a 200000"
+		    pedidosConTotalAlto := lista select: [:pedido |
+			pedido verTotal > 200000
+		    ].
+
+		    pedidosConTotalAlto isEmpty ifTrue: [
+			Transcript show: 'No hay pedidos con total mayor a 200000.'; cr.
+		    ] ifFalse: [
+			"Mostrar los pedidos que cumplen con la condición"
+			pedidosConTotalAlto do: [:pedido |
+			    Transcript show: 'Pedido Nro: ', pedido verNroPedido printString,
+					', Cliente Nro: ', pedido verNroCliente printString,
+					', Total: ', pedido verTotal printString; cr.
+			].
+		    ].
+
+		    "Esperar confirmación del usuario antes de continuar"
+		    MessageBox confirm: 'Presione OK para volver al menú principal'.
+		    op := ''
+		].
+
+        (op = '3') ifTrue: [
+            Transcript show: 'Ejecutando Función 3...'; cr.
+            "Lógica para Función 3"
+        ].
+
+        (op = '0') ifTrue: [
+            volver := MessageBox confirm: '¿Desea salir del menú principal?'
+        ].
+    ].
+].
 
 
-	"Termina menu Funciones"	
-	op:=''. ].
+
 	(op ~= '') ifTrue: [ MessageBox warning: 'No seleccionó una opcion correcta'. ].
 	]."no sale"
 ]."salir"
