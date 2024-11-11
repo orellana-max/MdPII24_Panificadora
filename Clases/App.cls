@@ -363,7 +363,7 @@ pedidosOrdenCosto := (pan verListaPedidos) asSortedCollection: [ :x :y | x verTo
 
 "imprimir los datos ordenados"
 Transcript show: 'Lista de pedidos ordenados por costo de mayor a menor'; cr.
-(pedidosOrdenCosto isNil) ifTrue: [Transcript  show: 'No se han realizado pedidos aun' ] 
+(pedidosOrdenCosto isEmpty) ifTrue: [Transcript  show: 'No se han realizado pedidos aun' ] 
 					   ifFalse: [
 								pedidosOrdenCosto do:[
 													: p | Transcript show:
@@ -377,13 +377,13 @@ imprimirPedidosMayorIgualA: pan
 "imprime los pedidos mayores o iguales a un determinado costo ingresado por teclado"
 |costoPedido listaPedidos |
 
-costoPedido := Prompter prompt: 'Ingresar un valor para obtener una lista de pedidos cuyo costo sea mayor o igual al valor ingresado'.
+costoPedido := Prompter prompt: 'Ingresar un valor para mostrar los pedidos cuyo costo sea mayor o igual a ese valor'.
 costoPedido := costoPedido asNumber.
 listaPedidos := (pan verListaPedidos) reject:  [ : p | p verTotal < costoPedido]. "no selecciona aquellos pedidos con costo menor al costo ingresado por teclado"
 
 "impresion pedidos mayores a un costo"
-(listaPedidos isNil) ifTrue: [Transcript show: 'No hay pedidos mayores o iguales a ese costo'; cr]
-				ifFalse:[Transcript show: 'Lista de pedidos de costo mayores a: ', costoPedido printString; cr.
+(listaPedidos isEmpty) ifTrue: [Transcript show: 'No hay pedidos mayores o iguales a ese costo'; cr]
+				ifFalse:[Transcript show: 'Lista de pedidos de costo mayor a: ', costoPedido printString; cr.
 						listaPedidos do:[
 									: p | Transcript show:
 										'Nro cliente: ', (p verNroCliente) printString,
@@ -459,6 +459,40 @@ op :=''.
 	Transcript cr.
 ]
 !
+
+mainFunciones: pan
+|op|
+
+op :=''.
+Transcript clear.
+[op ~= '0']  whileTrue: [
+	Transcript show: 'Funciones: ';cr.
+	Transcript show: 'Elige opción: ';cr.
+	Transcript show: 'Opción 1: Imprimir pedidos de un cliente';cr.
+	Transcript show: 'Opción 2: Imprimir pedidos mayores o iguales a un costo';cr.
+	Transcript show: 'Opción 3: Imprimir todos los pedidos ordenados por costo de mayor a menor';cr.
+	Transcript show: 'Opción 0: Volver al menú principal';cr.
+	op:= Prompter prompt: 'Funciones. Ingrese opción: '.
+	Transcript show: 'ingreso: ', op printString; cr.
+	(op = nil)ifTrue: [ op :='-1'].
+	op:= op asNumber.
+
+	(op>=0 and: [op<=3]) ifTrue:[
+			(op = 1) ifTrue:[ Transcript show: 'seleccionó 1 Imprimir pedidos de un cliente.';cr. 
+					App imprimirPedidosCliente: pan.
+					op:=''. ].		
+			(op = 2) ifTrue:[ Transcript show: 'seleccionó 2 .Imprimir pedidos iguales o mayores a un costo ';cr. 
+					App imprimirPedidosMayorIgualA: pan.
+					op:=''. ].		
+			(op = 3) ifTrue:[ Transcript show: 'seleccionó 3 Imprimir todos los pedidos ordenados por costo de mayor a menor';cr. 
+					App imprimirPedidosMayorAMenor: pan.
+					op:=''. ].		
+			(op = 0) ifTrue:[ Transcript show: 'seleccionó 0. Volviendo al menú principal';cr.
+					op:='0'.] ]
+		ifFalse: [ Transcript show: 'no seleccionó una opcion correcta';cr.
+			op:=''. ].
+	Transcript cr.
+]!
 
 mainListarDatos: pan
 	| op lista volver impMenu |
@@ -540,6 +574,7 @@ op :=''.
 			(op = 3) ifTrue:[ Transcript show: 'seleccionó 3 Buscar Datos';cr. 
 					op:=''. ].		
 			(op = 4) ifTrue:[ Transcript show: 'seleccionó 4 Funciones';cr. 
+					App mainFunciones: pan.
 					op:=''. ].		
 			(op = 0) ifTrue:[ Transcript show: 'seleccionó 0. saliendo';cr.
 					op:='0'.] ]
@@ -573,6 +608,7 @@ imprimirPedidosMayorAMenor:!public! !
 imprimirPedidosMayorIgualA:!public! !
 load:!public! !
 mainCargaManual:!public! !
+mainFunciones:!public! !
 mainListarDatos:!public! !
 mainPrincipal:!public! !
 run:!public! !
