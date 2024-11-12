@@ -1,4 +1,4 @@
-﻿| salir op pan volver sigue c p r v nom tel dir dic cant leg pue pro tip precio precio2 idx impMenu|
+﻿| salir op pan volver sigue c p r v nom tel dir dic cant leg pue pro tip precio precio2 idx impMenu |
 
 pan:= Panificadora crearPanificadoraNom: 'pa' dire: 'Av.7 123'  tel: '4257-8897'.
 "Carga de datos predefinidos a la Panificadora"
@@ -321,7 +321,7 @@ salir := false.
             op := ''
         ].
 
-        (op = '2') ifTrue: [
+       (op = '2') ifTrue: [
 		    Transcript show: 'Listando pedidos con total > 200000...'; cr.
 		    lista := pan verListaPedidos.
 
