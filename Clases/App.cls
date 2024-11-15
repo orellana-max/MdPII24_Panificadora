@@ -332,7 +332,7 @@ imprimirPedidosCliente:pan
 |num listaPedidos c|
 num:=''.
 [num isNumber] whileFalse: [
-	num := Prompter prompt: 'Ingrese número de Cliente a buscar '.
+	num := Prompter prompt: 'Ingrese número de Cliente a buscar los pedidos '.
 	"comprobueba que se ingresa un numero"
 	(num ='') ifTrue: [MessageBox warning: 'no ingreso un numero']
 			ifFalse:[ ((num detect: [ :di| di isDigit not] ifNone:['vacio']) = 'vacio' ) ifTrue: [num := num asNumber.]
@@ -364,26 +364,33 @@ pedidosOrdenCosto := (pan verListaPedidos) asSortedCollection: [ :x :y | x verTo
 "imprimir los datos ordenados"
 Transcript show: 'Lista de pedidos ordenados por costo de mayor a menor'; cr.
 (pedidosOrdenCosto isEmpty) ifTrue: [Transcript  show: 'No se han realizado pedidos aun' ] 
-					   ifFalse: [
-								pedidosOrdenCosto do:[
-													: p | Transcript show:
-														'Nro cliente: ', (p verNroCliente) printString,
-														' | Fecha: ', (p verFechaEntrega) printString,	
-														' | Costo: ', (p verTotal) printString; cr		
+					   ifFalse: [ pedidosOrdenCosto do:[ : p |
+							Transcript show:
+							'Nro Pedido ', (p verNroPedido) printString,
+							' | Nro cliente: ', (p verNroCliente) printString,
+							' | Fecha Entrega: ', (p verFechaEntrega) printString,	
+							' | Costo: ', (p verTotal) printString; cr		
 													].
 							].!
 
 imprimirPedidosMayorIgualA: pan
 "imprime los pedidos mayores o iguales a un determinado costo ingresado por teclado"
-|costoPedido listaPedidos |
+|costo listaPedidos |
 
-costoPedido := Prompter prompt: 'Ingresar un valor para mostrar los pedidos cuyo costo sea mayor o igual a ese valor'.
-costoPedido := costoPedido asNumber.
-listaPedidos := (pan verListaPedidos) reject:  [ : p | p verTotal < costoPedido]. "no selecciona aquellos pedidos con costo menor al costo ingresado por teclado"
+costo := ''.
+"comprobamos que se ingreso un numero"
+[costo isNumber] whileFalse: [
+costo := Prompter prompt: 'Ingresar un valor para mostrar los pedidos cuyo costo sea mayor o igual a ese valor'.
+(costo ='') ifTrue: [MessageBox warning: 'no ingreso un número']
+		ifFalse:[ ((costo detect: [ :le | le isDigit not] ifNone:['vacio']) = 'vacio' ) ifTrue: [costo := costo asNumber.]
+							ifFalse:[MessageBox warning: 'no ingreso un numero'].
+		]. 
+].
+listaPedidos := (pan verListaPedidos) reject:  [ : p | p verTotal < costo]. "no selecciona aquellos pedidos con costo menor al costo ingresado por teclado"
 
 "impresion pedidos mayores a un costo"
 (listaPedidos isEmpty) ifTrue: [Transcript show: 'No hay pedidos mayores o iguales a ese costo'; cr]
-				ifFalse:[Transcript show: 'Lista de pedidos de costo mayor a: ', costoPedido printString; cr.
+				ifFalse:[Transcript show: 'Lista de pedidos de costo mayor a: ', costo printString; cr.
 						listaPedidos do:[
 									: p | Transcript show:
 										'Nro cliente: ', (p verNroCliente) printString,

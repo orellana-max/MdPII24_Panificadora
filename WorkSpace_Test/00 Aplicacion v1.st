@@ -1,4 +1,4 @@
-﻿| salir op pan volver sigue c p r v nom tel dir dic cant leg pue pro tip precio precio2 idx impMenu costo |
+﻿| salir op pan volver sigue c p r v nom tel dir dic cant leg pue pro tip precio precio2 idx impMenu |
 
 pan:= Panificadora crearPanificadoraNom: 'pa' dire: 'Av.7 123'  tel: '4257-8897'.
 "Carga de datos predefinidos a la Panificadora"
@@ -222,7 +222,7 @@ salir := false.
 "Termina menu Carga de Datos"				
 	op:=''. ].
 "2 - Listar Datos"
-	(op = '2') ifTrue:[
+	(op = '2') ifTrue:[ Transcript show: '2 - Listar datos';cr. 
 	"Menu Listar de datos"
 	op := ''.
 	volver := false.
@@ -236,7 +236,6 @@ salir := false.
 				Transcript show: 'Opción 3: Listar Productos';cr.
 				Transcript show: 'Opción 4: Listar Repartidores ';cr.
 				Transcript show: 'Opción 5: Listar Vendedores ';cr.
-				Transcript show: 'Opción 6: Listar Pedidos ';cr.
 				Transcript show: 'Opción 0: Salir';cr;cr.
 			].
 			op := Prompter prompt: 'MENU LISTAR DATOS. Ingrese opción: '.
@@ -263,10 +262,6 @@ salir := false.
 						ifTrue: [Transcript show: 'seleccionó Listar Vendedores.';cr.
 							lista := pan verListaClientes.
 							op := ''].
-					op = '6'
-						ifTrue: [Transcript show: 'seleccionó Listar Pedidos.';cr.
-							lista := pan verListaPedidos.
-							op := ''].
 					op ~= ''
 						ifTrue: [MessageBox warning: 'No seleccionó una opcion correcta'.
 							impMenu :=false.
@@ -283,99 +278,86 @@ salir := false.
 	
 	App imprimirPedidosCliente: pan.
 	MessageBox warning: 'seguir'.
-	App imprimirPedidosMayorAMenor: pan.
-	MessageBox warning: 'seguir'.
-	App imprimirPedidosMayorIgualA: pan.
-	MessageBox warning: 'seguir'.
 
 	"Termina menu Buscar Datos"	
 	op:=''. ].
 "4 - Funciones"
 	(op = '4') ifTrue: [
-	Transcript clear.
-	op := ''.
-	volver := false.
-	impMenu:= true. "si se imprime o no el menu de opciones de listar"
-	[volver not] whileTrue: [
-		impMenu ifTrue:[
-		Transcript show: '    MENU FUNCIONES '; cr; show: 'Elige opción: '; cr.
-		Transcript show: 'Opción 1: Listar pedidos (reducido)'; cr.
-		Transcript show: 'Opción 2: Imprimir pedidos de un cliente';cr.
-		Transcript show: 'Opción 3: Imprimir pedidos mayores o iguales a un costo';cr.
-		Transcript show: 'Opción 4: Imprimir todos los pedidos ordenados por costo de mayor a menor';cr.
-		Transcript show: 'Opción 5: Listar Pedidos con total > 20000'; cr.
-		Transcript show: 'Opción 0: Salir'; cr; cr. ].
-	
-		op := Prompter prompt: 'Menú Funciones. Ingrese opción: '.
-		op = '' ifTrue:[op:='incorrecta'].
+    Transcript show: '4 - Funciones'; cr.
+    op := ''.
+    volver := false.
+    [volver not] whileTrue: [
+        Transcript clear; show: '    MENU PRINCIPAL: '; cr; show: 'Elige opción: '; cr.
+        Transcript show: 'Opción 1: Listar pedidos reducida (collect)'; cr.
+        Transcript show: 'Opción 2: Pedidos con total > 20000'; cr.
+        Transcript show: 'Opción 3: Función 3'; cr.
+        Transcript show: 'Opción 0: Salir'; cr; cr.
 
-		(op = '1') ifTrue: [
-				Transcript show: 'Listando pedidos...'; cr.
-				lista := pan verListaPedidos.
-				
-				lista isEmpty ifTrue: [
-						Transcript show: 'No hay pedidos para mostrar.'; cr.
-						] ifFalse: [
-						"Transformar la lista de pedidos usando collect"
-						lista := lista collect: [:pedido |
-						'Pedido Nro: ', pedido verNroPedido printString,
-						', Cliente Nro: ', pedido verNroCliente printString,
-						', Total: ', pedido verTotal printString
-						].
+        op := Prompter prompt: 'Menú Principal. Ingrese opción: '.
+
+        (op = '1') ifTrue: [
+            Transcript show: 'Listando pedidos...'; cr.
+            lista := pan verListaPedidos.
+
+            lista isEmpty ifTrue: [
+                Transcript show: 'No hay pedidos para mostrar.'; cr.
+            ] ifFalse: [
+                "Transformar la lista de pedidos usando collect"
+                lista := lista collect: [:pedido |
+                    'Pedido Nro: ', pedido verNroPedido printString,
+                    ', Cliente Nro: ', pedido verNroCliente printString,
+                    ', Total: ', pedido verTotal printString
+                ].
                 
-						"Mostrar los resultados"
-						lista do: [:pedidoTexto | Transcript show: pedidoTexto; cr.].
-						Transcript cr.
-						].
-				
-				"Esperar confirmación del usuario antes de continuar"
-				MessageBox confirm: 'Presione aceptar para volver al Menu Funciones'.
-				op := ''
-				]."fin op1"
+                "Mostrar los resultados"
+                lista do: [:pedidoTexto |
+                    Transcript show: pedidoTexto; cr.
+                ].
+                Transcript cr.
+            ].
 
-		(op = '2') ifTrue:[ Transcript show: 'seleccionó 1 Imprimir pedidos de un cliente.';cr. 
-				App imprimirPedidosCliente: pan.
-				op:=''. 
-				]."fin op2"
-		(op = '3') ifTrue:[ Transcript show: 'seleccionó 2 .Imprimir pedidos iguales o mayores a un costo ';cr. 
-				App imprimirPedidosMayorIgualA: pan.
-				op:=''. ]."fin op3"
-		(op = '4') ifTrue:[ Transcript show: 'seleccionó 3 Imprimir todos los pedidos ordenados por costo de mayor a menor';cr. 
-				App imprimirPedidosMayorAMenor: pan.
-				op:=''. ]."fin op4"
-	
-		(op = '5') ifTrue: [
-				Transcript show: 'Listando pedidos con total > 200000...'; cr.
-				lista := pan verListaPedidos.
-				"Seleccionar los pedidos cuyo total es mayor a 200000"
-				pedidosConTotalAlto := lista select: [:pedido | pedido verTotal > 200000].
-				pedidosConTotalAlto isEmpty ifTrue: [ Transcript show: 'No hay pedidos con total mayor a 200000.'; cr.
-								] ifFalse: [
-								"Mostrar los pedidos que cumplen con la condición"
-								pedidosConTotalAlto do: [:pedido |
-								Transcript show: 'Pedido Nro: ',pedido verNroPedido printString,
-											', Cliente Nro: ', pedido verNroCliente printString,
-											', Total: ', pedido verTotal printString; cr.].
-								].
-				op := ''
-				]."fin op5"
+            "Esperar confirmación del usuario antes de continuar"
+            MessageBox confirm: 'Presione OK para volver al menú principal'.
+            op := ''
+        ].
 
-		(op = '0') ifTrue: [
-				volver := MessageBox confirm: '¿Desea salir del menú Funciones?'.
-				op:=''.
-				]."fin op0"
-		
-		(op ~= '') ifTrue: [MessageBox warning: 'No seleccionó una opcion correcta'.
-				impMenu :=false.
-				] ifFalse: [	Transcript cr.
-						impMenu:=true
-				].
+       (op = '2') ifTrue: [
+		    Transcript show: 'Listando pedidos con total > 200000...'; cr.
+		    lista := pan verListaPedidos.
+
+		    "Seleccionar los pedidos cuyo total es mayor a 200000"
+		    pedidosConTotalAlto := lista select: [:pedido |
+			pedido verTotal > 200000
+		    ].
+
+		    pedidosConTotalAlto isEmpty ifTrue: [
+			Transcript show: 'No hay pedidos con total mayor a 200000.'; cr.
+		    ] ifFalse: [
+			"Mostrar los pedidos que cumplen con la condición"
+			pedidosConTotalAlto do: [:pedido |
+			    Transcript show: 'Pedido Nro: ', pedido verNroPedido printString,
+					', Cliente Nro: ', pedido verNroCliente printString,
+					', Total: ', pedido verTotal printString; cr.
+			].
+		    ].
+
+		    "Esperar confirmación del usuario antes de continuar"
+		    MessageBox confirm: 'Presione OK para volver al menú principal'.
+		    op := ''
+		].
+
+        (op = '3') ifTrue: [
+            Transcript show: 'Ejecutando Función 3...'; cr.
+            "Lógica para Función 3"
+        ].
+
+        (op = '0') ifTrue: [
+            volver := MessageBox confirm: '¿Desea salir del menú principal?'
+        ].
+    ].
+].
 
 
-	]."sale While"
-	"Termina menu 4 Funciones"
-	op:=''.
-	].
 
 	(op ~= '') ifTrue: [ MessageBox warning: 'No seleccionó una opcion correcta'. ].
 	]."no sale"
