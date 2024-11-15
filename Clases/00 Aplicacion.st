@@ -1,4 +1,4 @@
-﻿| salir op pan volver sigue c p r v nom tel dir dic cant leg pue pro tip precio precio2 idx impMenu costo |
+﻿| salir op pan volver sigue c p r v nom tel dir dic cant leg pue pro tip precio precio2 idx impMenu costo listaPedidos|
 
 pan:= Panificadora crearPanificadoraNom: 'pa' dire: 'Av.7 123'  tel: '4257-8897'.
 "Carga de datos predefinidos a la Panificadora"
@@ -333,19 +333,79 @@ salir := false.
 				op := ''
 				]."fin op1"
 
-		(op = '2') ifTrue:[ Transcript show: 'seleccionó 1 Imprimir pedidos de un cliente.';cr. 
-				App imprimirPedidosCliente: pan.
+		(op = '2') ifTrue:[ Transcript show: 'Seleccionó 2 Imprimir pedidos de un cliente.';cr. 
+				"imprime los pedidos realizados por un cliente"
+				num:=''.
+				[num isNumber] whileFalse: [
+					num := Prompter prompt: 'Ingrese número de Cliente a buscar los pedidos '.
+					"comprobueba que se ingresa un numero"
+					(num ='') ifTrue: [MessageBox warning: 'No ingreso un número']
+							ifFalse:[ ((num detect: [ :di| di isDigit not] ifNone:['vacio']) = 'vacio' ) ifTrue: [num := num asNumber.]
+																ifFalse:[MessageBox warning: 'No ingreso un número'].
+							]. 
+				].
+				c:= pan traerClienteNro: num.
+				(c isNil) ifTrue: [ MessageBox warning: 'El número ingresado no pertenece a un cliente']
+						ifFalse:[
+							listaPedidos := (pan verListaPedidos) select:  [ : p | p verNroCliente =  num ].
+							"impresion pedidos del cliente"
+							(listaPedidos isEmpty) ifTrue: [MessageBox warning: 'No hay pedidos realizados por ese Cliente'.]
+											ifFalse: [Transcript cr; show: 'Lista de pedidos del cliente Nro: ', num printString, ' Nombre: ', c verNombre ; cr.
+													listaPedidos do:[: p | Transcript show:
+																	'Nro pedido: ', (p verNroPedido) printString ,
+																	' | Fecha Entrega: ', (p verFechaEntrega) printString,	
+																	' | Costo: ', (p verTotal) printString,
+																	' | Estado ', (p verEstado) printString; cr
+																].
+													].
+						].
 				op:=''. 
 				]."fin op2"
-		(op = '3') ifTrue:[ Transcript show: 'seleccionó 2 .Imprimir pedidos iguales o mayores a un costo ';cr. 
-				App imprimirPedidosMayorIgualA: pan.
+		(op = '3') ifTrue:[ Transcript show: 'seleccionó 3 .Imprimir pedidos iguales o mayores a un costo ';cr. 
+				"imprime los pedidos mayores o iguales a un determinado costo ingresado por teclado"
+				costo := ''.
+				"comprobamos que se ingreso un numero"
+				[costo isNumber] whileFalse: [
+				costo := Prompter prompt: 'Ingresar un valor para mostrar los pedidos cuyo costo sea mayor o igual a ese valor'.
+				(costo ='') ifTrue: [MessageBox warning: 'no ingreso un número']
+						ifFalse:[ ((costo detect: [ :le | le isDigit not] ifNone:['vacio']) = 'vacio' ) ifTrue: [costo := costo asNumber.]
+											ifFalse:[MessageBox warning: 'no ingreso un numero'].
+						]. 
+				].
+				listaPedidos := (pan verListaPedidos) reject:  [ : p | p verTotal < costo]. "no selecciona aquellos pedidos con costo menor al costo ingresado por teclado"
+				
+				"impresion pedidos mayores a un costo"
+				(listaPedidos isEmpty) ifTrue: [Transcript show: 'No hay pedidos mayores o iguales a ese costo'; cr]
+								ifFalse:[Transcript show: 'Lista de pedidos de costo mayor a: ', costo printString; cr.
+									listaPedidos do:[
+												: p | Transcript show:
+													'Nro cliente: ', (p verNroCliente) printString,
+													' | Nro pedido: ', (p verNroPedido) printString ,
+													' | Fecha: ', (p verFechaEntrega) printString,	
+													' | Costo: ', (p verTotal) printString; cr		
+												].
+								].
 				op:=''. ]."fin op3"
-		(op = '4') ifTrue:[ Transcript show: 'seleccionó 3 Imprimir todos los pedidos ordenados por costo de mayor a menor';cr. 
-				App imprimirPedidosMayorAMenor: pan.
+
+		(op = '4') ifTrue:[ Transcript show: 'seleccionó 4 Imprimir todos los pedidos ordenados por costo de mayor a menor';cr. 
+				"imprime los pedidos ordenados de mayor a menor costo"
+				listaPedidos := (pan verListaPedidos) asSortedCollection: [ :x :y | x verTotal > y verTotal].
+
+				"imprimir los datos ordenados"
+				Transcript cr; show: 'Lista de pedidos ordenados por costo de mayor a menor'; cr.
+
+				(listaPedidos isEmpty) ifTrue: [Transcript  show: 'No se han realizado pedidos aun' ] 
+									ifFalse: [ listaPedidos do:[ : p |
+											Transcript show:
+											'Nro Pedido ', (p verNroPedido) printString,
+											' | Nro cliente: ', (p verNroCliente) printString,
+											' | Fecha Entrega: ', (p verFechaEntrega) printString,	
+											' | Costo: ', (p verTotal) printString; cr		
+																	].
+											].
 				op:=''. ]."fin op4"
 	
-		(op = '5') ifTrue: [
-				Transcript show: 'Listando pedidos con total > 200000...'; cr.
+		(op = '5') ifTrue: [ Transcript show: 'Listando pedidos con total > 200000...'; cr.
 				lista := pan verListaPedidos.
 				"Seleccionar los pedidos cuyo total es mayor a 200000"
 				pedidosConTotalAlto := lista select: [:pedido | pedido verTotal > 200000].
@@ -370,7 +430,6 @@ salir := false.
 				] ifFalse: [	Transcript cr.
 						impMenu:=true
 				].
-
 
 	]."sale While"
 	"Termina menu 4 Funciones"
