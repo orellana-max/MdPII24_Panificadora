@@ -91,14 +91,14 @@ crearClienteNom:unNom dire:unaDire tel:unTel
 ^(self new) iniClienteNom:unNom dire: unaDire tel: unTel.!
 
 initialize
-idCliente := 0.
+idCliente := 1.
 !
 
 nextNroCliente
 	"Retorna un id unico para una instancia nueva de Cliente"
 	| id |
 
-	(idCliente isNil) ifTrue: [idCliente := 0].
+	(idCliente isNil) ifTrue: [idCliente := 1].
 	id := idCliente.
 	idCliente := idCliente + 1.
 	^id.! !

@@ -46,7 +46,7 @@ Object subclass: #Cliente
 	classInstanceVariableNames: 'idCliente'!
 
 Object subclass: #Empleado
-	instanceVariableNames: 'legajo direccion telefono sueldo nombre'
+	instanceVariableNames: 'legajo direccion telefono nombre sueldo'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
@@ -200,6 +200,7 @@ cant:=''.
 cargarPanaderosPanificadora: pan
 	"Agregamos algunos Panaderos a la panaficadora"
 
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 1 nom: 'Daniel' dire: 'calle 101' tel: '123-564' puesto: 'Pastelero').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 2 nom: 'Maxi' dire: 'calle 102' tel: '123-564' puesto: 'Pastelero').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 3 nom: 'Daniel' dire: 'calle 103' tel: '123-564' puesto: 'Panadero').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 4 nom: 'Julio' dire: 'calle 104' tel: '123-564' puesto: 'Maestro').
@@ -805,14 +806,14 @@ crearClienteNom:unNom dire:unaDire tel:unTel
 ^(self new) iniClienteNom:unNom dire: unaDire tel: unTel.!
 
 initialize
-idCliente := 0.
+idCliente := 1.
 !
 
 nextNroCliente
 	"Retorna un id unico para una instancia nueva de Cliente"
 	| id |
 
-	(idCliente isNil) ifTrue: [idCliente := 0].
+	(idCliente isNil) ifTrue: [idCliente := 1].
 	id := idCliente.
 	idCliente := idCliente + 1.
 	^id.! !
@@ -978,14 +979,16 @@ asignarRepartidorPedido: nroPedido
 "asignar un repartidor libre al pedido"
 
 |repartidor pedido|
+
 "buscar el pedido"
 pedido:= listaPedidos detect: [:ped | ped verNroPedido = nroPedido] ifNone: [^nil].
-"seguir con buscar repartidor libre...."
+"busca repartidor libre"
 repartidor:= listaRepartidores detect: [:rep | rep verNroPedidoAsignado = 0 ] ifNone:[^nil].
 
-"asignar repartidor al pedido"
-pedido modiRepartidorAsignado: repartidor verNroRepartidor.
-
+pedido ifNil:[ MessageBox warning: 'no existe pedido para asignar un repartidor'. ]
+	ifNotNil: [ "asignar repartidor al pedido"
+		pedido modiRepartidorAsignado: repartidor verNroRepartidor.
+	].
 "retorna el repartidor asignado"
 ^repartidor.
 
@@ -1000,21 +1003,17 @@ comprarProductosNroCliente: nroCliente listaProd: unaListaProdPedido
 	self agregarPedido: pe.
 
 	"producir cada productoPedido"
-	1 to: pe verListaPedidos size
-		do: 
-			[:prodPe |
+	1 to: pe verListaProductosPedidos size
+		do:  [:prodPe |
 			pro := self verListaProductos detect: [:p | p verNroProducto = prodPe verNroProducto].	"busca el producto del productoPedido"
 			pana := self seleccionarPanadero: pro.	"selecciona un panadero segun el tipo de producto, si es un pastel se necesita un pastelero"
-			pana producirProducto: pro cant: prodPe verCantidad	"Se pide al panadero producir el productoPedido"].
+			self producirProducto: pro pana: pana cantidad: prodPe verCantidad.	"Se manda a producir el productoPedido"
+			].
 
 	"modificar el estado del pedido, ahora ya esta lista para repartir"
 	pe modEstado: 'listo para repartir'.
 
-	" repartir producto"
-	self repartirPedido: pe.
-
-	"modificar el estado del pedido"
-	pe modEstado: 'entregado'!
+!
 
 eliminarCliente: unCliente
 	"Elimina un Cliente de la lista de Clientes"
@@ -1152,13 +1151,6 @@ eliminarVendedor: unVendedor
 						warning: 'No existe Vendedor Nro: ' , nro printString , ' Nombre: ' , nom , ' en la lista.']]
 		ifFalse: [MessageBox warning: 'El Vendedor es vacio']!
 
-fabricarProducto: unProducto pana: unPanadero cantidad: unaCantidad
-	"Pone a producir un producto asignando al panadero correspondiente"
-
-	"unPanadero producirProducto: unProducto cant:unaCantidad."
-
-	!
-
 iniPanificadoraNom: unNom dire: unaDire tel: unTel
 	"Inicializa una instancia de Panificadora"
 
@@ -1189,26 +1181,30 @@ modTelefono: unTelefono
 
 	telefono := unTelefono.!
 
-repartirPedido:unPedido
-"verificar si el pedido tiene repartidor y asignar uno"
-|repa|
-((unPedido verRepartidor) isNil) ifTrue: [ 
-								repa := self asignarRepartidorPedido: unPedido verNroPedido.
-								repa asignarPedido: unPedido verNroPedido.
-								].
-"verificar si el pedido esta en estado listo para repartir"
-(unPedido verEstado = 'listo para repartir') ifTrue: [ 
-										Transcript show: 'Repartiendo el pedido'."unPedido repartir."
-										repa liberarRepartidor. "agregar a viajes realizados del repartidor"
-										]
-								     ifFalse: [
-										Transcript show: 'El pedido aun no esta listo para repartir'
-										].
-										
-											
+producirProducto: unProducto pana: unPanadero cantidad: unaCantidad
+	"Pone a producir un producto asignando al panadero correspondiente"
 
+	unPanadero producirProducto: unProducto cant:unaCantidad.
 
 !
+
+repartirPedido: unPedido
+	"verificar si el pedido tiene repartidor y asignar uno"
+
+	| repa |
+	"verificar si el pedido esta en estado listo para repartir"
+	unPedido verEstado = 'listo para repartir'
+		ifTrue: 
+			[unPedido verNroRepartidor = -1
+				ifTrue: 
+					["asigna repartidor"
+					repa := self asignarRepartidorPedido: unPedido verNroPedido.
+					repa asignarPedido: unPedido verNroPedido]
+				ifFalse: 
+					[repa := self verListaRepartidores detect: [:re | re verNroRepartidor = unPedido verNroRepartidor]].	"si no tiene repartidor asignado"
+			Transcript show: 'Repartiendo el pedido'.	"repartidor repartir."
+			repa repartir: unPedido]
+		ifFalse: [Transcript show: 'El pedido aun no esta listo para repartir']!
 
 seleccionarPanadero: unProducto
 "selecciona un panadero segun el tipo de producto a producir"
@@ -1221,7 +1217,7 @@ pana := listaPanaderos detect: [:p| p verPuesto = dic at: (unProducto verTipo)].
 ^pana.!
 
 traerClienteNro: nroCliente
-	"Retorna el producto de nro de producto pasado por parametro, nil en caso contrario"
+	"Retorna el Cliente de nro de Cliente pasado por parametro, nil en caso contrario"
 
 	^listaClientes detect: [:pro | pro verNroCliente = nroCliente ] ifNone: [^nil].!
 
@@ -1311,11 +1307,11 @@ eliminarProducto:!public! !
 eliminarProveedor:!public! !
 eliminarRepartidor:!public! !
 eliminarVendedor:!public! !
-fabricarProducto:pana:cantidad:!public! !
 iniPanificadoraNom:dire:tel:!public! !
 modDireccion:!public! !
 modNombre:!public! !
 modTelefono:!public! !
+producirProducto:pana:cantidad:!public! !
 repartirPedido:!public! !
 seleccionarPanadero:!public! !
 traerClienteNro:!public! !
@@ -1356,34 +1352,19 @@ Pedido comment: ''!
 
 !Pedido methodsFor!
 
-agregarProductoPedido: nroProducto cantidad: cantidad
-   | productoExistente nuevoProductoPedido |
-   
-   productoExistente := listaProductosPedidos detect: [ :p | p verNroProducto = nroProducto ] ifNone: [ nil ].
-   
-   productoExistente
-      ifNotNil: [ productoExistente modCantidad: (productoExistente verCantidad + cantidad) ]
-      ifNil: [
-         nuevoProductoPedido := ProductoPedido new.
-         nuevoProductoPedido iniProductoPedido: (listaProductosPedidos size + 1)
-                                nroProd: nroProducto
-                                pedido: self
-                                cantidad: cantidad.
-         listaProductosPedidos add: nuevoProductoPedido
-      ].!
-
 agregarProductoPedidoProd: unProducto cantidad: cantidad
    | PPExistente nuevoPP |
    
    PPExistente := listaProductosPedidos detect: [ :p | p verNroProducto = unProducto verNroProducto ] ifNone: [ nil ].
    
    PPExistente ifNotNil: [ PPExistente sumarCantidad:  cantidad.]
-      ifNil: [
-        nuevoPP := ProductoPedido crearProductoPedido: unProducto pedido: self cantidad: cantidad.
-	listaProductosPedidos add: nuevoPP.
-	total := 0.
-	listaProductosPedidos do: [ :pp | total := total + pp verCosto.].
-      ].!
+		ifNil: [
+			nuevoPP := ProductoPedido crearProductoPedido: unProducto pedido: self cantidad: cantidad.
+			listaProductosPedidos add: nuevoPP.
+			total := 0.
+			"actualiza el costo total del pedido"
+			listaProductosPedidos do: [ :pp | total := total + pp verCosto.].
+			].!
 
 eliminarProductoPedido: nroProducto
    | productoAEliminar |
@@ -1447,17 +1428,9 @@ verFechaEntrega
 	^fechaEntrega.!
 
 verListaProductosPedidos
-   | listaTexto |
-   listaTexto := String streamContents: [ :stream |
-      listaProductosPedidos do: [ :producto |
-         stream
-            nextPutAll: ', Nro Producto: ', producto verNroProducto printString;
-            nextPutAll: ', Cantidad: ', producto verCantidad printString;
-            nextPutAll: ', Nro Pedido: ', producto verNroPedido printString;
-            nextPutAll: '; '.
-      ].
-   ].
-   Transcript show: listaTexto; cr.!
+   "retorna la lista de ProductosPedidos"
+
+^listaProductosPedidos.!
 
 verNroCliente
 ^nroCliente.!
@@ -1465,8 +1438,8 @@ verNroCliente
 verNroPedido
 	^nroPedido.!
 
-verRepartidor
-	^nroRepartidorAsignado.!
+verNroRepartidor
+	^nroRepartidorAsignado!
 
 verTotal
    total := 0.
@@ -1475,7 +1448,6 @@ verTotal
    ^ total.! !
 
 !Pedido categoriesForMethods!
-agregarProductoPedido:cantidad:!public! !
 agregarProductoPedidoProd:cantidad:!public! !
 eliminarProductoPedido:!public! !
 imprimir!public! !
@@ -1488,7 +1460,7 @@ verFechaEntrega!public! !
 verListaProductosPedidos!public! !
 verNroCliente!public! !
 verNroPedido!public! !
-verRepartidor!public! !
+verNroRepartidor!public! !
 verTotal!public! !
 !
 
@@ -1699,16 +1671,6 @@ cadena := 'Producto Pedido ID: ', idProductoPedido printString,' Producto Nro: '
 
 ^cadena!
 
-iniProductoPedidoNroProd:unNroProduct cantidad:cant costoUnitario:cost
-"inicializa una instancia de ProductoPedido"
-
-idProductoPedido := ProductoPedido nextNroPP.
-nroProducto := unNroProduct.
-nroPedido := 0.
-pedido := nil.
-cantidad:= cant.
-costoUnitario:=cost.!
-
 iniProductoPedidoUnProd:unProducto cantidad:cant 
 "inicializa una instancia de ProductoPedido"
 
@@ -1731,9 +1693,6 @@ costoUnitario:=unProducto verPrecio.!
 
 modCantidad:unNro
 	cantidad:=unNro.!
-
-modCostoUnitario:unNro
-	costoUnitario =unNro.!
 
 modNroPedido: unNroPedido
 	nroPedido := unNroPedido!
@@ -1767,11 +1726,9 @@ verNroProducto
 
 !ProductoPedido categoriesForMethods!
 imprimir!public! !
-iniProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 iniProductoPedidoUnProd:cantidad:!public! !
 iniProductoPedidoUnProd:Pedido:cantidad:!public! !
 modCantidad:!public! !
-modCostoUnitario:!public! !
 modNroPedido:!public! !
 setPedido:!public! !
 sumarCantidad:!public! !
@@ -1793,10 +1750,6 @@ crearProductoPedido:unProducto pedido:unPedido cantidad:cant
 
 	^(self new) iniProductoPedidoUnProd: unProducto Pedido: unPedido cantidad: cant.!
 
-crearProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo
-
-	^(self new) iniProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo.!
-
 initialize 
     nroProductoPedido := 0.
 !
@@ -1811,7 +1764,6 @@ nextNroPP
 !ProductoPedido class categoriesForMethods!
 crearProductoPedido:cantidad:!public! !
 crearProductoPedido:pedido:cantidad:!public! !
-crearProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 initialize!public! !
 nextNroPP!public! !
 !
@@ -2043,9 +1995,14 @@ repartir: pedido
 |nroPed|
 nroPed := pedido verNroPedido.
 self asignarPedido: nroPed.
-self liberarRepartidor.
+"Reparte el pedido"
+Transcript show: 'El repartidor nro : ', nroRepartidor printString, ' repartio el pedido nro: ', nroPed printString ; cr.
+"modificar el estado del pedido"
+pedido modEstado: 'entregado'. 
+"agregar a viajes realizados del repartidor"
+self liberarRepartidor. 
 
-Transcript show: 'El repartidor nro : ', nroRepartidor printString, ' repartio el pedido nro: ', nroPed printString ; cr.!
+!
 
 verListaPedidosEntregados
 "retorna la lista de pedidos asignados"
@@ -2113,8 +2070,7 @@ imprimir
 iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Vendedor"
 
-	self iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
-	"nroVendedor := Vendedor nuevoNumeroVendedor."
+	super iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
 	nroVendedor := Vendedor nextNroVendedor.
 	pedidosVendidos := OrderedCollection new.
 	sueldo := 600000.!
@@ -2152,8 +2108,7 @@ crearVendedorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
 	^(self new) iniVendedorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.!
 
 initialize
-	idVendedor := 0
-	"UnNuevoNroVendedor := 0."!
+	idVendedor := 1.!
 
 nextNroVendedor
 	"Retorna un id unico para una instancia nueva de Vendedor"
@@ -2162,19 +2117,12 @@ nextNroVendedor
 	(idVendedor isNil) ifTrue: [idVendedor := 0].
 	id := idVendedor.
 	idVendedor := idVendedor + 1.
-	^id.!
-
-nuevoNumeroVendedor
-"Retorna un nuevo numero de vendedor, primero se asegura que ya fue inicializada la variable de clase"
-(UnNuevoNroVendedor isNil) ifTrue: [UnNuevoNroVendedor := 0].
-UnNuevoNroVendedor := UnNuevoNroVendedor + 1.
-^UnNuevoNroVendedor.! !
+	^id.! !
 
 !Vendedor class categoriesForMethods!
 crearVendedorLegajo:nom:dire:tel:!public! !
 initialize!public! !
 nextNroVendedor!public! !
-nuevoNumeroVendedor!public! !
 !
 
 "Binary Globals"!

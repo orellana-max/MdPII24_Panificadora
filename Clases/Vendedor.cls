@@ -25,8 +25,7 @@ imprimir
 iniVendedorLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel
 	"Inicializa una instancia de Vendedor"
 
-	self iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
-	"nroVendedor := Vendedor nuevoNumeroVendedor."
+	super iniEmpleadoLegajo: unLegajo nom: unNombre dire: unaDire tel: unTel.
 	nroVendedor := Vendedor nextNroVendedor.
 	pedidosVendidos := OrderedCollection new.
 	sueldo := 600000.!
@@ -64,8 +63,7 @@ crearVendedorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel
 	^(self new) iniVendedorLegajo: unLegajo nom: unNom dire: unaDire tel: unTel.!
 
 initialize
-	idVendedor := 0
-	"UnNuevoNroVendedor := 0."!
+	idVendedor := 1.!
 
 nextNroVendedor
 	"Retorna un id unico para una instancia nueva de Vendedor"
@@ -74,18 +72,11 @@ nextNroVendedor
 	(idVendedor isNil) ifTrue: [idVendedor := 0].
 	id := idVendedor.
 	idVendedor := idVendedor + 1.
-	^id.!
-
-nuevoNumeroVendedor
-"Retorna un nuevo numero de vendedor, primero se asegura que ya fue inicializada la variable de clase"
-(UnNuevoNroVendedor isNil) ifTrue: [UnNuevoNroVendedor := 0].
-UnNuevoNroVendedor := UnNuevoNroVendedor + 1.
-^UnNuevoNroVendedor.! !
+	^id.! !
 
 !Vendedor class categoriesForMethods!
 crearVendedorLegajo:nom:dire:tel:!public! !
 initialize!public! !
 nextNroVendedor!public! !
-nuevoNumeroVendedor!public! !
 !
 

@@ -22,16 +22,6 @@ cadena := 'Producto Pedido ID: ', idProductoPedido printString,' Producto Nro: '
 
 ^cadena!
 
-iniProductoPedidoNroProd:unNroProduct cantidad:cant costoUnitario:cost
-"inicializa una instancia de ProductoPedido"
-
-idProductoPedido := ProductoPedido nextNroPP.
-nroProducto := unNroProduct.
-nroPedido := 0.
-pedido := nil.
-cantidad:= cant.
-costoUnitario:=cost.!
-
 iniProductoPedidoUnProd:unProducto cantidad:cant 
 "inicializa una instancia de ProductoPedido"
 
@@ -54,9 +44,6 @@ costoUnitario:=unProducto verPrecio.!
 
 modCantidad:unNro
 	cantidad:=unNro.!
-
-modCostoUnitario:unNro
-	costoUnitario =unNro.!
 
 modNroPedido: unNroPedido
 	nroPedido := unNroPedido!
@@ -90,11 +77,9 @@ verNroProducto
 
 !ProductoPedido categoriesForMethods!
 imprimir!public! !
-iniProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 iniProductoPedidoUnProd:cantidad:!public! !
 iniProductoPedidoUnProd:Pedido:cantidad:!public! !
 modCantidad:!public! !
-modCostoUnitario:!public! !
 modNroPedido:!public! !
 setPedido:!public! !
 sumarCantidad:!public! !
@@ -116,10 +101,6 @@ crearProductoPedido:unProducto pedido:unPedido cantidad:cant
 
 	^(self new) iniProductoPedidoUnProd: unProducto Pedido: unPedido cantidad: cant.!
 
-crearProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo
-
-	^(self new) iniProductoPedidoNroProd: nroProd cantidad: cant costoUnitario: costo.!
-
 initialize 
     nroProductoPedido := 0.
 !
@@ -134,7 +115,6 @@ nextNroPP
 !ProductoPedido class categoriesForMethods!
 crearProductoPedido:cantidad:!public! !
 crearProductoPedido:pedido:cantidad:!public! !
-crearProductoPedidoNroProd:cantidad:costoUnitario:!public! !
 initialize!public! !
 nextNroPP!public! !
 !

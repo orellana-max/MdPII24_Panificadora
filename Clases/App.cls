@@ -101,6 +101,7 @@ cant:=''.
 cargarPanaderosPanificadora: pan
 	"Agregamos algunos Panaderos a la panaficadora"
 
+	pan agregarPanadero: (Panadero crearPanaderoLegajo: 1 nom: 'Daniel' dire: 'calle 101' tel: '123-564' puesto: 'Pastelero').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 2 nom: 'Maxi' dire: 'calle 102' tel: '123-564' puesto: 'Pastelero').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 3 nom: 'Daniel' dire: 'calle 103' tel: '123-564' puesto: 'Panadero').
 	pan agregarPanadero: (Panadero crearPanaderoLegajo: 4 nom: 'Julio' dire: 'calle 104' tel: '123-564' puesto: 'Maestro').

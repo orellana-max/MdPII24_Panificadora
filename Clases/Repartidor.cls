@@ -55,9 +55,14 @@ repartir: pedido
 |nroPed|
 nroPed := pedido verNroPedido.
 self asignarPedido: nroPed.
-self liberarRepartidor.
+"Reparte el pedido"
+Transcript show: 'El repartidor nro : ', nroRepartidor printString, ' repartio el pedido nro: ', nroPed printString ; cr.
+"modificar el estado del pedido"
+pedido modEstado: 'entregado'. 
+"agregar a viajes realizados del repartidor"
+self liberarRepartidor. 
 
-Transcript show: 'El repartidor nro : ', nroRepartidor printString, ' repartio el pedido nro: ', nroPed printString ; cr.!
+!
 
 verListaPedidosEntregados
 "retorna la lista de pedidos asignados"

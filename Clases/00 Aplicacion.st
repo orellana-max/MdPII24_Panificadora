@@ -106,50 +106,41 @@ salir := false.
 		"3 - Carga de Productos"
 				(op = '3') ifTrue:[ Transcript show: '3 - Cargar Productos.';cr. 
 						"Dictionary para Tipo de Producto"
-						dic := Dictionary new 
-								at:'1' put:'Pastel'; at:'2' put:'Pan'; at:'3' put:'Factura'; at:'4' put:'Tarta'; at:'5' put:'Galleta'; 
-								yourself.
+						dic := Dictionary new at:'1' put:'Pastel'; at:'2' put:'Pan'; at:'3' put:'Factura'; at:'4' put:'Tarta'; at:'5' put:'Galleta'; yourself.
 			
 						sigue := true.
 						"Cargamos Productos"
-						[sigue] whileTrue: [
-							Transcript cr.
+						[sigue] whileTrue: [ Transcript cr.
 							"Creamos un Producto manualmente"
 							nom:= Prompter prompt: 'ingrese nombre del Producto: '.
 							tip := '0'.
-							[tip = '0'] whileTrue: [
-								op:= Prompter prompt: 'ingrese nro de tipo: ',
-								'1- Pastel, 2- Pan, 3- Factura, 4- Tarta, 5- Galleta'. 
-								tip:= dic at: op ifAbsent: ['0'].
-								(tip = '0') ifTrue: [MessageBox warning: 'No ingreso una opción valida'.].
-							].
+							[tip = '0'] whileTrue: [ 
+									op:= Prompter prompt: 'ingrese nro de tipo de Producto: ', '1- Pastel, 2- Pan, 3- Factura, 4- Tarta, 5- Galleta'. 
+									tip:= dic at: op ifAbsent: ['0'].
+									(tip = '0') ifTrue: [MessageBox warning: 'No ingreso una opción valida'.]. ].
 							
 							"Pedimos Precio, Comprobamos que ingrese un float"
 							precio :=''.
-							[precio isNumber] whileFalse: [
-								precio := Prompter prompt: 'Ingrese Precio del Producto  '.
+							[precio isNumber] whileFalse: [  precio := Prompter prompt: 'Ingrese Precio del Producto  '.
 								cant := precio occurrencesOf: $.. "ocurrencias de puntos"
-								((precio ='') or: [cant > 1]) "si ingreso varios puntos o vacio"
-										ifTrue: [MessageBox warning: 'no ingreso un numero'] 
-										ifFalse: [
-										(cant = 0)  "si no tiene puntos"
-												ifTrue: [ "Bloque si no contiene letras ni punto"
-												((precio detect: [ :pre | pre isDigit not] ifNone:['vacio']) = 'vacio' ) 
-												ifTrue: [precio := precio asNumber asFloat.] 
-												ifFalse:[MessageBox warning: 'no ingreso un numero']."--> Bloque si contiene letras"
-												].
-										(cant = 1) "si tiene un punto"
-												ifTrue:[
-												idx := precio indexOf: $..
-												precio2 := (precio copyFrom: 1 to: idx -1), (precio copyFrom: idx +1).
-												((precio2 detect: [ :pre2 | pre2 isDigit not] ifNone:['vacio']) = 'vacio' ) 
-													ifTrue: [ "Bloque si no contiene letras es un numero"
-													precio := precio asNumber asFloat.
-												] "fin Bloque si no contiene letras es un numero"
-												ifFalse:[MessageBox warning: 'no ingreso un numero']."--> Bloque si contiene letras"
-												].
-										].
-							].
+								((precio ='') or: [(precio ='.') or: [cant > 1]]) ifTrue: [MessageBox warning: 'no ingreso un numero'] 
+											ifFalse: [
+												(cant = 0)  "si no tiene puntos"
+													ifTrue: [ "Bloque si no contiene letras ni punto"
+														((precio detect: [ :pre | pre isDigit not] ifNone:['vacio']) = 'vacio' ) ifTrue: [precio := precio asNumber asFloat.] 
+																			ifFalse:[MessageBox warning: 'no ingreso un numero']."--> Bloque si contiene letras"
+														].
+												(cant = 1) "si tiene un punto"
+													ifTrue:[ idx := precio indexOf: $..
+														(idx = 1) ifTrue:[ precio:= '0',precio.
+																	idx:= idx+1.].
+														precio2 := (precio copyFrom: 1 to: idx -1), (precio copyFrom: idx +1).
+														((precio2 detect: [ :pre2 | pre2 isDigit not] ifNone:['vacio']) = 'vacio' ) 
+															ifTrue: [ "Bloque si no contiene letras es un numero"
+															precio := precio asNumber asFloat. ] "fin Bloque si no contiene letras es un numero"
+															ifFalse:[MessageBox warning: 'no ingreso un numero']."--> Bloque si contiene letras"
+														].]. "se comprobo si ingreso un numero o no" 
+								]. "fin while, ingreso un float o number"
 							"Creamos el producto"
 							pro:= Producto crearProductoNombre: nom tip: tip prec: precio.
 							MessageBox warning:  'Se creo con exito el Producto Nro: ', pro verNroProducto printString , ' Nombre: ', pro verNombre , ' Tipo ',  pro verTipo.
@@ -283,8 +274,6 @@ salir := false.
 	
 	App imprimirPedidosCliente: pan.
 	MessageBox warning: 'seguir'.
-	App imprimirPedidosMayorAMenor: pan.
-	MessageBox warning: 'seguir'.
 	App imprimirPedidosMayorIgualA: pan.
 	MessageBox warning: 'seguir'.
 
@@ -346,16 +335,13 @@ salir := false.
 				].
 				c:= pan traerClienteNro: num.
 				(c isNil) ifTrue: [ MessageBox warning: 'El número ingresado no pertenece a un cliente']
-						ifFalse:[
-							listaPedidos := (pan verListaPedidos) select:  [ : p | p verNroCliente =  num ].
+						ifFalse:[ listaPedidos := (pan verListaPedidos) select:  [ : p | p verNroCliente =  num ].
 							"impresion pedidos del cliente"
 							(listaPedidos isEmpty) ifTrue: [MessageBox warning: 'No hay pedidos realizados por ese Cliente'.]
 											ifFalse: [Transcript cr; show: 'Lista de pedidos del cliente Nro: ', num printString, ' Nombre: ', c verNombre ; cr.
-													listaPedidos do:[: p | Transcript show:
-																	'Nro pedido: ', (p verNroPedido) printString ,
+													listaPedidos do:[: p | Transcript show: 'Nro pedido: ', (p verNroPedido) printString ,
 																	' | Fecha Entrega: ', (p verFechaEntrega) printString,	
-																	' | Costo: ', (p verTotal) printString,
-																	' | Estado ', (p verEstado) printString; cr
+																	' | Costo: ', (p verTotal) printString, ' | Estado ', (p verEstado) printString; cr
 																].
 													].
 						].
@@ -395,14 +381,10 @@ salir := false.
 				Transcript cr; show: 'Lista de pedidos ordenados por costo de mayor a menor'; cr.
 
 				(listaPedidos isEmpty) ifTrue: [Transcript  show: 'No se han realizado pedidos aun' ] 
-									ifFalse: [ listaPedidos do:[ : p |
-											Transcript show:
-											'Nro Pedido ', (p verNroPedido) printString,
-											' | Nro cliente: ', (p verNroCliente) printString,
-											' | Fecha Entrega: ', (p verFechaEntrega) printString,	
-											' | Costo: ', (p verTotal) printString; cr		
-																	].
-											].
+							ifFalse: [ listaPedidos do:[ : p | Transcript show: 'Nro Pedido ', (p verNroPedido) printString,
+									' | Nro cliente: ', (p verNroCliente) printString, ' | Fecha Entrega: ', (p verFechaEntrega) printString,	
+									' | Costo: $', (p verTotal) printString; cr		
+								]. ].
 				op:=''. ]."fin op4"
 	
 		(op = '5') ifTrue: [ Transcript show: 'Listando pedidos con total > 200000...'; cr.

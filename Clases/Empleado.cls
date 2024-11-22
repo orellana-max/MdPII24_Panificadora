@@ -1,7 +1,7 @@
 ﻿"Filed out from Dolphin Smalltalk"!
 
 Object subclass: #Empleado
-	instanceVariableNames: 'legajo direccion telefono sueldo nombre'
+	instanceVariableNames: 'legajo direccion telefono nombre sueldo'
 	classVariableNames: ''
 	poolDictionaries: ''
 	classInstanceVariableNames: ''!
